@@ -1,9 +1,14 @@
 const clockElement = document.getElementById("clock");
-const heroSection = document.getElementById("hero-scroll");
-const heroStage = document.querySelector(".hero-stage");
-const mainCard = document.getElementById("mainCard");
-const rearCard = document.getElementById("rearCard");
-const mainCardContent = document.getElementById("mainCardContent");
+const dragChip = document.getElementById("dragChip");
+const dragTetherLayer = document.getElementById("dragTetherLayer");
+const dragTetherLine = document.getElementById("dragTetherLine");
+const dragIndicator = document.getElementById("dragIndicator");
+const dragIndicatorReadout = document.getElementById("dragIndicatorReadout");
+const heroDescription = document.getElementById("heroDescription");
+const siteHeader = document.querySelector(".site-header");
+const draggableWordmarks = Array.from(
+    document.querySelectorAll("[data-draggable-wordmark]")
+);
 
 function updateClock() {
     if (!clockElement) {
@@ -18,541 +23,499 @@ function updateClock() {
         hour12: false,
     });
 
-    clockElement.textContent = `Manila, PH - ${formatter.format(new Date())} PHT`;
+    const time = formatter.format(new Date());
+
+    clockElement.textContent = `Manila, PH - ${time} PHT`;
 }
 
-function getSceneConfig() {
-    const isMobile = window.matchMedia("(max-width: 640px)").matches;
-    const isTablet = window.matchMedia("(max-width: 900px)").matches;
-
-    if (isMobile) {
-        return {
-            scrollLength: 5200, // Tweak marker: overall scroll duration
-            frontTilt: {
-                rotate: -8,
-                rotateX: 14,
-                rotateY: -7,
-            },
-            rearTilt: {
-                rotate: -6,
-                rotateX: 11,
-                rotateY: -5,
-            },
-            frontY: {
-                initial: 250, // Tweak marker: state 1 hidden offset
-                reveal: 40,
-                lifted: -36,
-                exit: -210,
-                partial: -105,
-                final: 0,
-            },
-            rearY: {
-                initial: 150,
-                reveal: 118,
-                dominant: 98,
-                lowered: 172,
-            },
-            scale: {
-                frontInitial: 1.14, // Tweak marker: card scale values
-                frontVisible: 1,
-                frontMid: 0.92,
-                frontFar: 0.82,
-                rearInitial: 0.94,
-                rearVisible: 0.99,
-                rearLow: 0.91,
-            },
-        };
-    }
-
-    if (isTablet) {
-        return {
-            scrollLength: 5500,
-            frontTilt: {
-                rotate: -9,
-                rotateX: 15,
-                rotateY: -8,
-            },
-            rearTilt: {
-                rotate: -8,
-                rotateX: 13,
-                rotateY: -6,
-            },
-            frontY: {
-                initial: 260,
-                reveal: 26,
-                lifted: -48,
-                exit: -245,
-                partial: -118,
-                final: -2,
-            },
-            rearY: {
-                initial: 160,
-                reveal: 126,
-                dominant: 104,
-                lowered: 184,
-            },
-            scale: {
-                frontInitial: 1.1,
-                frontVisible: 1,
-                frontMid: 0.9,
-                frontFar: 0.8,
-                rearInitial: 0.95,
-                rearVisible: 1,
-                rearLow: 0.9,
-            },
-        };
-    }
-
-    return {
-        scrollLength: 5800,
-        frontTilt: {
-            rotate: -10, // Tweak marker: main card tilt
-            rotateX: 16,
-            rotateY: -10,
-        },
-        rearTilt: {
-            rotate: -8, // Tweak marker: rear card tilt
-            rotateX: 13,
-            rotateY: -7,
-        },
-        frontY: {
-            initial: 280, // Tweak marker: animation distances
-            reveal: 18,
-            lifted: -56,
-            exit: -265,
-            partial: -126,
-            final: -4,
-        },
-        rearY: {
-            initial: 172,
-            reveal: 138,
-            dominant: 112,
-            lowered: 196,
-        },
-        scale: {
-            frontInitial: 1.08,
-            frontVisible: 1,
-            frontMid: 0.9,
-            frontFar: 0.79,
-            rearInitial: 0.94,
-            rearVisible: 1,
-            rearLow: 0.9,
-        },
-    };
-}
-
-function applyReducedMotionState() {
-    if (!mainCard || !rearCard || !mainCardContent) {
+function setupDraggableWordmarks() {
+    if (!draggableWordmarks.length) {
         return;
     }
-
-    gsap.set(heroStage, { clearProps: "all" });
-    gsap.set(rearCard, {
-        xPercent: -50,
-        yPercent: -50,
-        y: 170,
-        scale: 0.9,
-        rotation: -8,
-        rotationX: 12,
-        rotationY: -7,
-        autoAlpha: 0.9,
-        filter: "brightness(0.34)",
-    });
-    gsap.set(mainCard, {
-        xPercent: -50,
-        yPercent: -50,
-        y: 0,
-        scale: 1,
-        rotation: -7,
-        rotationX: 12,
-        rotationY: -6,
-        autoAlpha: 1,
-        filter: "brightness(1)",
-    });
-    gsap.set(mainCardContent, {
-        autoAlpha: 1,
-        y: 0,
-        filter: "brightness(1)",
-    });
-}
-
-function initScrollHero() {
-    if (
-        !heroSection ||
-        !heroStage ||
-        !mainCard ||
-        !rearCard ||
-        !mainCardContent ||
-        !window.gsap ||
-        !window.ScrollTrigger
-    ) {
-        return;
-    }
-
-    gsap.registerPlugin(ScrollTrigger);
 
     const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)",
+        "(prefers-reduced-motion: reduce)"
     ).matches;
+    const defaultWordmark = draggableWordmarks[0];
+    let activeWordmark = defaultWordmark;
 
-    ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
-    gsap.killTweensOf([mainCard, rearCard, mainCardContent]);
+    function syncTetherViewport() {
+        if (!dragTetherLayer) {
+            return;
+        }
 
-    if (prefersReducedMotion) {
-        applyReducedMotionState();
+        dragTetherLayer.setAttribute("width", `${window.innerWidth}`);
+        dragTetherLayer.setAttribute("height", `${window.innerHeight}`);
+        dragTetherLayer.setAttribute(
+            "viewBox",
+            `0 0 ${window.innerWidth} ${window.innerHeight}`
+        );
+    }
+
+    function hideTether() {
+        if (!dragTetherLayer || !dragTetherLine) {
+            return;
+        }
+
+        dragTetherLayer.classList.remove("is-visible");
+        dragTetherLine.removeAttribute("x1");
+        dragTetherLine.removeAttribute("y1");
+        dragTetherLine.removeAttribute("x2");
+        dragTetherLine.removeAttribute("y2");
+    }
+
+    function hideDragIndicator() {
+        if (!dragIndicator) {
+            return;
+        }
+
+        dragIndicator.classList.remove("is-visible");
+    }
+
+    function setDragChipHidden(hidden) {
+        if (!dragChip) {
+            return;
+        }
+
+        dragChip.classList.toggle("is-hidden-during-drag", hidden);
+    }
+
+    function updateDragIndicator(homeX, homeY, currentX, currentY, state) {
+        if (!dragIndicator || !dragIndicatorReadout) {
+            return;
+        }
+
+        const indicatorX = homeX + (currentX - homeX) * 0.62;
+        const indicatorY = homeY + (currentY - homeY) * 0.62 - 16;
+
+        dragIndicator.style.left = `${indicatorX}px`;
+        dragIndicator.style.top = `${indicatorY}px`;
+        dragIndicatorReadout.textContent = `dx: ${Math.round(state.offsetX)}, dy: ${Math.round(state.offsetY)}`;
+        dragIndicator.classList.add("is-visible");
+    }
+
+    function updateTether(element, state) {
+        if (
+            !dragTetherLayer ||
+            !dragTetherLine ||
+            state.homeCenterX === null ||
+            state.homeCenterY === null
+        ) {
+            return;
+        }
+
+        const rect = element.getBoundingClientRect();
+        const currentCenterX = rect.left + rect.width / 2;
+        const currentCenterY = rect.top + rect.height / 2;
+        const distance = Math.hypot(
+            currentCenterX - state.homeCenterX,
+            currentCenterY - state.homeCenterY
+        );
+
+        if (distance < 1) {
+            hideTether();
+            hideDragIndicator();
+            return;
+        }
+
+        dragTetherLine.setAttribute("x1", `${state.homeCenterX}`);
+        dragTetherLine.setAttribute("y1", `${state.homeCenterY}`);
+        dragTetherLine.setAttribute("x2", `${currentCenterX}`);
+        dragTetherLine.setAttribute("y2", `${currentCenterY}`);
+        dragTetherLayer.classList.add("is-visible");
+        updateDragIndicator(
+            state.homeCenterX,
+            state.homeCenterY,
+            currentCenterX,
+            currentCenterY,
+            state
+        );
+    }
+
+    function getHoveredWordmark() {
+        return draggableWordmarks.find((element) => element.matches(":hover")) ?? null;
+    }
+
+    function setActiveWordmark(element = defaultWordmark) {
+        if (!element) {
+            return;
+        }
+
+        if (activeWordmark && activeWordmark !== element) {
+            activeWordmark.classList.remove("is-active");
+        }
+
+        activeWordmark = element;
+        activeWordmark.classList.add("is-active");
+
+        if (dragChip && dragChip.parentElement !== activeWordmark) {
+            activeWordmark.prepend(dragChip);
+        }
+    }
+
+    function restoreActiveWordmark() {
+        const hoveredWordmark = getHoveredWordmark();
+        setActiveWordmark(hoveredWordmark ?? defaultWordmark);
+    }
+
+    draggableWordmarks.forEach((element) => {
+        const state = {
+            pointerId: null,
+            offsetX: 0,
+            offsetY: 0,
+            startX: 0,
+            startY: 0,
+            resetFrame: null,
+            homeCenterX: null,
+            homeCenterY: null,
+        };
+
+        function applyTransform() {
+            element.style.transform = `translate(${state.offsetX}px, ${state.offsetY}px)`;
+        }
+
+        function finishReturn() {
+            element.classList.remove("is-returning");
+            setDragChipHidden(false);
+            hideTether();
+            hideDragIndicator();
+            restoreActiveWordmark();
+        }
+
+        function resetPosition() {
+            if (state.resetFrame) {
+                cancelAnimationFrame(state.resetFrame);
+                state.resetFrame = null;
+            }
+
+            const shouldAnimateReturn =
+                !prefersReducedMotion &&
+                (Math.abs(state.offsetX) > 0.5 || Math.abs(state.offsetY) > 0.5);
+
+            if (!shouldAnimateReturn) {
+                state.offsetX = 0;
+                state.offsetY = 0;
+                applyTransform();
+                finishReturn();
+                return;
+            }
+
+            element.classList.add("is-returning");
+            state.resetFrame = requestAnimationFrame(() => {
+                state.offsetX = 0;
+                state.offsetY = 0;
+                applyTransform();
+                state.resetFrame = null;
+            });
+        }
+
+        function endDrag(event) {
+            if (event.pointerId !== state.pointerId) {
+                return;
+            }
+
+            const releasedPointerId = state.pointerId;
+            state.pointerId = null;
+
+            if (element.hasPointerCapture(releasedPointerId)) {
+                element.releasePointerCapture(releasedPointerId);
+            }
+
+            element.classList.remove("is-dragging");
+            hideTether();
+            hideDragIndicator();
+            resetPosition();
+        }
+
+        element.addEventListener("pointerenter", () => {
+            if (state.pointerId !== null) {
+                return;
+            }
+
+            setActiveWordmark(element);
+        });
+
+        element.addEventListener("pointerleave", () => {
+            if (state.pointerId !== null) {
+                return;
+            }
+
+            requestAnimationFrame(() => {
+                restoreActiveWordmark();
+            });
+        });
+
+        element.addEventListener("pointerdown", (event) => {
+            if (state.pointerId !== null) {
+                return;
+            }
+
+            if (state.resetFrame) {
+                cancelAnimationFrame(state.resetFrame);
+                state.resetFrame = null;
+            }
+
+            const rect = element.getBoundingClientRect();
+
+            state.pointerId = event.pointerId;
+            state.startX = event.clientX - state.offsetX;
+            state.startY = event.clientY - state.offsetY;
+            state.homeCenterX = rect.left + rect.width / 2;
+            state.homeCenterY = rect.top + rect.height / 2;
+
+            setActiveWordmark(element);
+            element.classList.remove("is-returning");
+            setDragChipHidden(true);
+            element.classList.add("is-dragging");
+            syncTetherViewport();
+            element.setPointerCapture(state.pointerId);
+        });
+
+        element.addEventListener("pointermove", (event) => {
+            if (event.pointerId !== state.pointerId) {
+                return;
+            }
+
+            state.offsetX = event.clientX - state.startX;
+            state.offsetY = event.clientY - state.startY;
+            applyTransform();
+            updateTether(element, state);
+        });
+
+        element.addEventListener("pointerup", endDrag);
+        element.addEventListener("pointercancel", endDrag);
+        element.addEventListener("lostpointercapture", () => {
+            if (state.pointerId === null) {
+                return;
+            }
+
+            state.pointerId = null;
+            element.classList.remove("is-dragging");
+            hideTether();
+            hideDragIndicator();
+            resetPosition();
+        });
+
+        element.addEventListener("transitionend", (event) => {
+            if (
+                event.propertyName !== "transform" ||
+                !element.classList.contains("is-returning")
+            ) {
+                return;
+            }
+
+            finishReturn();
+        });
+    });
+
+    syncTetherViewport();
+    window.addEventListener("resize", syncTetherViewport);
+    setActiveWordmark(defaultWordmark);
+}
+
+function setupAutoHidingHeader() {
+    if (!siteHeader) {
         return;
     }
 
-    const config = getSceneConfig();
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-    gsap.set(mainCard, {
-        xPercent: -50,
-        yPercent: -50,
-        y: config.frontY.initial,
-        scale: config.scale.frontInitial,
-        rotation: config.frontTilt.rotate,
-        rotationX: config.frontTilt.rotateX,
-        rotationY: config.frontTilt.rotateY,
-        transformOrigin: "50% 50%",
-        autoAlpha: 0.08,
-        filter: "brightness(0.34)",
+    if (prefersReducedMotion) {
+        siteHeader.classList.remove("is-hidden");
+        return;
+    }
+
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+    let hidePrimed = false;
+    let revealAnchorY = window.scrollY;
+    const secondScrollDistance = 96;
+
+    function updateHeaderState() {
+        const currentScrollY = window.scrollY;
+        const scrollDelta = currentScrollY - lastScrollY;
+
+        if (currentScrollY <= 24) {
+            siteHeader.classList.remove("is-hidden");
+            hidePrimed = false;
+            revealAnchorY = currentScrollY;
+        } else if (scrollDelta < -4) {
+            siteHeader.classList.remove("is-hidden");
+            hidePrimed = false;
+            revealAnchorY = currentScrollY;
+        } else if (scrollDelta > 4) {
+            if (!hidePrimed) {
+                hidePrimed = true;
+                revealAnchorY = currentScrollY;
+                siteHeader.classList.remove("is-hidden");
+            } else if (currentScrollY - revealAnchorY >= secondScrollDistance) {
+                siteHeader.classList.add("is-hidden");
+            }
+        }
+
+        lastScrollY = currentScrollY;
+        ticking = false;
+    }
+
+    window.addEventListener(
+        "scroll",
+        () => {
+            if (ticking) {
+                return;
+            }
+
+            ticking = true;
+            window.requestAnimationFrame(updateHeaderState);
+        },
+        { passive: true }
+    );
+}
+
+function setupHeroDescriptionTypewriter() {
+    if (!heroDescription) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)"
+    ).matches;
+    const initialPhrase = heroDescription.textContent.trim();
+    const configuredPhrases = (heroDescription.dataset.typewriterPhrases ?? "")
+        .split("|")
+        .map((phrase) => phrase.trim())
+        .filter(Boolean);
+    const phrases = Array.from(new Set([initialPhrase, ...configuredPhrases]));
+
+    heroDescription.textContent = initialPhrase;
+    heroDescription.classList.remove("is-restartable");
+    heroDescription.removeAttribute("tabindex");
+    heroDescription.removeAttribute("role");
+    heroDescription.removeAttribute("aria-label");
+
+    if (prefersReducedMotion || phrases.length < 2) {
+        return;
+    }
+
+    let phraseIndex = 0;
+    let characterIndex = phrases[0].length;
+    let isDeleting = false;
+    let isFinished = false;
+    let timeoutId = null;
+
+    function setRestartableState(enabled) {
+        heroDescription.classList.toggle("is-restartable", enabled);
+
+        if (enabled) {
+            heroDescription.setAttribute("tabindex", "0");
+            heroDescription.setAttribute("role", "button");
+            heroDescription.setAttribute(
+                "aria-label",
+                "Restart description animation"
+            );
+            return;
+        }
+
+        heroDescription.removeAttribute("tabindex");
+        heroDescription.removeAttribute("role");
+        heroDescription.removeAttribute("aria-label");
+    }
+
+    function clearQueuedStep() {
+        if (timeoutId === null) {
+            return;
+        }
+
+        window.clearTimeout(timeoutId);
+        timeoutId = null;
+    }
+
+    function queueNextStep(delay) {
+        if (isFinished) {
+            return;
+        }
+
+        clearQueuedStep();
+        timeoutId = window.setTimeout(runTypewriterStep, delay);
+    }
+
+    function runTypewriterStep() {
+        timeoutId = null;
+
+        if (isFinished) {
+            return;
+        }
+
+        const currentPhrase = phrases[phraseIndex];
+
+        if (isDeleting) {
+            characterIndex = Math.max(0, characterIndex - 1);
+            heroDescription.textContent = currentPhrase.slice(0, characterIndex);
+
+            if (characterIndex === 0) {
+                isDeleting = false;
+                phraseIndex = (phraseIndex + 1) % phrases.length;
+                queueNextStep(260);
+                return;
+            }
+
+            queueNextStep(42);
+            return;
+        }
+
+        const nextPhrase = phrases[phraseIndex];
+        characterIndex = Math.min(nextPhrase.length, characterIndex + 1);
+        heroDescription.textContent = nextPhrase.slice(0, characterIndex);
+
+        if (characterIndex === nextPhrase.length) {
+            if (phraseIndex === phrases.length - 1) {
+                isFinished = true;
+                setRestartableState(true);
+                return;
+            }
+
+            isDeleting = true;
+            queueNextStep(2300);
+            return;
+        }
+
+        queueNextStep(72);
+    }
+
+    function restartSequence() {
+        clearQueuedStep();
+        phraseIndex = phrases.length - 1;
+        characterIndex = phrases[phraseIndex].length;
+        isDeleting = true;
+        isFinished = false;
+        setRestartableState(false);
+        heroDescription.textContent = phrases[phraseIndex];
+        queueNextStep(42);
+    }
+
+    heroDescription.addEventListener("click", () => {
+        if (!isFinished) {
+            return;
+        }
+
+        restartSequence();
     });
 
-    gsap.set(rearCard, {
-        xPercent: -50,
-        yPercent: -50,
-        y: config.rearY.initial,
-        scale: config.scale.rearInitial,
-        rotation: config.rearTilt.rotate,
-        rotationX: config.rearTilt.rotateX,
-        rotationY: config.rearTilt.rotateY,
-        transformOrigin: "50% 50%",
-        autoAlpha: 0.98,
-        filter: "brightness(0.28)",
+    heroDescription.addEventListener("keydown", (event) => {
+        if (!isFinished || (event.key !== "Enter" && event.key !== " ")) {
+            return;
+        }
+
+        event.preventDefault();
+        restartSequence();
     });
 
-    gsap.set(mainCardContent, {
-        y: 28,
-        autoAlpha: 0.2,
-        filter: "brightness(0.75)",
-    });
-
-    const timeline = gsap.timeline({
-        defaults: {
-            duration: 1,
-            ease: "none",
-        },
-        scrollTrigger: {
-            trigger: heroSection,
-            pin: heroStage,
-            scrub: 1.35,
-            start: "top top",
-            end: `+=${config.scrollLength}`,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-        },
-    });
-
-    timeline.addLabel("state1");
-
-    // State 2: main hero card rises into clear view.
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.reveal,
-            scale: config.scale.frontVisible,
-            rotation: config.frontTilt.rotate + 1.2,
-            rotationY: config.frontTilt.rotateY + 1.5,
-            autoAlpha: 1,
-            filter: "brightness(1)",
-        },
-        "state1+=0.65",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            y: 0,
-            autoAlpha: 1,
-            filter: "brightness(1)",
-        },
-        "state1+=0.65",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.reveal,
-            scale: config.scale.rearVisible,
-            filter: "brightness(0.4)",
-        },
-        "state1+=0.65",
-    );
-
-    // State 3: main card shrinks slightly and lifts, exposing the rear layer.
-    timeline.addLabel("state3");
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.lifted,
-            scale: config.scale.frontMid,
-            rotation: config.frontTilt.rotate - 0.4,
-            rotationY: config.frontTilt.rotateY - 1.4,
-        },
-        "state3",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.dominant,
-            scale: config.scale.rearVisible + 0.02,
-            autoAlpha: 1,
-            filter: "brightness(0.52)",
-        },
-        "state3",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            autoAlpha: 0.92,
-            filter: "brightness(0.96)",
-        },
-        "state3",
-    );
-
-    // State 4: main card exits upward and the darker rear card dominates.
-    timeline.addLabel("state4");
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.exit,
-            scale: config.scale.frontFar,
-            rotation: config.frontTilt.rotate - 2,
-            rotationY: config.frontTilt.rotateY - 3,
-            autoAlpha: 0.1,
-            filter: "brightness(0.26)",
-        },
-        "state4",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            autoAlpha: 0,
-            y: -28,
-            filter: "brightness(0.58)",
-        },
-        "state4",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.dominant + 4,
-            scale: config.scale.rearVisible + 0.04,
-            filter: "brightness(0.58)",
-        },
-        "state4",
-    );
-
-    // State 5: main card re-enters from above for the second reveal cycle.
-    timeline.addLabel("state5");
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.partial,
-            scale: config.scale.frontMid,
-            rotation: config.frontTilt.rotate - 1,
-            rotationY: config.frontTilt.rotateY - 1.6,
-            autoAlpha: 0.68,
-            filter: "brightness(0.7)",
-        },
-        "state5",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            autoAlpha: 0.74,
-            y: -10,
-            filter: "brightness(0.86)",
-        },
-        "state5",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.reveal + 10,
-            scale: config.scale.rearVisible,
-            filter: "brightness(0.46)",
-        },
-        "state5",
-    );
-
-    // State 6: strongest hero readability in the center of the scene.
-    timeline.addLabel("state6");
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.final,
-            scale: 1.01,
-            rotation: config.frontTilt.rotate + 0.6,
-            rotationY: config.frontTilt.rotateY + 0.7,
-            autoAlpha: 1,
-            filter: "brightness(1.03)",
-        },
-        "state6",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            autoAlpha: 1,
-            y: 0,
-            filter: "brightness(1)",
-        },
-        "state6",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.reveal,
-            scale: config.scale.rearLow,
-            filter: "brightness(0.34)",
-        },
-        "state6",
-    );
-
-    // State 7: main card starts leaving upward again.
-    timeline.addLabel("state7");
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.partial - 18,
-            scale: config.scale.frontMid - 0.02,
-            rotation: config.frontTilt.rotate - 1.4,
-            rotationY: config.frontTilt.rotateY - 1.8,
-            autoAlpha: 0.72,
-            filter: "brightness(0.74)",
-        },
-        "state7",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            autoAlpha: 0.72,
-            y: -12,
-        },
-        "state7",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.dominant,
-            scale: config.scale.rearVisible + 0.03,
-            filter: "brightness(0.5)",
-        },
-        "state7",
-    );
-
-    // State 8: darker minimal rear-card moment returns.
-    timeline.addLabel("state8");
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.exit - 12,
-            scale: config.scale.frontFar,
-            rotation: config.frontTilt.rotate - 2.4,
-            rotationY: config.frontTilt.rotateY - 3.4,
-            autoAlpha: 0.08,
-            filter: "brightness(0.24)",
-        },
-        "state8",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            autoAlpha: 0,
-            y: -24,
-        },
-        "state8",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.dominant + 2,
-            scale: config.scale.rearVisible + 0.05,
-            filter: "brightness(0.6)",
-        },
-        "state8",
-    );
-
-    // State 9: main card partially re-enters from the top.
-    timeline.addLabel("state9");
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.partial,
-            scale: config.scale.frontMid,
-            rotation: config.frontTilt.rotate - 0.8,
-            rotationY: config.frontTilt.rotateY - 1.3,
-            autoAlpha: 0.7,
-            filter: "brightness(0.76)",
-        },
-        "state9",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            autoAlpha: 0.76,
-            y: -6,
-        },
-        "state9",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.lowered,
-            scale: config.scale.rearLow,
-            filter: "brightness(0.34)",
-        },
-        "state9",
-    );
-
-    // State 10: polished final centered composition.
-    timeline.addLabel("state10");
-    timeline.to(
-        mainCard,
-        {
-            y: config.frontY.final,
-            scale: config.scale.frontVisible,
-            rotation: config.frontTilt.rotate + 0.8,
-            rotationY: config.frontTilt.rotateY + 0.4,
-            autoAlpha: 1,
-            filter: "brightness(1)",
-        },
-        "state10",
-    );
-    timeline.to(
-        mainCardContent,
-        {
-            autoAlpha: 1,
-            y: 0,
-            filter: "brightness(1)",
-        },
-        "state10",
-    );
-    timeline.to(
-        rearCard,
-        {
-            y: config.rearY.lowered + 10,
-            scale: config.scale.rearLow,
-            filter: "brightness(0.3)",
-            autoAlpha: 0.96,
-        },
-        "state10",
-    );
-
-    ScrollTrigger.refresh();
+    queueNextStep(2100);
 }
 
 updateClock();
-initScrollHero();
+setupAutoHidingHeader();
+setupDraggableWordmarks();
+setupHeroDescriptionTypewriter();
 setInterval(updateClock, 1000);
-window.addEventListener("resize", () => {
-    initScrollHero();
-});
