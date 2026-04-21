@@ -9,12 +9,12 @@ const siteHeader = document.querySelector(".site-header");
 const stackTransition = document.querySelector(".stack-transition");
 const stackStage = document.getElementById("stackStage");
 const heroPanel = document.querySelector(".hero-panel");
-const revealPanel = document.querySelector(".reveal-panel");
-const revealEditor = document.getElementById("workEditor");
-const revealMessage = document.getElementById("workStatement");
-const revealLines = Array.from(document.querySelectorAll(".reveal-line"));
-const revealSegments = Array.from(
-    document.querySelectorAll(".reveal-segment"),
+const heroOrbits = Array.from(document.querySelectorAll("[data-hero-orbit]"));
+const featuredCards = Array.from(document.querySelectorAll(".featured-card"));
+const featuredMediaItems = Array.from(document.querySelectorAll(".featured-media"));
+const featuredImages = Array.from(document.querySelectorAll(".featured-image"));
+const revealPanels = Array.from(
+    document.querySelectorAll("[data-reveal-panel]"),
 );
 const draggableWordmarks = Array.from(
     document.querySelectorAll("[data-draggable-wordmark]"),
@@ -531,40 +531,244 @@ function setupHeroDescriptionTypewriter() {
     queueNextStep(2100);
 }
 
-function setupStackTransition() {
-    if (
-        !stackTransition ||
-        !stackStage ||
-        !heroPanel ||
-        !revealPanel ||
-        !revealEditor ||
-        !revealMessage ||
-        !revealSegments.length
-    ) {
+function setupHeroSpotlight() {
+    if (!heroPanel) {
         return;
     }
 
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
-    const segmentTexts = revealSegments.map(
-        (segment) => segment.dataset.scrollText ?? "",
-    );
-    const totalCharacters = segmentTexts.reduce(
-        (sum, text) => sum + text.length,
-        0,
-    );
+
+    function setSpotlightPosition(xPercent, yPercent) {
+        heroPanel.style.setProperty("--hero-spotlight-x", `${xPercent}%`);
+        heroPanel.style.setProperty("--hero-spotlight-y", `${yPercent}%`);
+    }
+
+    if (prefersReducedMotion) {
+        setSpotlightPosition(50, 50);
+        return;
+    }
 
     function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
     }
 
-    function renderSegments(textProgress) {
-        const visibleCharacters = Math.floor(totalCharacters * textProgress);
+    function updateSpotlight(event) {
+        if (event.pointerType && event.pointerType !== "mouse") {
+            return;
+        }
+
+        const rect = heroPanel.getBoundingClientRect();
+
+        if (!rect.width || !rect.height) {
+            return;
+        }
+
+        const xPercent = clamp(
+            ((event.clientX - rect.left) / rect.width) * 100,
+            0,
+            100,
+        );
+        const yPercent = clamp(
+            ((event.clientY - rect.top) / rect.height) * 100,
+            0,
+            100,
+        );
+
+        setSpotlightPosition(xPercent, yPercent);
+    }
+
+    window.addEventListener("pointermove", updateSpotlight, { passive: true });
+}
+
+function setupHeroAtmosphereTrail() {
+    if (!heroPanel || !heroOrbits.length) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const state = {
+        targetX: 0,
+        targetY: 0,
+        currentX: 0,
+        currentY: 0,
+        frameId: null,
+    };
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    function renderOffsets(x, y) {
+        heroOrbits.forEach((orbit) => {
+            const depth = Number.parseFloat(
+                orbit.style.getPropertyValue("--orbit-depth") || "0.3",
+            );
+            const shiftX = x * depth;
+            const shiftY = y * depth;
+            const shiftRotation = (x * depth * 0.045 - y * depth * 0.02).toFixed(
+                2,
+            );
+
+            orbit.style.setProperty("--orbit-shift-x", `${shiftX.toFixed(2)}px`);
+            orbit.style.setProperty("--orbit-shift-y", `${shiftY.toFixed(2)}px`);
+            orbit.style.setProperty("--orbit-shift-r", `${shiftRotation}deg`);
+        });
+    }
+
+    if (prefersReducedMotion) {
+        renderOffsets(0, 0);
+        return;
+    }
+
+    function step() {
+        state.currentX += (state.targetX - state.currentX) * 0.085;
+        state.currentY += (state.targetY - state.currentY) * 0.085;
+
+        renderOffsets(state.currentX, state.currentY);
+
+        if (
+            Math.abs(state.targetX - state.currentX) < 0.08 &&
+            Math.abs(state.targetY - state.currentY) < 0.08
+        ) {
+            state.frameId = null;
+            return;
+        }
+
+        state.frameId = window.requestAnimationFrame(step);
+    }
+
+    function requestStep() {
+        if (state.frameId !== null) {
+            return;
+        }
+
+        state.frameId = window.requestAnimationFrame(step);
+    }
+
+    function updateTrail(event) {
+        if (event.pointerType && event.pointerType !== "mouse") {
+            return;
+        }
+
+        const rect = heroPanel.getBoundingClientRect();
+
+        if (!rect.width || !rect.height) {
+            return;
+        }
+
+        const normalizedX = clamp(
+            (event.clientX - (rect.left + rect.width / 2)) / rect.width,
+            -0.72,
+            0.72,
+        );
+        const normalizedY = clamp(
+            (event.clientY - (rect.top + rect.height / 2)) / rect.height,
+            -0.62,
+            0.62,
+        );
+
+        state.targetX = normalizedX * 150;
+        state.targetY = normalizedY * 110;
+        requestStep();
+    }
+
+    renderOffsets(0, 0);
+    heroPanel.addEventListener("pointermove", updateTrail, { passive: true });
+}
+
+function setupStackTransition() {
+    if (!stackTransition || !stackStage || !heroPanel || !revealPanels.length) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const panelStates = revealPanels
+        .map((panel) => {
+            const editor = panel.querySelector(".reveal-editor");
+            const indexLabel = panel.querySelector(".reveal-index");
+            const message = panel.querySelector(".reveal-message");
+            const lines = Array.from(panel.querySelectorAll(".reveal-line"));
+            const segments = Array.from(
+                panel.querySelectorAll(".reveal-segment"),
+            );
+            const segmentTexts = segments.map(
+                (segment) => segment.dataset.scrollText ?? "",
+            );
+            const totalCharacters = segmentTexts.reduce(
+                (sum, text) => sum + text.length,
+                0,
+            );
+
+            if (
+                !editor ||
+                !indexLabel ||
+                !message ||
+                !lines.length ||
+                !segments.length
+            ) {
+                return null;
+            }
+
+            return {
+                panel,
+                editor,
+                indexLabel,
+                message,
+                lines,
+                segments,
+                segmentTexts,
+                totalCharacters,
+            };
+        })
+        .filter(Boolean);
+
+    if (!panelStates.length) {
+        return;
+    }
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    function renderIndex(panelState, entranceProgress) {
+        const fadeProgress = clamp(entranceProgress / 0.55, 0, 1);
+        const shift = (1 - fadeProgress) * 14;
+
+        panelState.indexLabel.style.setProperty(
+            "--reveal-index-opacity",
+            fadeProgress.toFixed(4),
+        );
+        panelState.indexLabel.style.setProperty(
+            "--reveal-index-shift",
+            `${shift.toFixed(2)}px`,
+        );
+    }
+
+    function syncStackHeight() {
+        const transitionDistance = Math.max(window.innerHeight * 0.95, 1);
+        const typingDistance = Math.max(window.innerHeight * 0.8, 1);
+        const holdDistance = Math.max(window.innerHeight * 0.55, 1);
+        const totalScrollDistance =
+            panelStates.length * (transitionDistance + typingDistance) +
+            holdDistance;
+
+        stackTransition.style.minHeight = `${window.innerHeight + totalScrollDistance}px`;
+    }
+
+    function renderSegments(panelState, textProgress) {
+        const visibleCharacters = Math.floor(
+            panelState.totalCharacters * textProgress,
+        );
         let remainingCharacters = visibleCharacters;
 
-        revealSegments.forEach((segment, index) => {
-            const fullText = segmentTexts[index];
+        panelState.segments.forEach((segment, index) => {
+            const fullText = panelState.segmentTexts[index];
             const shownLength = clamp(
                 remainingCharacters,
                 0,
@@ -575,7 +779,7 @@ function setupStackTransition() {
             remainingCharacters -= shownLength;
         });
 
-        revealLines.forEach((line) => {
+        panelState.lines.forEach((line) => {
             const hasVisibleText = Array.from(
                 line.querySelectorAll(".reveal-segment"),
             ).some((segment) => segment.textContent.length > 0);
@@ -584,54 +788,96 @@ function setupStackTransition() {
         });
     }
 
-    function render(panelProgress, textProgress) {
+    function render() {
         if (prefersReducedMotion) {
             heroPanel.style.transform = "none";
-            revealPanel.style.transform = "translate3d(0, 100%, 0)";
             stackStage.style.setProperty("--stack-progress", "0");
-            renderSegments(1);
-            revealMessage.classList.add("is-visible");
-            revealEditor.classList.remove("is-active");
+
+            panelStates.forEach((panelState, index) => {
+                panelState.panel.style.transform =
+                    index === panelStates.length - 1
+                        ? "translate3d(0, 0, 0)"
+                        : "translate3d(0, -100%, 0)";
+                renderSegments(panelState, 1);
+                renderIndex(panelState, 1);
+                panelState.message.classList.add("is-visible");
+                panelState.editor.classList.add("is-active");
+                panelState.editor.classList.add("is-complete");
+            });
             return;
         }
+
+        const rect = stackTransition.getBoundingClientRect();
+        const scrolledDistance = clamp(-rect.top, 0, Number.MAX_SAFE_INTEGER);
+        const transitionDistance = Math.max(window.innerHeight * 0.95, 1);
+        const typingDistance = Math.max(window.innerHeight * 0.8, 1);
+        const transitionProgresses = panelStates.map(() => 0);
+        const textProgresses = panelStates.map(() => 0);
+        let cursor = 0;
+
+        transitionProgresses[0] = clamp(
+            scrolledDistance / transitionDistance,
+            0,
+            1,
+        );
+        cursor += transitionDistance;
+        textProgresses[0] = clamp(
+            (scrolledDistance - cursor) / typingDistance,
+            0,
+            1,
+        );
+        cursor += typingDistance;
+
+        for (let index = 1; index < panelStates.length; index += 1) {
+            transitionProgresses[index] = clamp(
+                (scrolledDistance - cursor) / transitionDistance,
+                0,
+                1,
+            );
+            cursor += transitionDistance;
+            textProgresses[index] = clamp(
+                (scrolledDistance - cursor) / typingDistance,
+                0,
+                1,
+            );
+            cursor += typingDistance;
+        }
+
+        const panelProgress = transitionProgresses[0];
 
         const pushBack = -150 * panelProgress;
         const scale = 1 - 0.06 * panelProgress;
         const tiltX = 8.5 * panelProgress;
         const tiltZ = -2.6 * panelProgress;
-        const slideUp = (1 - panelProgress) * 100;
 
         stackStage.style.setProperty(
             "--stack-progress",
             panelProgress.toFixed(4),
         );
         heroPanel.style.transform = `translate3d(0, 0, ${pushBack}px) scale(${scale}) rotateX(${tiltX}deg) rotate(${tiltZ}deg)`;
-        revealPanel.style.transform = `translate3d(0, ${slideUp}%, 0)`;
-        renderSegments(textProgress);
-        revealMessage.classList.toggle("is-visible", textProgress > 0);
-        revealEditor.classList.toggle(
-            "is-active",
-            textProgress > 0 && textProgress < 1,
-        );
-    }
 
-    function update() {
-        const rect = stackTransition.getBoundingClientRect();
-        const scrolledDistance = clamp(-rect.top, 0, Number.MAX_SAFE_INTEGER);
-        const transitionDistance = Math.max(window.innerHeight * 0.95, 1);
-        const typingDistance = Math.max(window.innerHeight * 0.8, 1);
-        const panelProgress = clamp(
-            scrolledDistance / transitionDistance,
-            0,
-            1,
-        );
-        const textProgress = clamp(
-            (scrolledDistance - transitionDistance) / typingDistance,
-            0,
-            1,
-        );
+        panelStates.forEach((panelState, index) => {
+            const entranceProgress = transitionProgresses[index];
+            const exitProgress =
+                index < panelStates.length - 1
+                    ? transitionProgresses[index + 1]
+                    : 0;
+            const textProgress = textProgresses[index];
+            const translateY = (1 - entranceProgress - exitProgress) * 100;
 
-        render(panelProgress, textProgress);
+            panelState.panel.style.transform = `translate3d(0, ${translateY}%, 0)`;
+            renderSegments(panelState, textProgress);
+            renderIndex(panelState, entranceProgress);
+            panelState.message.classList.toggle("is-visible", textProgress > 0);
+            panelState.editor.classList.toggle(
+                "is-active",
+                textProgress > 0,
+            );
+            panelState.editor.classList.toggle(
+                "is-complete",
+                textProgress >= 1,
+            );
+        });
     }
 
     let ticking = false;
@@ -643,19 +889,242 @@ function setupStackTransition() {
 
         ticking = true;
         window.requestAnimationFrame(() => {
-            update();
+            render();
             ticking = false;
         });
     }
 
-    update();
+    syncStackHeight();
+    render();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", () => {
+        syncStackHeight();
+        requestUpdate();
+    });
+}
+
+function setupFeaturedMediaParallax() {
+    if (!featuredMediaItems.length || !featuredImages.length) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    if (prefersReducedMotion) {
+        featuredImages.forEach((image) => {
+            image.style.setProperty("--featured-image-shift", "0px");
+        });
+        return;
+    }
+
+    const mediaStates = featuredMediaItems
+        .map((media, index) => {
+            const image = featuredImages[index];
+
+            if (!image) {
+                return null;
+            }
+
+            return {
+                media,
+                image,
+                currentShift: 0,
+                targetShift: 0,
+            };
+        })
+        .filter(Boolean);
+
+    if (!mediaStates.length) {
+        return;
+    }
+
+    let frameId = null;
+
+    function measureTargetShift(media) {
+        const rect = media.getBoundingClientRect();
+
+        if (!rect.width || !rect.height) {
+            return 0;
+        }
+
+        const viewportHeight = Math.max(window.innerHeight, 1);
+        const progress = clamp(
+            (viewportHeight - rect.top) / (viewportHeight + rect.height),
+            0,
+            1,
+        );
+        const maxTravel = Math.min(144, rect.width * 0.24);
+        return (0.5 - progress) * maxTravel;
+    }
+
+    function renderShifts() {
+        mediaStates.forEach((state) => {
+            state.image.style.setProperty(
+                "--featured-image-shift",
+                `${state.currentShift.toFixed(2)}px`,
+            );
+        });
+    }
+
+    function step() {
+        let isAnimating = false;
+
+        mediaStates.forEach((state) => {
+            const delta = state.targetShift - state.currentShift;
+
+            state.currentShift += delta * 0.09;
+
+            if (Math.abs(delta) < 0.05) {
+                state.currentShift = state.targetShift;
+                return;
+            }
+
+            isAnimating = true;
+        });
+
+        renderShifts();
+
+        if (!isAnimating) {
+            frameId = null;
+            return;
+        }
+
+        frameId = window.requestAnimationFrame(step);
+    }
+
+    function requestStep() {
+        if (frameId !== null) {
+            return;
+        }
+
+        frameId = window.requestAnimationFrame(step);
+    }
+
+    function syncTarget() {
+        mediaStates.forEach((state) => {
+            state.targetShift = measureTargetShift(state.media);
+        });
+        requestStep();
+    }
+
+    mediaStates.forEach((state) => {
+        state.currentShift = measureTargetShift(state.media);
+        state.targetShift = state.currentShift;
+    });
+    renderShifts();
+
+    window.addEventListener("scroll", syncTarget, { passive: true });
+    window.addEventListener("resize", syncTarget);
+}
+
+function setupFeaturedCardStack() {
+    if (featuredCards.length < 2) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const compactLayout = window.matchMedia("(max-width: 960px)");
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    function resetCards() {
+        featuredCards.forEach((card, index) => {
+            card.style.setProperty("--featured-layer", `${index + 1}`);
+            card.style.setProperty("--featured-card-shift-y", "0px");
+            card.style.setProperty("--featured-card-depth", "0px");
+            card.style.setProperty("--featured-card-scale", "1");
+            card.style.setProperty("--featured-card-blur", "0px");
+            card.style.setProperty("--featured-card-opacity", "1");
+            card.style.setProperty("--featured-card-brightness", "1");
+        });
+    }
+
+    function render() {
+        if (prefersReducedMotion || compactLayout.matches) {
+            resetCards();
+            return;
+        }
+
+        resetCards();
+
+        const stickyTop =
+            Number.parseFloat(window.getComputedStyle(featuredCards[0]).top) || 0;
+        const handoffDistance = Math.max(window.innerHeight * 0.48, 1);
+
+        for (let index = 0; index < featuredCards.length - 1; index += 1) {
+            const card = featuredCards[index];
+            const nextCard = featuredCards[index + 1];
+            const nextRect = nextCard.getBoundingClientRect();
+            const progress = clamp(
+                (stickyTop + handoffDistance - nextRect.top) / handoffDistance,
+                0,
+                1,
+            );
+
+            card.style.setProperty(
+                "--featured-card-shift-y",
+                `${(-24 * progress).toFixed(2)}px`,
+            );
+            card.style.setProperty(
+                "--featured-card-depth",
+                `${(-220 * progress).toFixed(2)}px`,
+            );
+            card.style.setProperty(
+                "--featured-card-scale",
+                `${(1 - 0.1 * progress).toFixed(4)}`,
+            );
+            card.style.setProperty(
+                "--featured-card-blur",
+                `${(18 * progress).toFixed(2)}px`,
+            );
+            card.style.setProperty(
+                "--featured-card-opacity",
+                `${(1 - 0.82 * progress).toFixed(4)}`,
+            );
+            card.style.setProperty(
+                "--featured-card-brightness",
+                `${(1 - 0.22 * progress).toFixed(4)}`,
+            );
+        }
+    }
+
+    let ticking = false;
+
+    function requestUpdate() {
+        if (ticking) {
+            return;
+        }
+
+        ticking = true;
+        window.requestAnimationFrame(() => {
+            render();
+            ticking = false;
+        });
+    }
+
+    render();
     window.addEventListener("scroll", requestUpdate, { passive: true });
     window.addEventListener("resize", requestUpdate);
+    compactLayout.addEventListener("change", requestUpdate);
 }
 
 updateClock();
 setupAutoHidingHeader();
 setupDraggableWordmarks();
 setupHeroDescriptionTypewriter();
+setupHeroSpotlight();
+setupHeroAtmosphereTrail();
 setupStackTransition();
+setupFeaturedCardStack();
+setupFeaturedMediaParallax();
 setInterval(updateClock, 1000);

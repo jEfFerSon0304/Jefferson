@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta
             name="description"
-            content="Andy Reff portfolio concept with a precision-built editorial hero."
+            content="Jefferson portfolio concept with a precision-built editorial hero."
         />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,10 +14,14 @@
             href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
             rel="stylesheet"
         />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+        />
 
         <link rel="stylesheet" href="../CSS/style.css" />
 
-        <title>Jefferson</title>
+        <title>Jefferson | Web Developer</title>
     </head>
     <body>
         <div class="page-shell">
@@ -48,6 +52,137 @@
                 <section class="stack-transition" id="hero">
                     <div class="stack-stage" id="stackStage">
                         <section class="hero hero-panel">
+                            <div class="hero-atmosphere" aria-hidden="true">
+                                <div
+                                    class="hero-orbit hero-orbit-badge"
+                                    data-hero-orbit
+                                    style="
+                                        --orbit-x: -28%;
+                                        --orbit-y: -18%;
+                                        --orbit-depth: 0.32;
+                                        --orbit-tilt: -5deg;
+                                    "
+                                >
+                                    <span class="hero-orbit-kicker">
+                                        GRID_09
+                                    </span>
+                                    <span class="hero-orbit-copy">
+                                        cursor drift
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="hero-orbit hero-orbit-note"
+                                    data-hero-orbit
+                                    style="
+                                        --orbit-x: -40%;
+                                        --orbit-y: -31%;
+                                        --orbit-depth: 0.4;
+                                        --orbit-tilt: -8deg;
+                                    "
+                                >
+                                    <span class="hero-orbit-note-title">
+                                        VECTOR MAP
+                                    </span>
+                                    <span class="hero-orbit-note-copy">
+                                        offset sampling
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="hero-orbit hero-orbit-outline"
+                                    data-hero-orbit
+                                    style="
+                                        --orbit-x: 33%;
+                                        --orbit-y: -14%;
+                                        --orbit-depth: 0.46;
+                                        --orbit-tilt: 8deg;
+                                    "
+                                >
+                                    SURFACE
+                                </div>
+
+                                <div
+                                    class="hero-orbit hero-orbit-badge"
+                                    data-hero-orbit
+                                    style="
+                                        --orbit-x: 40%;
+                                        --orbit-y: -29%;
+                                        --orbit-depth: 0.36;
+                                        --orbit-tilt: 7deg;
+                                    "
+                                >
+                                    <span class="hero-orbit-kicker">
+                                        INPUT_02
+                                    </span>
+                                    <span class="hero-orbit-copy">
+                                        glide tracking
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="hero-orbit hero-orbit-chip"
+                                    data-hero-orbit
+                                    style="
+                                        --orbit-x: -36%;
+                                        --orbit-y: 20%;
+                                        --orbit-depth: 0.28;
+                                        --orbit-tilt: 6deg;
+                                    "
+                                >
+                                    soft signal
+                                </div>
+
+                                <div
+                                    class="hero-orbit hero-orbit-note"
+                                    data-hero-orbit
+                                    style="
+                                        --orbit-x: 36%;
+                                        --orbit-y: 24%;
+                                        --orbit-depth: 0.52;
+                                        --orbit-tilt: -7deg;
+                                    "
+                                >
+                                    <span class="hero-orbit-note-title">
+                                        MOTION TRACE
+                                    </span>
+                                    <span class="hero-orbit-note-copy">
+                                        responsive depth
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="hero-orbit hero-orbit-badge"
+                                    data-hero-orbit
+                                    style="
+                                        --orbit-x: -38%;
+                                        --orbit-y: 35%;
+                                        --orbit-depth: 0.26;
+                                        --orbit-tilt: 5deg;
+                                    "
+                                >
+                                    <span class="hero-orbit-kicker">
+                                        DRIFT_FIELD
+                                    </span>
+                                    <span class="hero-orbit-copy">
+                                        lower current
+                                    </span>
+                                </div>
+
+                                <div
+                                    class="hero-orbit hero-orbit-ring"
+                                    data-hero-orbit
+                                    style="
+                                        --orbit-x: 0%;
+                                        --orbit-y: 33%;
+                                        --orbit-depth: 0.18;
+                                        --orbit-tilt: 0deg;
+                                    "
+                                >
+                                    <span class="hero-orbit-ring-core"></span>
+                                </div>
+                            </div>
+
                             <div class="hero-copy-wrap">
                                 <p class="hero-kicker">
                                     NAVIGATING THE UNKNOWN, PIXEL BY PIXEL.
@@ -83,10 +218,12 @@
                             </p>
                         </section>
 
-                        <section
+                        <div
                             class="reveal-panel"
                             id="work"
                             aria-labelledby="workStatement"
+                            data-reveal-panel
+                            style="--panel-layer: 2"
                         >
                             <div class="reveal-panel-inner">
                                 <p class="reveal-index" id="workIndex">01</p>
@@ -130,10 +267,527 @@
                                     </span>
                                 </div>
                             </div>
-                        </section>
+                        </div>
+
+                        <div
+                            class="reveal-panel"
+                            id="about"
+                            aria-labelledby="aboutStatement"
+                            data-reveal-panel
+                            style="--panel-layer: 3"
+                        >
+                            <div class="reveal-panel-inner">
+                                <p class="reveal-index" id="aboutIndex">02</p>
+
+                                <div class="reveal-editor" id="aboutEditor">
+                                    <span class="reveal-editor-label">
+                                        P / Statement 02
+                                    </span>
+
+                                    <div
+                                        class="reveal-message"
+                                        id="aboutStatement"
+                                        aria-live="off"
+                                    >
+                                        <p class="reveal-line">
+                                            <span
+                                                class="reveal-segment"
+                                                data-scroll-text="I build interfaces that turn"
+                                            ></span>
+                                        </p>
+                                        <p class="reveal-line">
+                                            <span
+                                                class="reveal-segment reveal-segment-accent"
+                                                data-scroll-text="complexity"
+                                            ></span>
+                                            <span
+                                                class="reveal-segment"
+                                                data-scroll-text=" into focused"
+                                            ></span>
+                                        </p>
+                                        <p class="reveal-line">
+                                            <span
+                                                class="reveal-segment reveal-segment-accent"
+                                                data-scroll-text="motion."
+                                            ></span>
+                                        </p>
+                                    </div>
+
+                                    <span class="reveal-editor-status">
+                                        content -> editing...
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div
+                            class="reveal-panel"
+                            id="vision"
+                            aria-labelledby="visionStatement"
+                            data-reveal-panel
+                            style="--panel-layer: 4"
+                        >
+                            <div class="reveal-panel-inner">
+                                <p class="reveal-index" id="visionIndex">03</p>
+
+                                <div class="reveal-editor" id="visionEditor">
+                                    <span class="reveal-editor-label">
+                                        P / Statement 03
+                                    </span>
+
+                                    <div
+                                        class="reveal-message"
+                                        id="visionStatement"
+                                        aria-live="off"
+                                    >
+                                        <p class="reveal-line">
+                                            <span
+                                                class="reveal-segment"
+                                                data-scroll-text="I build digital moments that feel"
+                                            ></span>
+                                        </p>
+                                        <p class="reveal-line">
+                                            <span
+                                                class="reveal-segment reveal-segment-accent"
+                                                data-scroll-text="seamless"
+                                            ></span>
+                                        </p>
+                                        <p class="reveal-line">
+                                            <span
+                                                class="reveal-segment"
+                                                data-scroll-text="from first glance to action."
+                                            ></span>
+                                        </p>
+                                    </div>
+
+                                    <span class="reveal-editor-status">
+                                        content -> editing...
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="toolkit-section" id="stack">
+                    <div class="toolkit-shell">
+                        <div class="toolkit-header">
+                            <h2 class="toolkit-title">
+                                TECH
+                                <span class="toolkit-title-outline">STACK</span>
+                            </h2>
+                            <p class="toolkit-subtitle">
+                                DEVELOPMENT TOOLS, FRAMEWORKS, AND MOTION
+                                SYSTEMS
+                            </p>
+                        </div>
+
+                        <div class="toolkit-head-row" aria-hidden="true">
+                            <span class="toolkit-head-label">STACK</span>
+                            <span
+                                class="toolkit-head-label toolkit-head-label-right"
+                            >
+                                --------
+                            </span>
+                        </div>
+
+                        <div class="toolkit-list">
+                            <article class="toolkit-row">
+                                <p class="toolkit-name">HTML5</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="HTML5 logo"
+                                >
+                                    <i
+                                        class="devicon-html5-plain colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article>
+
+                            <article class="toolkit-row">
+                                <p class="toolkit-name">TAILWIND</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="Tailwind CSS logo"
+                                >
+                                    <i
+                                        class="devicon-tailwindcss-original colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article>
+
+                            <article class="toolkit-row">
+                                <p class="toolkit-name">JAVASCRIPT</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="JavaScript logo"
+                                >
+                                    <i
+                                        class="devicon-javascript-plain colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article>
+
+                            <!-- <article class="toolkit-row">
+                                <p class="toolkit-name">C#</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="C# logo"
+                                >
+                                    <i
+                                        class="devicon-csharp-plain colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article> -->
+
+                            <!-- <article class="toolkit-row">
+                                <p class="toolkit-name">PHP</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="PHP logo"
+                                >
+                                    <i
+                                        class="devicon-php-plain colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article> -->
+
+                            <article class="toolkit-row">
+                                <p class="toolkit-name">LARAVEL</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="Laravel logo"
+                                >
+                                    <i
+                                        class="devicon-laravel-original colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article>
+
+                            <!-- <article class="toolkit-row">
+                                <p class="toolkit-name">JAVA</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="Java logo"
+                                >
+                                    <i
+                                        class="devicon-java-plain colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article> -->
+
+                            <article class="toolkit-row">
+                                <p class="toolkit-name">GSAP</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="GSAP logo"
+                                >
+                                    <img
+                                        src="https://cdn.simpleicons.org/gsap/88CE02"
+                                        alt="GSAP logo"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </article>
+
+                            <article class="toolkit-row">
+                                <p class="toolkit-name">NODE.JS</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="Node.js logo"
+                                >
+                                    <i
+                                        class="devicon-nodejs-plain colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article>
+
+                            <article class="toolkit-row">
+                                <p class="toolkit-name">REACT</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="React logo"
+                                >
+                                    <i
+                                        class="devicon-react-original colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article>
+
+                            <!-- <article class="toolkit-row">
+                                <p class="toolkit-name">MONGODB</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="MongoDB logo"
+                                >
+                                    <i
+                                        class="devicon-mongodb-plain colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article> -->
+
+                            <!-- <article class="toolkit-row">
+                                <p class="toolkit-name">PYTHON</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="Python logo"
+                                >
+                                    <i
+                                        class="devicon-python-plain colored"
+                                        aria-hidden="true"
+                                    ></i>
+                                </div>
+                            </article> -->
+
+                            <article class="toolkit-row">
+                                <p class="toolkit-name">WEBFLOW</p>
+                                <div
+                                    class="toolkit-logo-wrap"
+                                    aria-label="Webflow logo"
+                                >
+                                    <img
+                                        src="https://cdn.simpleicons.org/webflow/4353FF"
+                                        alt="Webflow logo"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="featured-section" id="featured">
+                    <div class="featured-shell">
+                        <header class="featured-header">
+                            <h2 class="featured-title">
+                                FEATURED
+                                <span class="featured-title-outline">WORK</span>
+                            </h2>
+                        </header>
+
+                        <article class="featured-card">
+                            <div class="featured-copy">
+                                <p class="featured-kicker">
+                                    LOREM, IPSUM, DOLOR, SIT AMET
+                                </p>
+
+                                <h3 class="featured-project-title">
+                                    Lorem Ipsum Dolor Sit Amet Consectetur
+                                    Adipiscing Elit
+                                </h3>
+
+                                <p class="featured-description">
+                                    Lorem ipsum dolor sit amet, consectetur
+                                    adipiscing elit, sed do eiusmod tempor
+                                    incididunt ut labore et dolore magna aliqua.
+                                    Ut enim ad minim veniam, quis nostrud
+                                    exercitation ullamco laboris nisi ut aliquip
+                                    ex ea commodo consequat.
+                                </p>
+
+                                <div class="featured-metrics">
+                                    <div class="featured-metric">
+                                        <strong class="featured-metric-value">
+                                            00
+                                        </strong>
+                                        <span class="featured-metric-label">
+                                            placeholder metric
+                                        </span>
+                                    </div>
+
+                                    <div class="featured-metric">
+                                        <strong class="featured-metric-value">
+                                            00
+                                        </strong>
+                                        <span class="featured-metric-label">
+                                            placeholder stat
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <a class="featured-link" href="#featured">
+                                    View Placeholder Case Study
+                                </a>
+                            </div>
+
+                            <div class="featured-media">
+                                <img
+                                    class="featured-image"
+                                    src="../Assets/Screenshot%202026-03-01%20225614.png"
+                                    alt="Placeholder featured work screenshot"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                        </article>
+
+                        <article class="featured-card">
+                            <div class="featured-copy">
+                                <p class="featured-kicker">
+                                    LOREM, IPSUM, DOLOR, SIT AMET
+                                </p>
+
+                                <h3 class="featured-project-title">
+                                    Lorem Ipsum Dolor Sit Amet Consectetur
+                                    Adipiscing Elit
+                                </h3>
+
+                                <p class="featured-description">
+                                    Lorem ipsum dolor sit amet, consectetur
+                                    adipiscing elit, sed do eiusmod tempor
+                                    incididunt ut labore et dolore magna aliqua.
+                                    Ut enim ad minim veniam, quis nostrud
+                                    exercitation ullamco laboris nisi ut aliquip
+                                    ex ea commodo consequat.
+                                </p>
+
+                                <div class="featured-metrics">
+                                    <div class="featured-metric">
+                                        <strong class="featured-metric-value">
+                                            00
+                                        </strong>
+                                        <span class="featured-metric-label">
+                                            placeholder metric
+                                        </span>
+                                    </div>
+
+                                    <div class="featured-metric">
+                                        <strong class="featured-metric-value">
+                                            00
+                                        </strong>
+                                        <span class="featured-metric-label">
+                                            placeholder stat
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <a class="featured-link" href="#featured">
+                                    View Placeholder Case Study
+                                </a>
+                            </div>
+
+                            <div class="featured-media">
+                                <img
+                                    class="featured-image"
+                                    src="../Assets/Screenshot%202026-03-01%20225614.png"
+                                    alt="Placeholder featured work screenshot"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                        </article>
+
+                        <article class="featured-card">
+                            <div class="featured-copy">
+                                <p class="featured-kicker">
+                                    LOREM, IPSUM, DOLOR, SIT AMET
+                                </p>
+
+                                <h3 class="featured-project-title">
+                                    Lorem Ipsum Dolor Sit Amet Consectetur
+                                    Adipiscing Elit
+                                </h3>
+
+                                <p class="featured-description">
+                                    Lorem ipsum dolor sit amet, consectetur
+                                    adipiscing elit, sed do eiusmod tempor
+                                    incididunt ut labore et dolore magna aliqua.
+                                    Ut enim ad minim veniam, quis nostrud
+                                    exercitation ullamco laboris nisi ut aliquip
+                                    ex ea commodo consequat.
+                                </p>
+
+                                <div class="featured-metrics">
+                                    <div class="featured-metric">
+                                        <strong class="featured-metric-value">
+                                            00
+                                        </strong>
+                                        <span class="featured-metric-label">
+                                            placeholder metric
+                                        </span>
+                                    </div>
+
+                                    <div class="featured-metric">
+                                        <strong class="featured-metric-value">
+                                            00
+                                        </strong>
+                                        <span class="featured-metric-label">
+                                            placeholder stat
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <a class="featured-link" href="#featured">
+                                    View Placeholder Case Study
+                                </a>
+                            </div>
+
+                            <div class="featured-media">
+                                <img
+                                    class="featured-image"
+                                    src="../Assets/Screenshot%202026-03-01%20225614.png"
+                                    alt="Placeholder featured work screenshot"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="profile-section" id="profile-preview">
+                    <div class="profile-shell profile-preview-shell">
+                        <div class="profile-preview-content">
+                            <h2 class="profile-preview-title">
+                                <span class="profile-preview-line">
+                                    DESIGNING SYSTEMS.
+                                </span>
+                                <span class="profile-preview-line">
+                                    BUILDING
+                                    <span class="profile-preview-outline">
+                                        EXPERIENCES.
+                                    </span>
+                                </span>
+                            </h2>
+
+                            <a class="profile-preview-link" href="./about.html">
+                                View Full Profile
+                            </a>
+                        </div>
                     </div>
                 </section>
             </main>
+
+            <footer class="site-footer">
+                <div class="site-footer-mark">
+                    <span class="site-footer-mark-solid">LET'S</span>
+                    <span class="site-footer-mark-outline">TALK.</span>
+                </div>
+
+                <div class="site-footer-meta">
+                    <a href="mailto:andrew@andrewreff.com">
+                        andrew@andrewreff.com
+                    </a>
+                    <a href="./about.html">LinkedIn</a>
+                    <a href="./work.html">Instagram</a>
+                    <a href="./about.html">Privacy</a>
+                    <span class="site-footer-copy">
+                        &copy; 2026 Jefferson. All rights reserved.
+                    </span>
+                </div>
+            </footer>
 
             <a class="ask-pill" href="#work">
                 <span class="ask-pill-icon">+</span>
