@@ -133,6 +133,7 @@ main {
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
 }
 
 .site-header {
@@ -185,6 +186,23 @@ main {
     gap: 2rem;
 }
 
+.stack-transition {
+    position: relative;
+    width: calc(100% + (var(--shell-side-space) * 2));
+    min-height: 290svh;
+    margin-inline: calc(var(--shell-side-space) * -1);
+}
+
+.stack-stage {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: clip;
+    isolation: isolate;
+    perspective: 1800px;
+    transform-style: preserve-3d;
+}
+
 .hero {
     position: relative;
     width: 100%;
@@ -194,7 +212,169 @@ main {
     justify-content: center;
     gap: 1.05rem;
     min-height: calc(100svh - 6.25rem);
-    padding: clamp(5rem, 4vh, 4rem) 0 clamp(2.8rem, 8vh, 4.4rem);
+    padding: clamp(1rem, 2vh, 3rem) 0 clamp(5.2rem, 11vh, 6.4rem);
+}
+
+.hero-panel,
+.reveal-panel {
+    position: absolute;
+    inset: 0;
+}
+
+.hero-panel {
+    z-index: 1;
+    min-height: 100svh;
+    padding-inline: var(--shell-side-space);
+    transform-origin: center center;
+    transform-style: preserve-3d;
+    will-change: transform;
+}
+
+.reveal-panel {
+    z-index: 2;
+    display: grid;
+    place-items: center;
+    padding: clamp(2rem, 4vw, 3rem);
+    background: linear-gradient(
+        180deg,
+        rgba(10, 10, 10, 0.98),
+        rgba(4, 4, 4, 0.995)
+    );
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    transform: translate3d(0, 100%, 0);
+    will-change: transform;
+}
+
+.reveal-panel-inner {
+    position: relative;
+    width: min(100%, 72rem);
+    height: 100%;
+    text-align: center;
+}
+
+.reveal-index {
+    position: absolute;
+    left: 50%;
+    top: 34%;
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: rgba(230, 255, 120, 0.8);
+    transform: translate(-50%, -50%);
+}
+
+.reveal-message {
+    position: relative;
+    display: inline-grid;
+    justify-items: center;
+    gap: 0.2em;
+    opacity: 0;
+    transition: opacity 180ms ease;
+    width: fit-content;
+    max-width: calc(100vw - 6rem);
+}
+
+.reveal-message.is-visible {
+    opacity: 1;
+}
+
+.reveal-line {
+    display: block;
+    margin: 0;
+    width: fit-content;
+    max-width: 100%;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    line-height: 1.2;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+    color: rgba(255, 255, 255, 0.92);
+    text-align: center;
+}
+
+.reveal-line.is-empty {
+    display: none;
+}
+
+.reveal-segment {
+    white-space: pre-wrap;
+}
+
+.reveal-segment-accent {
+    color: rgba(255, 255, 255, 0.86);
+    color: var(--accent);
+    font-style: italic;
+}
+
+.reveal-editor {
+    position: absolute;
+    left: 50%;
+    top: 58%;
+    display: inline-grid;
+    justify-items: center;
+    width: fit-content;
+    max-width: calc(100vw - 10rem);
+    padding: 0.2px;
+    border: 1px solid rgba(165, 132, 255, 0.82);
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 180ms ease;
+    pointer-events: none;
+}
+
+.reveal-editor::before,
+.reveal-editor::after {
+    content: "";
+    position: absolute;
+    bottom: -3px;
+    width: 5px;
+    height: 5px;
+    background: #a584ff;
+}
+
+.reveal-editor::before {
+    left: -3px;
+}
+
+.reveal-editor::after {
+    right: -3px;
+}
+
+.reveal-editor.is-active {
+    opacity: 1;
+}
+
+.reveal-editor-label {
+    position: absolute;
+    left: -1px;
+    top: -1.6rem;
+    padding: 0.28rem 0.72rem;
+    border-radius: 0.28rem 0.28rem 0 0;
+    background: #a584ff;
+    color: #111111;
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+}
+
+.reveal-editor-status {
+    position: absolute;
+    right: -1px;
+    bottom: -2.6rem;
+    padding: 0.48rem 0.78rem;
+    border: 1px solid rgba(165, 132, 255, 0.52);
+    border-radius: 0.58rem;
+    background: rgba(20, 20, 20, 0.96);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.76rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
 }
 
 .hero-copy-wrap {
@@ -346,7 +526,7 @@ main {
     justify-content: center;
     gap: 0.14em;
     text-align: center;
-    font-size: clamp(1.22rem, 2.2vw, 1.85rem);
+    font-size: clamp(1.22rem, 1.9vw, 1.85rem);
     line-height: 1.2;
     min-height: 1.2em;
     font-weight: 500;
@@ -504,6 +684,10 @@ main {
         padding-bottom: 2.6rem;
     }
 
+    .stack-transition {
+        min-height: 270svh;
+    }
+
     .detail-grid {
         grid-template-columns: 1fr;
         padding-bottom: 6rem;
@@ -551,6 +735,15 @@ main {
 
     .hero-description {
         max-width: 18rem;
+    }
+
+    .reveal-message {
+        top: 59%;
+    }
+
+    .reveal-line {
+        max-width: 12ch;
+        font-size: clamp(1.9rem, 8vw, 2.7rem);
     }
 
     .ask-pill {

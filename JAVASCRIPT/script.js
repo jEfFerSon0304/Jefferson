@@ -6,6 +6,16 @@ const dragIndicator = document.getElementById("dragIndicator");
 const dragIndicatorReadout = document.getElementById("dragIndicatorReadout");
 const heroDescription = document.getElementById("heroDescription");
 const siteHeader = document.querySelector(".site-header");
+const stackTransition = document.querySelector(".stack-transition");
+const stackStage = document.getElementById("stackStage");
+const heroPanel = document.querySelector(".hero-panel");
+const revealPanel = document.querySelector(".reveal-panel");
+const revealEditor = document.getElementById("workEditor");
+const revealMessage = document.getElementById("workStatement");
+const revealLines = Array.from(document.querySelectorAll(".reveal-line"));
+const revealSegments = Array.from(
+    document.querySelectorAll(".reveal-segment"),
+);
 const draggableWordmarks = Array.from(
     document.querySelectorAll("[data-draggable-wordmark]"),
 );
@@ -521,8 +531,131 @@ function setupHeroDescriptionTypewriter() {
     queueNextStep(2100);
 }
 
+function setupStackTransition() {
+    if (
+        !stackTransition ||
+        !stackStage ||
+        !heroPanel ||
+        !revealPanel ||
+        !revealEditor ||
+        !revealMessage ||
+        !revealSegments.length
+    ) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const segmentTexts = revealSegments.map(
+        (segment) => segment.dataset.scrollText ?? "",
+    );
+    const totalCharacters = segmentTexts.reduce(
+        (sum, text) => sum + text.length,
+        0,
+    );
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    function renderSegments(textProgress) {
+        const visibleCharacters = Math.floor(totalCharacters * textProgress);
+        let remainingCharacters = visibleCharacters;
+
+        revealSegments.forEach((segment, index) => {
+            const fullText = segmentTexts[index];
+            const shownLength = clamp(
+                remainingCharacters,
+                0,
+                fullText.length,
+            );
+
+            segment.textContent = fullText.slice(0, shownLength);
+            remainingCharacters -= shownLength;
+        });
+
+        revealLines.forEach((line) => {
+            const hasVisibleText = Array.from(
+                line.querySelectorAll(".reveal-segment"),
+            ).some((segment) => segment.textContent.length > 0);
+
+            line.classList.toggle("is-empty", !hasVisibleText);
+        });
+    }
+
+    function render(panelProgress, textProgress) {
+        if (prefersReducedMotion) {
+            heroPanel.style.transform = "none";
+            revealPanel.style.transform = "translate3d(0, 100%, 0)";
+            stackStage.style.setProperty("--stack-progress", "0");
+            renderSegments(1);
+            revealMessage.classList.add("is-visible");
+            revealEditor.classList.remove("is-active");
+            return;
+        }
+
+        const pushBack = -150 * panelProgress;
+        const scale = 1 - 0.06 * panelProgress;
+        const tiltX = 8.5 * panelProgress;
+        const tiltZ = -2.6 * panelProgress;
+        const slideUp = (1 - panelProgress) * 100;
+
+        stackStage.style.setProperty(
+            "--stack-progress",
+            panelProgress.toFixed(4),
+        );
+        heroPanel.style.transform = `translate3d(0, 0, ${pushBack}px) scale(${scale}) rotateX(${tiltX}deg) rotate(${tiltZ}deg)`;
+        revealPanel.style.transform = `translate3d(0, ${slideUp}%, 0)`;
+        renderSegments(textProgress);
+        revealMessage.classList.toggle("is-visible", textProgress > 0);
+        revealEditor.classList.toggle(
+            "is-active",
+            textProgress > 0 && textProgress < 1,
+        );
+    }
+
+    function update() {
+        const rect = stackTransition.getBoundingClientRect();
+        const scrolledDistance = clamp(-rect.top, 0, Number.MAX_SAFE_INTEGER);
+        const transitionDistance = Math.max(window.innerHeight * 0.95, 1);
+        const typingDistance = Math.max(window.innerHeight * 0.8, 1);
+        const panelProgress = clamp(
+            scrolledDistance / transitionDistance,
+            0,
+            1,
+        );
+        const textProgress = clamp(
+            (scrolledDistance - transitionDistance) / typingDistance,
+            0,
+            1,
+        );
+
+        render(panelProgress, textProgress);
+    }
+
+    let ticking = false;
+
+    function requestUpdate() {
+        if (ticking) {
+            return;
+        }
+
+        ticking = true;
+        window.requestAnimationFrame(() => {
+            update();
+            ticking = false;
+        });
+    }
+
+    update();
+    window.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+}
+
 updateClock();
 setupAutoHidingHeader();
 setupDraggableWordmarks();
 setupHeroDescriptionTypewriter();
+setupStackTransition();
 setInterval(updateClock, 1000);
