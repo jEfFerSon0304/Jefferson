@@ -7,7 +7,7 @@ const dragIndicatorReadout = document.getElementById("dragIndicatorReadout");
 const heroDescription = document.getElementById("heroDescription");
 const siteHeader = document.querySelector(".site-header");
 const draggableWordmarks = Array.from(
-    document.querySelectorAll("[data-draggable-wordmark]")
+    document.querySelectorAll("[data-draggable-wordmark]"),
 );
 
 function updateClock() {
@@ -34,7 +34,7 @@ function setupDraggableWordmarks() {
     }
 
     const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
+        "(prefers-reduced-motion: reduce)",
     ).matches;
     const defaultWordmark = draggableWordmarks[0];
     let activeWordmark = defaultWordmark;
@@ -48,7 +48,7 @@ function setupDraggableWordmarks() {
         dragTetherLayer.setAttribute("height", `${window.innerHeight}`);
         dragTetherLayer.setAttribute(
             "viewBox",
-            `0 0 ${window.innerWidth} ${window.innerHeight}`
+            `0 0 ${window.innerWidth} ${window.innerHeight}`,
         );
     }
 
@@ -109,7 +109,7 @@ function setupDraggableWordmarks() {
         const currentCenterY = rect.top + rect.height / 2;
         const distance = Math.hypot(
             currentCenterX - state.homeCenterX,
-            currentCenterY - state.homeCenterY
+            currentCenterY - state.homeCenterY,
         );
 
         if (distance < 1) {
@@ -128,12 +128,15 @@ function setupDraggableWordmarks() {
             state.homeCenterY,
             currentCenterX,
             currentCenterY,
-            state
+            state,
         );
     }
 
     function getHoveredWordmark() {
-        return draggableWordmarks.find((element) => element.matches(":hover")) ?? null;
+        return (
+            draggableWordmarks.find((element) => element.matches(":hover")) ??
+            null
+        );
     }
 
     function setActiveWordmark(element = defaultWordmark) {
@@ -190,7 +193,8 @@ function setupDraggableWordmarks() {
 
             const shouldAnimateReturn =
                 !prefersReducedMotion &&
-                (Math.abs(state.offsetX) > 0.5 || Math.abs(state.offsetY) > 0.5);
+                (Math.abs(state.offsetX) > 0.5 ||
+                    Math.abs(state.offsetY) > 0.5);
 
             if (!shouldAnimateReturn) {
                 state.offsetX = 0;
@@ -319,7 +323,7 @@ function setupAutoHidingHeader() {
     }
 
     const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
+        "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (prefersReducedMotion) {
@@ -369,7 +373,7 @@ function setupAutoHidingHeader() {
             ticking = true;
             window.requestAnimationFrame(updateHeaderState);
         },
-        { passive: true }
+        { passive: true },
     );
 }
 
@@ -379,7 +383,7 @@ function setupHeroDescriptionTypewriter() {
     }
 
     const prefersReducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
+        "(prefers-reduced-motion: reduce)",
     ).matches;
     const initialPhrase = heroDescription.textContent.trim();
     const configuredPhrases = (heroDescription.dataset.typewriterPhrases ?? "")
@@ -412,7 +416,7 @@ function setupHeroDescriptionTypewriter() {
             heroDescription.setAttribute("role", "button");
             heroDescription.setAttribute(
                 "aria-label",
-                "Restart description animation"
+                "Restart description animation",
             );
             return;
         }
@@ -451,7 +455,10 @@ function setupHeroDescriptionTypewriter() {
 
         if (isDeleting) {
             characterIndex = Math.max(0, characterIndex - 1);
-            heroDescription.textContent = currentPhrase.slice(0, characterIndex);
+            heroDescription.textContent = currentPhrase.slice(
+                0,
+                characterIndex,
+            );
 
             if (characterIndex === 0) {
                 isDeleting = false;
