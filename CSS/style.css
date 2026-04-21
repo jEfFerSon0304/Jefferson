@@ -1,0 +1,586 @@
+:root {
+    --bg: #040404;
+    --panel: rgba(255, 255, 255, 0.03);
+    --line: rgba(255, 255, 255, 0.12);
+    --line-strong: rgba(255, 255, 255, 0.36);
+    --text: #f3f3f3;
+    --muted: rgba(255, 255, 255, 0.44);
+    --accent: #e6ff78;
+    --glow: rgba(230, 255, 120, 0.28);
+    --shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+    --shell-top-space: 1.5rem;
+    --shell-side-space: clamp(1.2rem, 3vw, 2.5rem);
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    font-family: "Space Grotesk", sans-serif;
+    color: var(--text);
+    background:
+        radial-gradient(
+            circle at top,
+            rgba(255, 255, 255, 0.08),
+            transparent 32%
+        ),
+        radial-gradient(
+            circle at bottom right,
+            rgba(228, 255, 111, 0.08),
+            transparent 24%
+        ),
+        radial-gradient(
+            circle,
+            rgba(255, 255, 255, 0.12) 1px,
+            transparent 1.2px
+        ),
+        var(--bg);
+    background-size:
+        auto,
+        auto,
+        22px 22px,
+        auto;
+}
+
+a,
+button {
+    font: inherit;
+}
+
+a {
+    color: inherit;
+    text-decoration: none;
+}
+
+button {
+    border: 0;
+    background: none;
+    color: inherit;
+}
+
+.page-shell {
+    position: relative;
+    min-height: 100vh;
+    padding: var(--shell-top-space) var(--shell-side-space) 2rem;
+}
+
+.drag-tether-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 5;
+    width: 100vw;
+    height: 100vh;
+    overflow: visible;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 140ms ease;
+}
+
+.drag-tether-layer.is-visible {
+    opacity: 1;
+}
+
+.drag-tether-line {
+    fill: none;
+    stroke: #ff3b4f;
+    stroke-width: 1;
+    stroke-dasharray: 5 5;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+}
+
+.drag-indicator {
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 6;
+    pointer-events: none;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition: opacity 140ms ease;
+}
+
+.drag-indicator.is-visible {
+    opacity: 1;
+}
+
+.drag-indicator-readout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.38rem 0.56rem;
+    border-radius: 0.34rem;
+    background: #ff3b4f;
+    color: #ffffff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    box-shadow: 0 10px 26px rgba(255, 59, 79, 0.24);
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.site-header {
+    position: sticky;
+    top: var(--shell-top-space);
+    z-index: 8;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-size: 0.76rem;
+    transition:
+        transform 220ms ease,
+        opacity 220ms ease;
+    will-change: transform, opacity;
+}
+
+.site-header.is-hidden {
+    transform: translateY(calc(-100% - 1rem));
+    opacity: 0;
+    pointer-events: none;
+}
+
+.brand,
+.site-nav a {
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 180ms ease;
+}
+
+.brand:hover,
+.brand:focus-visible,
+.site-nav a:hover,
+.site-nav a:focus-visible {
+    color: #ffffff;
+}
+
+.header-clock {
+    justify-self: center;
+    margin: 0;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+.site-nav {
+    justify-self: end;
+    display: flex;
+    gap: 2rem;
+}
+
+.hero {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.05rem;
+    min-height: calc(100svh - 6.25rem);
+    padding: clamp(5rem, 4vh, 4rem) 0 clamp(2.8rem, 8vh, 4.4rem);
+}
+
+.hero-copy-wrap {
+    display: grid;
+    justify-items: center;
+    gap: 0.45rem;
+}
+
+.hero-kicker {
+    margin: 0;
+    text-align: center;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.4em;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.drag-chip {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    z-index: 3;
+    transform: translate(-50%, calc(-100% - 0.28rem));
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.2rem 0.38rem;
+    border: 1px solid rgba(0, 0, 0, 0.18);
+    border-radius: 0.14rem;
+    background: #f7f7f7;
+    color: #1f1f1f;
+    font-size: 0.42rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1;
+    text-transform: uppercase;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    box-shadow: 0 4px 10px rgba(255, 255, 255, 0.04);
+    opacity: 1;
+    transition: opacity 180ms ease;
+}
+
+.drag-chip.is-hidden-during-drag {
+    opacity: 0;
+}
+
+.wordmark-stage {
+    position: relative;
+    width: min(100%, 66rem);
+    display: flex;
+    justify-content: center;
+    overflow: visible;
+}
+
+.wordmark-layout {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: clamp(0.7rem, 1.3vw, 1rem);
+    width: fit-content;
+    max-width: 100%;
+}
+
+.wordmark-panel {
+    width: fit-content;
+    text-align: center;
+    max-width: 100%;
+    display: grid;
+    place-items: center;
+    border: 1px dashed transparent;
+    background: rgba(255, 255, 255, 0.01);
+    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.wordmark-text {
+    display: block;
+    width: fit-content;
+    margin: 0 auto;
+    text-align: center;
+    line-height: 0.84;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    font-weight: 700;
+    white-space: nowrap;
+    user-select: none;
+}
+
+.wordmark-panel-solid {
+    padding: clamp(0.55rem, 1vw, 0.75rem) clamp(0.72rem, 1.2vw, 0.95rem);
+}
+
+.wordmark-panel-solid .wordmark-text {
+    font-size: clamp(5rem, 14vw, 14rem);
+    color: #f6f6f6;
+}
+
+.wordmark-panel-outline {
+    padding: clamp(0.32rem, 0.7vw, 0.5rem) clamp(0.62rem, 1vw, 0.86rem);
+    border-color: transparent;
+}
+
+.wordmark-panel-outline .wordmark-text {
+    font-size: clamp(5rem, 14vw, 14rem);
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.788);
+    text-shadow: 0 0 28px rgba(255, 255, 255, 0.05);
+}
+
+.draggable-wordmark {
+    position: relative;
+    z-index: 1;
+    touch-action: none;
+    cursor: grab;
+    user-select: none;
+    will-change: transform;
+    transition:
+        transform 480ms cubic-bezier(0.22, 1, 0.36, 1),
+        box-shadow 180ms ease,
+        border-color 180ms ease;
+}
+
+.wordmark-panel.draggable-wordmark.is-active {
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.draggable-wordmark.is-dragging {
+    z-index: 6;
+    cursor: grabbing;
+    transition: none;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgba(255, 255, 255, 0.64);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.02),
+        0 20px 50px rgba(0, 0, 0, 0.38);
+}
+
+.draggable-wordmark.is-returning .drag-chip {
+    opacity: 0;
+}
+
+.hero-description {
+    margin: 0 auto;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.14em;
+    text-align: center;
+    font-size: clamp(1.22rem, 2.2vw, 1.85rem);
+    line-height: 1.2;
+    min-height: 1.2em;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.44);
+    white-space: nowrap;
+}
+
+.hero-description.is-restartable {
+    cursor: pointer;
+}
+
+.hero-description::after {
+    content: "";
+    display: inline-block;
+    width: 0.09em;
+    height: 0.9em;
+    vertical-align: -0.08em;
+    background: rgba(255, 255, 255, 0.38);
+    flex-shrink: 0;
+    animation: hero-caret-blink 0.9s steps(1, end) infinite;
+}
+
+@keyframes hero-caret-blink {
+    0%,
+    49% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+.detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+    margin: 0 auto;
+    width: min(100%, 68rem);
+    padding-bottom: 4rem;
+}
+
+.detail-card {
+    padding: 1.5rem;
+    border: 1px solid var(--line);
+    border-radius: 1.2rem;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0.03),
+        rgba(255, 255, 255, 0.01)
+    );
+    backdrop-filter: blur(14px);
+}
+
+.detail-label {
+    margin: 0 0 0.8rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.24em;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.detail-card h2 {
+    margin: 0;
+    font-size: clamp(1.25rem, 2vw, 1.8rem);
+    font-weight: 500;
+    line-height: 1.15;
+}
+
+.honors-rail {
+    position: fixed;
+    right: clamp(0.8rem, 2vw, 1.7rem);
+    top: 50%;
+    z-index: 4;
+    transform: translateY(-50%);
+    display: grid;
+    justify-items: center;
+    gap: 4rem;
+    padding: 1rem 0.8rem;
+    width: 5.4rem;
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 1rem;
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: var(--shadow);
+    color: #121212;
+}
+
+.honors-mark {
+    font-size: 2.1rem;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.honors-label {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+}
+
+.ask-pill {
+    position: fixed;
+    right: clamp(1rem, 2.5vw, 2.2rem);
+    bottom: 1.2rem;
+    z-index: 4;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.95rem 1.25rem;
+    border-radius: 999px;
+    background: var(--accent);
+    color: #1c1c1c;
+    font-size: 0.88rem;
+    letter-spacing: 0.12em;
+    box-shadow:
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 0 38px var(--glow);
+}
+
+.ask-pill-icon {
+    display: inline-grid;
+    place-items: center;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.24);
+    font-weight: 700;
+    line-height: 1;
+}
+
+.ask-pill-count {
+    color: rgba(0, 0, 0, 0.44);
+}
+
+@media (max-width: 960px) {
+    .site-header {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+
+    .brand,
+    .site-nav,
+    .header-clock {
+        justify-self: center;
+    }
+
+    .site-nav {
+        gap: 1.4rem;
+    }
+
+    .hero {
+        min-height: auto;
+        padding-top: 2.8rem;
+        padding-bottom: 2.6rem;
+    }
+
+    .detail-grid {
+        grid-template-columns: 1fr;
+        padding-bottom: 6rem;
+    }
+
+    .honors-rail {
+        top: auto;
+        bottom: 6.5rem;
+        transform: none;
+        gap: 1.2rem;
+        width: auto;
+        padding: 0.75rem 1rem;
+        grid-auto-flow: column;
+        align-items: center;
+    }
+
+    .honors-label {
+        writing-mode: horizontal-tb;
+        transform: none;
+    }
+}
+
+@media (max-width: 640px) {
+    .page-shell {
+        padding-inline: 1rem;
+    }
+
+    .site-header {
+        gap: 0.75rem;
+        font-size: 0.68rem;
+    }
+
+    .hero-kicker {
+        font-size: 0.74rem;
+        letter-spacing: 0.26em;
+    }
+
+    .wordmark-stage {
+        width: 100%;
+    }
+
+    .wordmark-panel {
+        max-width: 88vw;
+    }
+
+    .hero-description {
+        max-width: 18rem;
+    }
+
+    .ask-pill {
+        left: 1rem;
+        right: 1rem;
+        justify-content: center;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .draggable-wordmark,
+    .drag-chip,
+    .brand,
+    .site-nav a {
+        transition: none;
+    }
+
+    .hero-description::after {
+        animation: none;
+    }
+
+    .drag-tether-layer {
+        transition: none;
+    }
+
+    .drag-indicator {
+        transition: none;
+    }
+}

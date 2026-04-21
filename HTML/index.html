@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="Scroll-driven stacked-card portfolio hero built with GSAP and ScrollTrigger."
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+            rel="stylesheet"
+        />
+
+        <link rel="stylesheet" href="../CSS/style.css" />
+
+        <title>Andy Reff</title>
+    </head>
+    <body>
+        <div class="page-shell">
+            <header class="site-header">
+                <a class="brand" href="#hero-scroll">ANDY REFF</a>
+                <p class="header-clock" id="clock">Manila, PH - --:--:-- PHT</p>
+                <nav class="site-nav" aria-label="Primary">
+                    <a href="#hero-scroll">WORK</a>
+                    <a href="#hero-scroll">ABOUT</a>
+                </nav>
+            </header>
+
+            <aside class="honors-rail" aria-label="Honors">
+                <span class="honors-mark">W.</span>
+                <span class="honors-label">Honors</span>
+            </aside>
+
+            <a class="ask-pill" href="#hero-scroll">
+                <span class="ask-pill-icon">✦</span>
+                <span>Ask my work</span>
+                <span class="ask-pill-shortcut">⌘K</span>
+            </a>
+
+            <main>
+                <section class="scroll-hero" id="hero-scroll">
+                    <div class="hero-stage">
+                        <div class="hero-perspective">
+                            <article class="hero-card hero-card--rear" id="rearCard">
+                                <span class="hero-card-index">01</span>
+                            </article>
+
+                            <article class="hero-card hero-card--main" id="mainCard">
+                                <div class="hero-card-grid"></div>
+
+                                <div class="hero-card-inner" id="mainCardContent">
+                                    <div class="hero-topline">
+                                        <p class="hero-kicker">
+                                            NAVIGATING THE UNKNOWN, PIXEL BY PIXEL.
+                                        </p>
+                                        <span class="drag-chip">DRAG TO MOVE</span>
+                                    </div>
+
+                                    <div class="hero-wordmark" aria-label="Andy Reff">
+                                        <span class="wordmark wordmark--solid">ANDY</span>
+                                        <span class="wordmark wordmark--outline">REFF</span>
+                                    </div>
+
+                                    <p class="hero-description">
+                                        Precision structure, bold creative vision.
+                                    </p>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/gsap.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.7/dist/ScrollTrigger.min.js"></script>
+        <script src="../JAVASCRIPT/script.js"></script>
+    </body>
+</html>
