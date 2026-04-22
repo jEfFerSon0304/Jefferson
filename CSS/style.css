@@ -451,7 +451,7 @@ main {
     content: "";
     position: absolute;
     inset: -8%;
-    background:
+    /* background:
         linear-gradient(
             90deg,
             transparent 0%,
@@ -473,13 +473,13 @@ main {
             circle at 50% 50%,
             rgba(255, 255, 255, 0.05),
             transparent 56%
-        );
-    background-size:
+        ); */
+    /* background-size:
         100% 100%,
         100% 100%,
         100% 100%,
         100% 100%;
-    opacity: 0.74;
+    opacity: 0.74; */
 }
 
 .hero-atmosphere::after {
@@ -527,7 +527,7 @@ main {
         0 0 0 1px rgb(var(--hero-accent-rgb) / 0.08),
         0 0 1.75rem rgb(var(--hero-accent-rgb) / 0.18),
         0 18px 60px rgba(0, 0, 0, 0.42);
-    backdrop-filter: blur(10px);
+    /* backdrop-filter: blur(10px); */
     transform: translate3d(
             calc(-50% + var(--orbit-shift-x, 0px)),
             calc(-50% + var(--orbit-shift-y, 0px)),
@@ -858,8 +858,8 @@ main {
     display: grid;
     place-items: center;
     border: 1px dashed transparent;
-    background: rgba(255, 255, 255, 0.01);
-    box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+    background: rgba(0, 0, 0, 0);
+    box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0);
 }
 
 .wordmark-text {
@@ -913,7 +913,7 @@ main {
 }
 
 .wordmark-panel.draggable-wordmark.is-active {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: rgb(255, 255, 255);
 }
 
 .draggable-wordmark.is-dragging {
@@ -930,7 +930,6 @@ main {
 
 .wordmark-panel-outline.draggable-wordmark.is-dragging .wordmark-text {
     -webkit-text-stroke-color: var(--hero-accent);
-    text-shadow: 0 0 24px rgb(var(--hero-accent-rgb) / 0.24);
 }
 
 .draggable-wordmark.is-returning .drag-chip {
@@ -948,7 +947,7 @@ main {
     line-height: 1.2;
     min-height: 1.2em;
     font-weight: 500;
-    color: rgba(255, 255, 255, 0.44);
+    color: rgba(255, 255, 255, 0.815);
     white-space: nowrap;
 }
 
