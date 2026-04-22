@@ -13,6 +13,8 @@ const heroOrbits = Array.from(document.querySelectorAll("[data-hero-orbit]"));
 const featuredCards = Array.from(document.querySelectorAll(".featured-card"));
 const featuredMediaItems = Array.from(document.querySelectorAll(".featured-media"));
 const featuredImages = Array.from(document.querySelectorAll(".featured-image"));
+const footerPhotoGallery = document.querySelector("[data-footer-gallery]");
+const footerPhotos = Array.from(document.querySelectorAll("[data-footer-photo]"));
 const revealPanels = Array.from(
     document.querySelectorAll("[data-reveal-panel]"),
 );
@@ -1118,6 +1120,209 @@ function setupFeaturedCardStack() {
     compactLayout.addEventListener("change", requestUpdate);
 }
 
+function setupFooterPhotoGallery() {
+    if (!footerPhotoGallery || !footerPhotos.length) {
+        return;
+    }
+
+    const dragBoundsElement = footerPhotoGallery.closest(".site-footer");
+
+    if (!dragBoundsElement) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const photoStates = [];
+    let zIndexSeed = footerPhotos.length + 10;
+
+    function bringToFront(element) {
+        element.style.zIndex = `${zIndexSeed}`;
+        zIndexSeed += 1;
+    }
+
+    footerPhotos.forEach((element, index) => {
+        const configuredLayer = Number.parseInt(
+            element.style.getPropertyValue("--photo-layer") || `${index + 1}`,
+            10,
+        );
+
+        if (Number.isFinite(configuredLayer)) {
+            element.style.zIndex = `${configuredLayer}`;
+            zIndexSeed = Math.max(zIndexSeed, configuredLayer + 1);
+        }
+    });
+
+    footerPhotos.forEach((element) => {
+        const rotation =
+            element.style.getPropertyValue("--photo-rotate").trim() || "0deg";
+        const state = {
+            pointerId: null,
+            offsetX: 0,
+            offsetY: 0,
+            startX: 0,
+            startY: 0,
+            initialOffsetX: 0,
+            initialOffsetY: 0,
+            minX: Number.NEGATIVE_INFINITY,
+            maxX: Number.POSITIVE_INFINITY,
+            minY: Number.NEGATIVE_INFINITY,
+            maxY: Number.POSITIVE_INFINITY,
+            moved: false,
+            suppressClick: false,
+        };
+
+        function applyTransform() {
+            element.style.transform = `translate3d(${state.offsetX}px, ${state.offsetY}px, 0) rotate(${rotation})`;
+        }
+
+        function constrainToFooter() {
+            const boundsRect = dragBoundsElement.getBoundingClientRect();
+            const rect = element.getBoundingClientRect();
+            const padding = 8;
+            const minX = state.offsetX + (boundsRect.left + padding - rect.left);
+            const maxX =
+                state.offsetX + (boundsRect.right - padding - rect.right);
+            const minY = state.offsetY + (boundsRect.top + padding - rect.top);
+            const maxY =
+                state.offsetY + (boundsRect.bottom - padding - rect.bottom);
+
+            state.offsetX = clamp(state.offsetX, minX, maxX);
+            state.offsetY = clamp(state.offsetY, minY, maxY);
+            applyTransform();
+        }
+
+        function endDrag(event) {
+            if (event.pointerId !== state.pointerId) {
+                return;
+            }
+
+            const releasedPointerId = state.pointerId;
+            state.pointerId = null;
+
+            if (element.hasPointerCapture(releasedPointerId)) {
+                element.releasePointerCapture(releasedPointerId);
+            }
+
+            element.classList.remove("is-dragging");
+        }
+
+        applyTransform();
+        photoStates.push({ constrainToFooter });
+
+        element.addEventListener("dragstart", (event) => {
+            event.preventDefault();
+        });
+
+        element.addEventListener("pointerenter", () => {
+            bringToFront(element);
+        });
+
+        element.addEventListener("focus", () => {
+            bringToFront(element);
+        });
+
+        element.addEventListener("pointerdown", (event) => {
+            if (state.pointerId !== null) {
+                return;
+            }
+
+            if (event.button !== undefined && event.button !== 0) {
+                return;
+            }
+
+            const boundsRect = dragBoundsElement.getBoundingClientRect();
+            const rect = element.getBoundingClientRect();
+            const padding = 8;
+
+            state.pointerId = event.pointerId;
+            state.startX = event.clientX;
+            state.startY = event.clientY;
+            state.initialOffsetX = state.offsetX;
+            state.initialOffsetY = state.offsetY;
+            state.moved = false;
+            state.suppressClick = false;
+            state.minX =
+                state.offsetX + (boundsRect.left + padding - rect.left);
+            state.maxX =
+                state.offsetX + (boundsRect.right - padding - rect.right);
+            state.minY = state.offsetY + (boundsRect.top + padding - rect.top);
+            state.maxY =
+                state.offsetY + (boundsRect.bottom - padding - rect.bottom);
+
+            bringToFront(element);
+            element.setPointerCapture(state.pointerId);
+        });
+
+        element.addEventListener("pointermove", (event) => {
+            if (event.pointerId !== state.pointerId) {
+                return;
+            }
+
+            const rawX = state.initialOffsetX + (event.clientX - state.startX);
+            const rawY = state.initialOffsetY + (event.clientY - state.startY);
+
+            state.offsetX = clamp(rawX, state.minX, state.maxX);
+            state.offsetY = clamp(rawY, state.minY, state.maxY);
+
+            if (!state.moved) {
+                const distance = Math.hypot(
+                    state.offsetX - state.initialOffsetX,
+                    state.offsetY - state.initialOffsetY,
+                );
+
+                if (distance > 3) {
+                    state.moved = true;
+                    state.suppressClick = true;
+                    element.classList.add("is-dragging");
+                }
+            }
+
+            applyTransform();
+
+            if (state.moved) {
+                event.preventDefault();
+            }
+        });
+
+        element.addEventListener("pointerup", endDrag);
+        element.addEventListener("pointercancel", endDrag);
+        element.addEventListener("lostpointercapture", () => {
+            if (state.pointerId === null) {
+                return;
+            }
+
+            state.pointerId = null;
+            element.classList.remove("is-dragging");
+        });
+
+        element.addEventListener("click", (event) => {
+            if (!state.suppressClick) {
+                return;
+            }
+
+            event.preventDefault();
+            state.suppressClick = false;
+        });
+
+        if (prefersReducedMotion) {
+            constrainToFooter();
+        }
+    });
+
+    photoStates.forEach((photoState) => {
+        photoState.constrainToFooter();
+    });
+
+    window.addEventListener("resize", () => {
+        photoStates.forEach((photoState) => {
+            photoState.constrainToFooter();
+        });
+    });
+}
+
 updateClock();
 setupAutoHidingHeader();
 setupDraggableWordmarks();
@@ -1127,4 +1332,5 @@ setupHeroAtmosphereTrail();
 setupStackTransition();
 setupFeaturedCardStack();
 setupFeaturedMediaParallax();
+setupFooterPhotoGallery();
 setInterval(updateClock, 1000);
