@@ -5,6 +5,9 @@ const dragTetherLine = document.getElementById("dragTetherLine");
 const dragIndicator = document.getElementById("dragIndicator");
 const dragIndicatorReadout = document.getElementById("dragIndicatorReadout");
 const heroDescription = document.getElementById("heroDescription");
+const introLoader = document.getElementById("siteIntroLoader");
+const introLoaderCount = document.getElementById("siteIntroLoaderCount");
+const INTRO_SESSION_KEY = "jeffersonPortfolioIntroSeen";
 const siteHeader = document.querySelector(".site-header");
 const stackTransition = document.querySelector(".stack-transition");
 const stackStage = document.getElementById("stackStage");
@@ -44,6 +47,100 @@ function updateClock() {
     const time = formatter.format(new Date());
 
     clockElement.textContent = `Manila, PH - ${time} PHT`;
+}
+
+function wait(duration) {
+    return new Promise((resolve) => {
+        window.setTimeout(resolve, duration);
+    });
+}
+
+function waitForWindowLoad() {
+    if (document.readyState === "complete") {
+        return Promise.resolve();
+    }
+
+    return new Promise((resolve) => {
+        window.addEventListener("load", resolve, { once: true });
+    });
+}
+
+function markIntroAsSeen() {
+    try {
+        window.sessionStorage.setItem(INTRO_SESSION_KEY, "true");
+    } catch (error) {
+        // Ignore storage failures and continue with the intro flow.
+    }
+}
+
+async function setupIntroLoader() {
+    if (!introLoader || !introLoaderCount) {
+        document.body.classList.remove("is-intro-loading");
+        return;
+    }
+
+    if (document.documentElement.classList.contains("has-seen-intro")) {
+        document.body.classList.remove("is-intro-loading");
+        introLoader.setAttribute("hidden", "");
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    const runCounter = () =>
+        new Promise((resolve) => {
+            let value = 1;
+            const intervalDelay = prefersReducedMotion ? 8 : 18;
+
+            introLoaderCount.textContent = `${value}%`;
+
+            const intervalId = window.setInterval(() => {
+                value += 1;
+                introLoaderCount.textContent = `${Math.min(value, 100)}%`;
+
+                if (value >= 100) {
+                    window.clearInterval(intervalId);
+                    resolve();
+                }
+            }, intervalDelay);
+        });
+
+    window.scrollTo(0, 0);
+
+    await Promise.all([runCounter(), waitForWindowLoad()]);
+
+    if (prefersReducedMotion) {
+        introLoader.classList.add("is-fading-count", "is-line-visible");
+        await wait(120);
+        introLoader.classList.add("is-opening");
+        document.body.classList.remove("is-intro-loading");
+        await wait(40);
+        introLoader.classList.add("is-hidden");
+        introLoader.setAttribute("hidden", "");
+        markIntroAsSeen();
+        return;
+    }
+
+    await wait(520);
+    introLoader.classList.add("is-complete");
+    await wait(920);
+    introLoader.classList.add("is-blinking");
+    await wait(620);
+    await wait(420);
+    introLoader.classList.add("is-fading-count");
+    await wait(680);
+    await wait(260);
+    introLoader.classList.add("is-line-visible");
+    await wait(520);
+    introLoader.classList.add("is-opening");
+    document.body.classList.remove("is-intro-loading");
+    await wait(900);
+    introLoader.classList.add("is-hidden");
+    await wait(340);
+    introLoader.setAttribute("hidden", "");
+    markIntroAsSeen();
 }
 
 function setupDraggableWordmarks() {
@@ -1452,7 +1549,6 @@ function setupFooterPhotoGallery() {
 updateClock();
 setupAutoHidingHeader();
 setupDraggableWordmarks();
-setupHeroDescriptionTypewriter();
 setupHeroSpotlight();
 setupHeroAtmosphereTrail();
 setupStackTransition();
@@ -1460,4 +1556,7 @@ setupFeaturedCardStack();
 setupFeaturedMediaParallax();
 setupWorkProjectImageScroll();
 setupFooterPhotoGallery();
+setupIntroLoader().finally(() => {
+    setupHeroDescriptionTypewriter();
+});
 setInterval(updateClock, 1000);

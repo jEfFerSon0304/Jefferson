@@ -7,6 +7,29 @@
             name="description"
             content="Jefferson portfolio concept with a precision-built editorial hero."
         />
+        <script>
+            (() => {
+                try {
+                    if (
+                        window.sessionStorage.getItem(
+                            "jeffersonPortfolioIntroSeen",
+                        ) === "true"
+                    ) {
+                        document.documentElement.classList.add(
+                            "has-seen-intro",
+                        );
+                    }
+                } catch (error) {
+                    // Keep the intro enabled if session storage is unavailable.
+                }
+            })();
+        </script>
+
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="../Assets/faviconLight.jpg"
+        />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -18,12 +41,39 @@
             rel="stylesheet"
             href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
         />
+        <noscript>
+            <style>
+                .site-intro-loader {
+                    display: none !important;
+                }
+
+                body.is-intro-loading {
+                    overflow: auto !important;
+                }
+            </style>
+        </noscript>
 
         <link rel="stylesheet" href="../CSS/style.css" />
 
         <title>Jefferson | Web Developer</title>
     </head>
-    <body>
+    <body class="is-intro-loading">
+        <div class="site-intro-loader" id="siteIntroLoader" aria-hidden="true">
+            <div
+                class="site-intro-loader-curtain site-intro-loader-curtain-top"
+            ></div>
+            <div
+                class="site-intro-loader-curtain site-intro-loader-curtain-bottom"
+            ></div>
+            <div class="site-intro-loader-center">
+                <span class="site-intro-loader-count" id="siteIntroLoaderCount">
+                    1%
+                </span>
+                <span class="site-intro-loader-line" id="siteIntroLoaderLine">
+                </span>
+            </div>
+        </div>
+
         <div class="page-shell">
             <svg
                 class="drag-tether-layer"
