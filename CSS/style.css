@@ -1401,7 +1401,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 
 .work-project-title {
     margin: 0;
-    max-width: 10ch;
+    max-width: 100%;
     font-size: clamp(1.55rem, 2.9vw, 2.7rem);
     line-height: 0.88;
     letter-spacing: -0.07em;
