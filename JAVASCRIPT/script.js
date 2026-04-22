@@ -73,6 +73,29 @@ function markIntroAsSeen() {
     }
 }
 
+function playHeroWordmarkEntrance() {
+    if (!draggableWordmarks.length) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    draggableWordmarks.forEach((wordmark, index) => {
+        const reveal = () => {
+            wordmark.classList.add("is-wordmark-visible");
+        };
+
+        if (prefersReducedMotion) {
+            reveal();
+            return;
+        }
+
+        window.setTimeout(reveal, index * 120);
+    });
+}
+
 async function setupIntroLoader() {
     if (!introLoader || !introLoaderCount) {
         document.body.classList.remove("is-intro-loading");
@@ -115,6 +138,7 @@ async function setupIntroLoader() {
         introLoader.classList.add("is-fading-count", "is-line-visible");
         await wait(120);
         introLoader.classList.add("is-opening");
+        playHeroWordmarkEntrance();
         document.body.classList.remove("is-intro-loading");
         await wait(40);
         introLoader.classList.add("is-hidden");
@@ -135,6 +159,7 @@ async function setupIntroLoader() {
     introLoader.classList.add("is-line-visible");
     await wait(520);
     introLoader.classList.add("is-opening");
+    playHeroWordmarkEntrance();
     document.body.classList.remove("is-intro-loading");
     await wait(900);
     introLoader.classList.add("is-hidden");

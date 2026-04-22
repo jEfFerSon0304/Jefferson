@@ -873,6 +873,20 @@ main {
     font-weight: 700;
     white-space: nowrap;
     user-select: none;
+    will-change: transform, opacity;
+    transition:
+        opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.is-intro-loading .draggable-wordmark .wordmark-text {
+    opacity: 0;
+    transform: translateY(1.35rem);
+}
+
+.draggable-wordmark.is-wordmark-visible .wordmark-text {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .wordmark-panel-solid {
@@ -895,6 +909,8 @@ main {
     -webkit-text-stroke: 1.5px rgb(255, 255, 255);
     text-shadow: 0 0 28px rgba(255, 255, 255, 0.05);
     transition:
+        opacity 720ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 720ms cubic-bezier(0.22, 1, 0.36, 1),
         -webkit-text-stroke-color 160ms ease,
         text-shadow 160ms ease;
 }
@@ -930,6 +946,7 @@ main {
 
 .wordmark-panel-outline.draggable-wordmark.is-dragging .wordmark-text {
     -webkit-text-stroke-color: var(--hero-accent);
+    border: #7602ac 2px solid;
 }
 
 .draggable-wordmark.is-returning .drag-chip {
@@ -1581,7 +1598,7 @@ main {
 
 .about-page-heading {
     margin: 0;
-    max-width: 11ch;
+    max-width: 100%;
     font-size: clamp(2rem, 4vw, 3.25rem);
     line-height: 0.98;
     letter-spacing: -0.06em;
@@ -3594,6 +3611,7 @@ main {
     .site-intro-loader-count,
     .site-intro-loader-line,
     .drag-chip,
+    .wordmark-text,
     .brand,
     .site-nav a {
         transition: none;
