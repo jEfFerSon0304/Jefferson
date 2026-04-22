@@ -13,6 +13,12 @@ const heroOrbits = Array.from(document.querySelectorAll("[data-hero-orbit]"));
 const featuredCards = Array.from(document.querySelectorAll(".featured-card"));
 const featuredMediaItems = Array.from(document.querySelectorAll(".featured-media"));
 const featuredImages = Array.from(document.querySelectorAll(".featured-image"));
+const workProjectMediaItems = Array.from(
+    document.querySelectorAll(".work-project-media"),
+);
+const workProjectImages = Array.from(
+    document.querySelectorAll(".work-project-image"),
+);
 const footerPhotoGallery = document.querySelector("[data-footer-gallery]");
 const footerPhotos = Array.from(document.querySelectorAll("[data-footer-photo]"));
 const revealPanels = Array.from(
@@ -1025,6 +1031,126 @@ function setupFeaturedMediaParallax() {
     window.addEventListener("resize", syncTarget);
 }
 
+function setupWorkProjectImageScroll() {
+    if (!workProjectMediaItems.length || !workProjectImages.length) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+
+    function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    if (prefersReducedMotion) {
+        workProjectImages.forEach((image) => {
+            image.style.setProperty("--work-project-image-shift", "0px");
+        });
+        return;
+    }
+
+    const mediaStates = workProjectMediaItems
+        .map((media, index) => {
+            const image = workProjectImages[index];
+
+            if (!image) {
+                return null;
+            }
+
+            return {
+                media,
+                image,
+                currentShift: 0,
+                targetShift: 0,
+            };
+        })
+        .filter(Boolean);
+
+    if (!mediaStates.length) {
+        return;
+    }
+
+    let frameId = null;
+
+    function measureTargetShift(media) {
+        const rect = media.getBoundingClientRect();
+
+        if (!rect.width || !rect.height) {
+            return 0;
+        }
+
+        const viewportHeight = Math.max(window.innerHeight, 1);
+        const progress = clamp(
+            (viewportHeight - rect.top) / (viewportHeight + rect.height),
+            0,
+            1,
+        );
+        const maxTravel = Math.min(88, rect.width * 0.16);
+        return (0.5 - progress) * maxTravel;
+    }
+
+    function renderShifts() {
+        mediaStates.forEach((state) => {
+            state.image.style.setProperty(
+                "--work-project-image-shift",
+                `${state.currentShift.toFixed(2)}px`,
+            );
+        });
+    }
+
+    function step() {
+        let isAnimating = false;
+
+        mediaStates.forEach((state) => {
+            const delta = state.targetShift - state.currentShift;
+
+            state.currentShift += delta * 0.09;
+
+            if (Math.abs(delta) < 0.05) {
+                state.currentShift = state.targetShift;
+                return;
+            }
+
+            isAnimating = true;
+        });
+
+        renderShifts();
+
+        if (!isAnimating) {
+            frameId = null;
+            return;
+        }
+
+        frameId = window.requestAnimationFrame(step);
+    }
+
+    function requestStep() {
+        if (frameId !== null) {
+            return;
+        }
+
+        frameId = window.requestAnimationFrame(step);
+    }
+
+    function syncTarget() {
+        mediaStates.forEach((state) => {
+            state.targetShift = measureTargetShift(state.media);
+        });
+        requestStep();
+    }
+
+    mediaStates.forEach((state) => {
+        state.currentShift = measureTargetShift(state.media);
+        state.targetShift = state.currentShift;
+    });
+    renderShifts();
+
+    window.addEventListener("scroll", syncTarget, { passive: true });
+    window.addEventListener("resize", syncTarget);
+}
+
 function setupFeaturedCardStack() {
     if (featuredCards.length < 2) {
         return;
@@ -1332,5 +1458,6 @@ setupHeroAtmosphereTrail();
 setupStackTransition();
 setupFeaturedCardStack();
 setupFeaturedMediaParallax();
+setupWorkProjectImageScroll();
 setupFooterPhotoGallery();
 setInterval(updateClock, 1000);
