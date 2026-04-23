@@ -28,6 +28,33 @@
                 try {
                     if (
                         window.sessionStorage.getItem(
+                            "jeffersonPortfolioPageTransition",
+                        ) === "true"
+                    ) {
+                        document.documentElement.classList.add(
+                            "is-page-transition-entering",
+                        );
+
+                        window.sessionStorage.removeItem(
+                            "jeffersonPortfolioPageTransition",
+                        );
+                    }
+
+                    if (
+                        window.sessionStorage.getItem(
+                            "jeffersonPortfolioSkipIntroOnce",
+                        ) === "true"
+                    ) {
+                        document.documentElement.classList.add(
+                            "has-seen-intro",
+                        );
+                        window.sessionStorage.removeItem(
+                            "jeffersonPortfolioSkipIntroOnce",
+                        );
+                    }
+
+                    if (
+                        window.sessionStorage.getItem(
                             "jeffersonPortfolioIntroSeen",
                         ) === "true"
                     ) {
@@ -70,6 +97,16 @@
         <title>Jefferson | Web Developer</title>
     </head>
     <body class="is-intro-loading">
+        <div class="page-transition-shell" aria-hidden="true">
+            <span
+                class="page-transition-panel page-transition-panel-top"
+            ></span>
+            <span
+                class="page-transition-panel page-transition-panel-bottom"
+            ></span>
+            <span class="page-transition-line"></span>
+        </div>
+
         <div class="site-intro-loader" id="siteIntroLoader" aria-hidden="true">
             <div
                 class="site-intro-loader-curtain site-intro-loader-curtain-top"
@@ -727,8 +764,11 @@
                                     </div>
                                 </div>
 
-                                <a class="featured-link" href="#featured">
-                                    View Placeholder Case Study
+                                <a
+                                    class="featured-link"
+                                    href="HTML/MahWorksNibbah/WildClash.html"
+                                >
+                                    View Case Study
                                 </a>
                             </div>
 
@@ -782,8 +822,11 @@
                                     </div>
                                 </div>
 
-                                <a class="featured-link" href="#featured">
-                                    View Placeholder Case Study
+                                <a
+                                    class="featured-link"
+                                    href="HTML/MahWorksNibbah/CEITThesisHub.html"
+                                >
+                                    View Case Study
                                 </a>
                             </div>
 
@@ -838,8 +881,11 @@
                                     </div>
                                 </div>
 
-                                <a class="featured-link" href="#featured">
-                                    View Placeholder Case Study
+                                <a
+                                    class="featured-link"
+                                    href="HTML/MahWorksNibbah/TheSession.html"
+                                >
+                                    View Case Study
                                 </a>
                             </div>
 

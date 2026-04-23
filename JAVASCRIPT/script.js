@@ -8,13 +8,17 @@ const heroDescription = document.getElementById("heroDescription");
 const introLoader = document.getElementById("siteIntroLoader");
 const introLoaderCount = document.getElementById("siteIntroLoaderCount");
 const INTRO_SESSION_KEY = "jeffersonPortfolioIntroSeen";
+const PAGE_TRANSITION_SESSION_KEY = "jeffersonPortfolioPageTransition";
+const SKIP_INTRO_ONCE_SESSION_KEY = "jeffersonPortfolioSkipIntroOnce";
 const siteHeader = document.querySelector(".site-header");
 const stackTransition = document.querySelector(".stack-transition");
 const stackStage = document.getElementById("stackStage");
 const heroPanel = document.querySelector(".hero-panel");
 const heroOrbits = Array.from(document.querySelectorAll("[data-hero-orbit]"));
 const featuredCards = Array.from(document.querySelectorAll(".featured-card"));
-const featuredMediaItems = Array.from(document.querySelectorAll(".featured-media"));
+const featuredMediaItems = Array.from(
+    document.querySelectorAll(".featured-media"),
+);
 const featuredImages = Array.from(document.querySelectorAll(".featured-image"));
 const workProjectMediaItems = Array.from(
     document.querySelectorAll(".work-project-media"),
@@ -23,13 +27,354 @@ const workProjectImages = Array.from(
     document.querySelectorAll(".work-project-image"),
 );
 const footerPhotoGallery = document.querySelector("[data-footer-gallery]");
-const footerPhotos = Array.from(document.querySelectorAll("[data-footer-photo]"));
+const footerPhotos = Array.from(
+    document.querySelectorAll("[data-footer-photo]"),
+);
 const revealPanels = Array.from(
     document.querySelectorAll("[data-reveal-panel]"),
 );
 const draggableWordmarks = Array.from(
     document.querySelectorAll("[data-draggable-wordmark]"),
 );
+
+function setupPageTransitions() {
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const root = document.documentElement;
+
+    if (prefersReducedMotion) {
+        root.classList.remove(
+            "is-page-transition-entering",
+            "is-page-transition-leaving",
+        );
+        return;
+    }
+
+    const transitionDuration = 920;
+    let isTransitioning = false;
+    let cleanupTimerId = null;
+
+    function cleanupEntryState() {
+        root.classList.remove("is-page-transition-entering");
+    }
+
+    if (root.classList.contains("is-page-transition-entering")) {
+        cleanupTimerId = window.setTimeout(() => {
+            cleanupEntryState();
+            cleanupTimerId = null;
+        }, transitionDuration);
+    }
+
+    function isHomeDestination(url) {
+        const filename = url.pathname.split("/").pop() || "";
+
+        return !filename || filename.toLowerCase() === "index.html";
+    }
+
+    function shouldHandleNavigation(link, event) {
+        if (
+            event.defaultPrevented ||
+            event.button !== 0 ||
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.altKey
+        ) {
+            return false;
+        }
+
+        if (link.hasAttribute("download")) {
+            return false;
+        }
+
+        const rawHref = link.getAttribute("href");
+
+        if (
+            !rawHref ||
+            rawHref.startsWith("#") ||
+            rawHref.startsWith("mailto:") ||
+            rawHref.startsWith("tel:") ||
+            rawHref.startsWith("javascript:")
+        ) {
+            return false;
+        }
+
+        if (link.target && link.target.toLowerCase() !== "_self") {
+            return false;
+        }
+
+        return true;
+    }
+
+    document.addEventListener("click", (event) => {
+        const link = event.target.closest("a[href]");
+
+        if (!link || !shouldHandleNavigation(link, event)) {
+            return;
+        }
+
+        const destination = new URL(link.href, window.location.href);
+        const current = new URL(window.location.href);
+        const isSameDocument =
+            destination.origin === current.origin &&
+            destination.pathname === current.pathname &&
+            destination.search === current.search;
+
+        if (destination.origin !== window.location.origin) {
+            return;
+        }
+
+        if (isSameDocument && destination.hash !== current.hash) {
+            return;
+        }
+
+        if (isSameDocument && destination.hash === current.hash) {
+            return;
+        }
+
+        if (isTransitioning) {
+            event.preventDefault();
+            return;
+        }
+
+        event.preventDefault();
+        isTransitioning = true;
+
+        if (cleanupTimerId !== null) {
+            window.clearTimeout(cleanupTimerId);
+            cleanupTimerId = null;
+        }
+
+        const shouldSkipIntro = isHomeDestination(destination);
+        root.classList.remove("is-page-transition-entering");
+        root.classList.add("is-page-transition-leaving");
+
+        try {
+            window.sessionStorage.setItem(PAGE_TRANSITION_SESSION_KEY, "true");
+
+            if (shouldSkipIntro) {
+                window.sessionStorage.setItem(
+                    SKIP_INTRO_ONCE_SESSION_KEY,
+                    "true",
+                );
+                window.sessionStorage.setItem(INTRO_SESSION_KEY, "true");
+            } else {
+                window.sessionStorage.removeItem(SKIP_INTRO_ONCE_SESSION_KEY);
+            }
+        } catch (error) {
+            // Keep navigation working if storage is unavailable.
+        }
+
+        window.setTimeout(() => {
+            window.location.assign(destination.href);
+        }, 640);
+    });
+
+    window.addEventListener("pageshow", () => {
+        isTransitioning = false;
+        root.classList.remove("is-page-transition-leaving");
+    });
+
+    window.addEventListener("pagehide", () => {
+        if (cleanupTimerId !== null) {
+            window.clearTimeout(cleanupTimerId);
+            cleanupTimerId = null;
+        }
+    });
+}
+
+function setupSiteCursor() {
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const supportsFinePointer = window.matchMedia(
+        "(hover: hover) and (pointer: fine)",
+    ).matches;
+
+    if (prefersReducedMotion || !supportsFinePointer) {
+        return;
+    }
+
+    const siteCursor = document.createElement("div");
+    const cursorHalo = document.createElement("span");
+    const cursorFrame = document.createElement("span");
+    const cursorCore = document.createElement("span");
+    const cursorLabel = document.createElement("span");
+    const state = {
+        targetX: window.innerWidth / 2,
+        targetY: window.innerHeight / 2,
+        currentX: window.innerWidth / 2,
+        currentY: window.innerHeight / 2,
+        visible: false,
+        rafId: null,
+        mode: "default",
+        label: "You",
+    };
+
+    siteCursor.className = "site-cursor";
+    siteCursor.setAttribute("aria-hidden", "true");
+    siteCursor.dataset.mode = "default";
+
+    cursorHalo.className = "site-cursor-halo";
+    cursorFrame.className = "site-cursor-frame";
+    cursorCore.className = "site-cursor-core";
+    cursorLabel.className = "site-cursor-label";
+    cursorLabel.textContent = state.label;
+
+    siteCursor.append(cursorHalo, cursorFrame, cursorCore, cursorLabel);
+    document.body.append(siteCursor);
+
+    function renderCursor() {
+        state.rafId = null;
+
+        const deltaX = state.targetX - state.currentX;
+        const deltaY = state.targetY - state.currentY;
+
+        state.currentX += deltaX * 0.18;
+        state.currentY += deltaY * 0.18;
+
+        siteCursor.style.transform = `translate3d(${state.currentX}px, ${state.currentY}px, 0)`;
+
+        if (Math.abs(deltaX) > 0.15 || Math.abs(deltaY) > 0.15) {
+            state.rafId = window.requestAnimationFrame(renderCursor);
+        }
+    }
+
+    function requestCursorRender() {
+        if (state.rafId !== null) {
+            return;
+        }
+
+        state.rafId = window.requestAnimationFrame(renderCursor);
+    }
+
+    function setCursorProfile(mode, label) {
+        if (state.mode !== mode) {
+            state.mode = mode;
+            siteCursor.dataset.mode = mode;
+        }
+
+        if (state.label !== label) {
+            state.label = label;
+            cursorLabel.textContent = label;
+        }
+    }
+
+    function resolveCursorProfile(target) {
+        if (!(target instanceof Element)) {
+            return { mode: "default", label: "You" };
+        }
+
+        if (target.closest(".draggable-wordmark, .footer-photo")) {
+            return { mode: "drag", label: "DRAG" };
+        }
+
+        if (target.closest("#heroDescription.is-restartable")) {
+            return { mode: "action", label: "REPLAY" };
+        }
+
+        if (target.closest("a[href], button, [role='button']")) {
+            return { mode: "action", label: "OPEN" };
+        }
+
+        if (
+            target.closest(
+                ".featured-card, .work-project-card, .about-page-photo, .about-toolkit-card",
+            )
+        ) {
+            return { mode: "inspect", label: "SCAN" };
+        }
+
+        return { mode: "default", label: "You" };
+    }
+
+    function showCursor() {
+        if (!state.visible) {
+            state.visible = true;
+            document.body.classList.add("has-custom-cursor");
+            siteCursor.classList.add("is-visible");
+        }
+    }
+
+    function hideCursor() {
+        state.visible = false;
+        document.body.classList.remove("has-custom-cursor");
+        siteCursor.classList.remove("is-visible", "is-pressed");
+
+        if (state.rafId !== null) {
+            window.cancelAnimationFrame(state.rafId);
+            state.rafId = null;
+        }
+    }
+
+    function updateCursorTarget(target) {
+        const profile = resolveCursorProfile(target);
+        setCursorProfile(profile.mode, profile.label);
+    }
+
+    window.addEventListener(
+        "pointermove",
+        (event) => {
+            if (event.pointerType && event.pointerType !== "mouse") {
+                hideCursor();
+                return;
+            }
+
+            state.targetX = event.clientX;
+            state.targetY = event.clientY;
+
+            if (!state.visible) {
+                state.currentX = event.clientX;
+                state.currentY = event.clientY;
+                siteCursor.style.transform = `translate3d(${state.currentX}px, ${state.currentY}px, 0)`;
+            }
+
+            showCursor();
+            updateCursorTarget(event.target);
+            requestCursorRender();
+        },
+        { passive: true },
+    );
+
+    window.addEventListener("pointerdown", (event) => {
+        if (event.pointerType && event.pointerType !== "mouse") {
+            return;
+        }
+
+        showCursor();
+        updateCursorTarget(event.target);
+        siteCursor.classList.add("is-pressed");
+    });
+
+    window.addEventListener("pointerup", (event) => {
+        if (event.pointerType && event.pointerType !== "mouse") {
+            return;
+        }
+
+        updateCursorTarget(event.target);
+        siteCursor.classList.remove("is-pressed");
+    });
+
+    window.addEventListener("pointercancel", () => {
+        siteCursor.classList.remove("is-pressed");
+    });
+
+    window.addEventListener("mouseout", (event) => {
+        if (event.relatedTarget) {
+            return;
+        }
+
+        hideCursor();
+    });
+
+    window.addEventListener("blur", hideCursor);
+    document.addEventListener("visibilitychange", () => {
+        if (document.hidden) {
+            hideCursor();
+        }
+    });
+}
 
 function updateClock() {
     if (!clockElement) {
@@ -739,12 +1084,19 @@ function setupHeroAtmosphereTrail() {
             );
             const shiftX = x * depth;
             const shiftY = y * depth;
-            const shiftRotation = (x * depth * 0.045 - y * depth * 0.02).toFixed(
-                2,
-            );
+            const shiftRotation = (
+                x * depth * 0.045 -
+                y * depth * 0.02
+            ).toFixed(2);
 
-            orbit.style.setProperty("--orbit-shift-x", `${shiftX.toFixed(2)}px`);
-            orbit.style.setProperty("--orbit-shift-y", `${shiftY.toFixed(2)}px`);
+            orbit.style.setProperty(
+                "--orbit-shift-x",
+                `${shiftX.toFixed(2)}px`,
+            );
+            orbit.style.setProperty(
+                "--orbit-shift-y",
+                `${shiftY.toFixed(2)}px`,
+            );
             orbit.style.setProperty("--orbit-shift-r", `${shiftRotation}deg`);
         });
     }
@@ -899,11 +1251,7 @@ function setupStackTransition() {
 
         panelState.segments.forEach((segment, index) => {
             const fullText = panelState.segmentTexts[index];
-            const shownLength = clamp(
-                remainingCharacters,
-                0,
-                fullText.length,
-            );
+            const shownLength = clamp(remainingCharacters, 0, fullText.length);
 
             segment.textContent = fullText.slice(0, shownLength);
             remainingCharacters -= shownLength;
@@ -999,10 +1347,7 @@ function setupStackTransition() {
             renderSegments(panelState, textProgress);
             renderIndex(panelState, entranceProgress);
             panelState.message.classList.toggle("is-visible", textProgress > 0);
-            panelState.editor.classList.toggle(
-                "is-active",
-                textProgress > 0,
-            );
+            panelState.editor.classList.toggle("is-active", textProgress > 0);
             panelState.editor.classList.toggle(
                 "is-complete",
                 textProgress >= 1,
@@ -1308,7 +1653,8 @@ function setupFeaturedCardStack() {
         resetCards();
 
         const stickyTop =
-            Number.parseFloat(window.getComputedStyle(featuredCards[0]).top) || 0;
+            Number.parseFloat(window.getComputedStyle(featuredCards[0]).top) ||
+            0;
         const handoffDistance = Math.max(window.innerHeight * 0.48, 1);
 
         for (let index = 0; index < featuredCards.length - 1; index += 1) {
@@ -1430,7 +1776,8 @@ function setupFooterPhotoGallery() {
             const boundsRect = dragBoundsElement.getBoundingClientRect();
             const rect = element.getBoundingClientRect();
             const padding = 8;
-            const minX = state.offsetX + (boundsRect.left + padding - rect.left);
+            const minX =
+                state.offsetX + (boundsRect.left + padding - rect.left);
             const maxX =
                 state.offsetX + (boundsRect.right - padding - rect.right);
             const minY = state.offsetY + (boundsRect.top + padding - rect.top);
@@ -1572,6 +1919,8 @@ function setupFooterPhotoGallery() {
 }
 
 updateClock();
+setupPageTransitions();
+setupSiteCursor();
 setupAutoHidingHeader();
 setupDraggableWordmarks();
 setupHeroSpotlight();

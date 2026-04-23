@@ -8,6 +8,28 @@
             content="Jefferson selected projects page with a featured placeholder project layout."
         />
 
+        <script>
+            (() => {
+                try {
+                    if (
+                        window.sessionStorage.getItem(
+                            "jeffersonPortfolioPageTransition",
+                        ) === "true"
+                    ) {
+                        document.documentElement.classList.add(
+                            "is-page-transition-entering",
+                        );
+
+                        window.sessionStorage.removeItem(
+                            "jeffersonPortfolioPageTransition",
+                        );
+                    }
+                } catch (error) {
+                    // Keep transitions optional if session storage is unavailable.
+                }
+            })();
+        </script>
+
         <link rel="icon" type="image/x-icon" href="../Assets/faviconDark.jpg" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,6 +43,16 @@
         <title>Jefferson | Work</title>
     </head>
     <body id="top">
+        <div class="page-transition-shell" aria-hidden="true">
+            <span
+                class="page-transition-panel page-transition-panel-top"
+            ></span>
+            <span
+                class="page-transition-panel page-transition-panel-bottom"
+            ></span>
+            <span class="page-transition-line"></span>
+        </div>
+
         <div class="page-shell">
             <header class="site-header">
                 <a class="brand" href="../index.html#hero">JEFFERSON</a>
@@ -56,8 +88,7 @@
 
                                     <div class="work-project-body">
                                         <p class="work-project-meta">
-                                            Solo Backend & Frontend Developer /
-                                            2025
+                                            Backend & Frontend Developer / 2025
                                         </p>
 
                                         <h2 class="work-project-title">
@@ -114,7 +145,10 @@
                                         decoding="async"
                                     />
 
-                                    <a class="work-project-arrow" href="#top">
+                                    <a
+                                        class="work-project-arrow"
+                                        href="MahWorksNibbah/TheSession.html"
+                                    >
                                         <span aria-hidden="true">&#8599;</span>
                                     </a>
                                 </div>
@@ -122,7 +156,7 @@
 
                             <article class="work-project-card">
                                 <div class="work-project-copy">
-                                    <p class="work-project-index">01</p>
+                                    <p class="work-project-index">02</p>
 
                                     <div class="work-project-body">
                                         <p class="work-project-meta">
@@ -183,7 +217,10 @@
                                         decoding="async"
                                     />
 
-                                    <a class="work-project-arrow" href="#top">
+                                    <a
+                                        class="work-project-arrow"
+                                        href="MahWorksNibbah/CEITThesisHub.html"
+                                    >
                                         <span aria-hidden="true">&#8599;</span>
                                     </a>
                                 </div>
@@ -254,7 +291,10 @@
                                         decoding="async"
                                     />
 
-                                    <a class="work-project-arrow" href="#top">
+                                    <a
+                                        class="work-project-arrow"
+                                        href="MahWorksNibbah/HannahsCreations.html"
+                                    >
                                         <span aria-hidden="true">&#8599;</span>
                                     </a>
                                 </div>
@@ -325,7 +365,10 @@
                                         decoding="async"
                                     />
 
-                                    <a class="work-project-arrow" href="#top">
+                                    <a
+                                        class="work-project-arrow"
+                                        href="MahWorksNibbah/WildClash.html"
+                                    >
                                         <span aria-hidden="true">&#8599;</span>
                                     </a>
                                 </div>
@@ -333,7 +376,7 @@
 
                             <article class="work-project-card">
                                 <div class="work-project-copy">
-                                    <p class="work-project-index">01</p>
+                                    <p class="work-project-index">05</p>
 
                                     <div class="work-project-body">
                                         <p class="work-project-meta">

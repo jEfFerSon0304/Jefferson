@@ -8,6 +8,28 @@
             content="Jefferson full profile page with background, focus, and working approach."
         />
 
+        <script>
+            (() => {
+                try {
+                    if (
+                        window.sessionStorage.getItem(
+                            "jeffersonPortfolioPageTransition",
+                        ) === "true"
+                    ) {
+                        document.documentElement.classList.add(
+                            "is-page-transition-entering",
+                        );
+
+                        window.sessionStorage.removeItem(
+                            "jeffersonPortfolioPageTransition",
+                        );
+                    }
+                } catch (error) {
+                    // Keep transitions optional if session storage is unavailable.
+                }
+            })();
+        </script>
+
         <link rel="icon" type="image/x-icon" href="../Assets/faviconDark.jpg" />
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -21,6 +43,14 @@
         <title>Jefferson | About</title>
     </head>
     <body id="top">
+        <div class="page-transition-shell" aria-hidden="true">
+            <span class="page-transition-panel page-transition-panel-top"></span>
+            <span
+                class="page-transition-panel page-transition-panel-bottom"
+            ></span>
+            <span class="page-transition-line"></span>
+        </div>
+
         <div class="page-shell">
             <header class="site-header">
                 <a class="brand" href="../index.html#hero">JEFFERSON</a>
@@ -153,7 +183,7 @@
 
                         <div class="education-badge">
                             <img src="../Assets/rdjesLogo.jpg" alt="" />
-                            Roberto D. Jesena Elementary School
+                            Roberto De Jesus Elementary School
                         </div>
                     </div>
 
