@@ -2835,10 +2835,10 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     max-width: min(100%, 48rem);
     margin-top: 0;
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.9rem;
+    border-radius: 0.5rem;
     overflow: hidden;
-    background: rgba(7, 7, 7, 0.38);
-    backdrop-filter: blur(12px);
+    background: rgba(7, 7, 7, 0.205);
+    /* backdrop-filter: blur(12px); */
 }
 
 .case-study-hero-summary-card {
@@ -3311,6 +3311,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 
 .case-study-task-card {
     display: grid;
+    justify-items: center;
     align-content: start;
     gap: 0.95rem;
     min-height: 17.5rem;
@@ -3331,6 +3332,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 
 .case-study-task-card-label {
     margin: 0;
+    text-align: center;
     font-size: 0.78rem;
     font-weight: 700;
     letter-spacing: 0.16em;
@@ -3339,16 +3341,31 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 }
 
 .case-study-task-card-icon {
+    justify-self: center;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: fit-content;
-    font-size: 2rem;
-    line-height: 1;
+    width: 2.9rem;
+    height: 2.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.78);
+    background: rgba(255, 255, 255, 0.035);
+}
+
+.case-study-task-card-icon svg {
+    width: 1.25rem;
+    height: 1.25rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
 .case-study-task-card-title {
     margin: 0;
+    text-align: center;
     font-size: clamp(1.35rem, 1.8vw, 2rem);
     font-weight: 600;
     line-height: 1.15;
@@ -3358,13 +3375,13 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 
 .case-study-task-card-copy {
     margin: 0;
+    text-align: center;
     font-size: 0.98rem;
     line-height: 1.58;
     color: rgba(255, 255, 255, 0.68);
 }
 
 .case-study-task-card-finale {
-    place-items: center;
     align-content: center;
     text-align: center;
 }
@@ -3402,7 +3419,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 }
 
 .case-study-zigzag-header .case-study-zigzag-title {
-    max-width: 14ch;
+    max-width: 100%;
 }
 
 .case-study-zigzag-header .case-study-zigzag-text {
@@ -3581,6 +3598,10 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 
 .case-study-next-project-link {
     --case-study-next-project-image: url("../Assets/ProjectImages/TheSession/TheSession.png");
+    --next-project-accent: 191 78 72;
+    --next-project-accent-soft: 191 78 72 / 0.22;
+    --next-project-accent-muted: 221 132 124 / 0.7;
+    --next-project-heading: #f5e6e3;
     position: relative;
     display: grid;
     align-items: end;
@@ -3594,6 +3615,11 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     position: absolute;
     inset: 0;
     background:
+        radial-gradient(
+            circle at 82% 18%,
+            rgb(var(--next-project-accent) / 0.22),
+            transparent 28%
+        ),
         linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.62)),
         linear-gradient(90deg, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.22)),
         var(--case-study-next-project-image) center / cover no-repeat;
@@ -3608,7 +3634,11 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     position: absolute;
     inset: 0;
     background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.04), transparent 28%),
+        linear-gradient(
+            180deg,
+            rgb(var(--next-project-accent) / 0.1),
+            transparent 30%
+        ),
         linear-gradient(0deg, rgba(0, 0, 0, 0.84), rgba(0, 0, 0, 0.06) 58%);
     pointer-events: none;
 }
@@ -3629,7 +3659,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.52);
+    color: rgb(var(--next-project-accent-muted));
 }
 
 .case-study-next-project-title {
@@ -3639,7 +3669,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     font-weight: 700;
     line-height: 0.95;
     letter-spacing: -0.06em;
-    color: #f4f4f4;
+    color: var(--next-project-heading);
 }
 
 .case-study-next-project-copy {
@@ -3658,14 +3688,14 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     min-height: 2.8rem;
     margin-top: 0.35rem;
     padding: 0.8rem 1.15rem;
-    border: 1px solid rgba(255, 255, 255, 0.16);
+    border: 1px solid rgb(var(--next-project-accent-soft));
     border-radius: 999px;
     font-size: 0.76rem;
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.88);
-    background: rgba(255, 255, 255, 0.04);
+    color: rgb(var(--next-project-accent-muted));
+    background: rgb(var(--next-project-accent) / 0.08);
     transition:
         border-color 220ms ease,
         background 220ms ease,
@@ -3867,14 +3897,168 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 
 .case-study-next-project-link-ceit {
     --case-study-next-project-image: url("../Assets/ProjectImages/PLVCeitThesisHub/PLVThesisCatalogSystem.png");
+    --next-project-accent: 128 173 230;
+    --next-project-accent-soft: 128 173 230 / 0.22;
+    --next-project-accent-muted: 172 205 247 / 0.74;
+    --next-project-heading: #edf5ff;
+}
+
+.case-study-next-project-link-thesession {
+    --case-study-next-project-image: url("../Assets/ProjectImages/TheSession/TheSession.png");
+    --next-project-accent: 191 78 72;
+    --next-project-accent-soft: 191 78 72 / 0.22;
+    --next-project-accent-muted: 221 132 124 / 0.74;
+    --next-project-heading: #f5e6e3;
 }
 
 .case-study-next-project-link-hannah {
     --case-study-next-project-image: url("../Assets/ProjectImages/HannahsCreations/HannahsCreations.png");
+    --next-project-accent: 184 125 82;
+    --next-project-accent-soft: 232 186 147 / 0.24;
+    --next-project-accent-muted: 232 186 147 / 0.76;
+    --next-project-heading: #f4e7dc;
 }
 
 .case-study-next-project-link-wildclash {
     --case-study-next-project-image: url("../Assets/ProjectImages/WildClash/WildClash.png");
+    --next-project-accent: 143 171 116;
+    --next-project-accent-soft: 143 171 116 / 0.24;
+    --next-project-accent-muted: 177 199 153 / 0.74;
+    --next-project-heading: #edf4e7;
+}
+
+.case-study-theme {
+    --project-accent: 151 196 255;
+    --project-accent-soft: 151 196 255 / 0.16;
+    --project-accent-muted: 151 196 255 / 0.58;
+    --project-heading: #eef5ff;
+    --project-surface: 8 12 18;
+}
+
+.case-study-theme-ceit {
+    --project-accent: 128 173 230;
+    --project-accent-soft: 128 173 230 / 0.16;
+    --project-accent-muted: 128 173 230 / 0.62;
+    --project-heading: #edf5ff;
+    --project-surface: 6 11 20;
+}
+
+.case-study-theme-thesession {
+    --project-accent: 191 78 72;
+    --project-accent-soft: 191 78 72 / 0.17;
+    --project-accent-muted: 221 132 124 / 0.62;
+    --project-heading: #f5e6e3;
+    --project-surface: 18 8 8;
+}
+
+.case-study-theme-wildclash {
+    --project-accent: 143 171 116;
+    --project-accent-soft: 143 171 116 / 0.18;
+    --project-accent-muted: 177 199 153 / 0.62;
+    --project-heading: #edf4e7;
+    --project-surface: 10 15 8;
+}
+
+.case-study-theme .the-overview-copy strong,
+.case-study-theme .case-study-story-intro,
+.case-study-theme .case-study-gallery-title,
+.case-study-theme .case-study-feature-text,
+.case-study-theme .case-study-zigzag-title,
+.case-study-theme .case-study-learnings-title,
+.case-study-theme .case-study-task-grid-title {
+    color: var(--project-heading);
+}
+
+.case-study-theme .case-study-story-bullet,
+.case-study-theme .case-study-story-next .case-study-story-bullet {
+    background: rgb(var(--project-accent));
+    box-shadow: 0 0 22px rgb(var(--project-accent) / 0.28);
+}
+
+.case-study-theme .case-study-story-section-label,
+.case-study-theme .case-study-story-details-label,
+.case-study-theme .case-study-gallery-label,
+.case-study-theme .case-study-feature-label,
+.case-study-theme .case-study-shot-label,
+.case-study-theme .case-study-task-card-label,
+.case-study-theme .case-study-zigzag-label,
+.case-study-theme .case-study-learnings-label,
+.case-study-theme .case-study-next-project-label,
+.case-study-theme .case-study-section-label {
+    color: rgb(var(--project-accent-muted));
+}
+
+.case-study-theme .case-study-story-details-table,
+.case-study-theme .case-study-story-detail-row,
+.case-study-theme .case-study-story-scope-list,
+.case-study-theme .case-study-story-scope-item,
+.case-study-theme .case-study-learnings-item {
+    border-color: rgb(var(--project-accent-soft));
+}
+
+.case-study-theme .case-study-gallery-media,
+.case-study-theme .case-study-feature-media,
+.case-study-theme .case-study-zigzag-media,
+.case-study-theme .case-study-shot-card {
+    border-color: rgb(var(--project-accent-soft));
+    background:
+        linear-gradient(180deg, rgb(var(--project-accent) / 0.04), transparent),
+        rgb(var(--project-surface) / 0.94);
+}
+
+.case-study-theme .case-study-task-card,
+.case-study-theme .case-study-content-card,
+.case-study-theme .case-study-detail-card {
+    border-color: rgb(var(--project-accent-soft));
+    background:
+        radial-gradient(
+            circle at top,
+            rgb(var(--project-accent) / 0.08),
+            transparent 46%
+        ),
+        linear-gradient(
+            180deg,
+            rgb(var(--project-surface) / 0.94),
+            rgba(10, 10, 10, 1)
+        );
+}
+
+.case-study-theme .case-study-task-card-icon,
+.case-study-theme .case-study-next-project-cta {
+    border-color: rgb(var(--project-accent-soft));
+    color: rgb(var(--project-accent-muted));
+    background: rgb(var(--project-accent) / 0.055);
+}
+
+.case-study-theme .case-study-learnings-index,
+.case-study-theme .case-study-story-scope-index,
+.case-study-theme .case-study-detail-label {
+    color: rgb(var(--project-accent-muted));
+}
+
+.case-study-theme .case-study-next-project-link .case-study-next-project-label {
+    color: rgb(var(--next-project-accent-muted));
+}
+
+.case-study-theme .case-study-next-project-link .case-study-next-project-title {
+    color: var(--next-project-heading);
+}
+
+.case-study-theme .case-study-next-project-link .case-study-next-project-cta {
+    border-color: rgb(var(--next-project-accent-soft));
+    color: rgb(var(--next-project-accent-muted));
+    background: rgb(var(--next-project-accent) / 0.08);
+}
+
+.case-study-theme
+    .case-study-next-project-link:hover
+    .case-study-next-project-cta,
+.case-study-theme
+    .case-study-next-project-link:focus-visible
+    .case-study-next-project-cta {
+    border-color: rgb(var(--next-project-accent) / 0.48);
+    background: rgb(var(--next-project-accent) / 0.14);
+    color: var(--next-project-heading);
 }
 
 .case-study-feature-image,
