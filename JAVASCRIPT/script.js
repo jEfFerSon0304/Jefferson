@@ -850,6 +850,7 @@ function setupAutoHidingHeader() {
         return;
     }
 
+    const pinnedHeaderQuery = window.matchMedia("(max-width: 960px)");
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
@@ -859,6 +860,10 @@ function setupAutoHidingHeader() {
         return;
     }
 
+    if (pinnedHeaderQuery.matches) {
+        siteHeader.classList.remove("is-hidden");
+    }
+
     let lastScrollY = window.scrollY;
     let ticking = false;
     let hidePrimed = false;
@@ -866,6 +871,12 @@ function setupAutoHidingHeader() {
     const secondScrollDistance = 96;
 
     function updateHeaderState() {
+        if (pinnedHeaderQuery.matches) {
+            siteHeader.classList.remove("is-hidden");
+            ticking = false;
+            return;
+        }
+
         const currentScrollY = window.scrollY;
         const scrollDelta = currentScrollY - lastScrollY;
 
@@ -903,6 +914,10 @@ function setupAutoHidingHeader() {
         },
         { passive: true },
     );
+
+    pinnedHeaderQuery.addEventListener("change", () => {
+        siteHeader.classList.remove("is-hidden");
+    });
 }
 
 function setupHeroDescriptionTypewriter() {

@@ -2304,17 +2304,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 }
 
 .featured-link::after {
-    content: "->";
-    color: rgba(255, 255, 255, 0.56);
-    transition:
-        transform 180ms ease,
-        color 180ms ease;
-}
-
-.featured-link:hover::after,
-.featured-link:focus-visible::after {
-    transform: translateX(0.18rem);
-    color: #ffffff;
+    content: none;
 }
 
 .featured-media {
@@ -5216,6 +5206,8 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .core-foundations-shell {
+        width: 100%;
+        margin-inline: 0;
         padding-inline: 0;
     }
 
@@ -5297,10 +5289,16 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .site-footer-links {
-        grid-auto-flow: column;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
         align-items: center;
         gap: 1.2rem;
+        width: min(100%, 28rem);
         padding-bottom: 0;
+    }
+
+    .site-footer-links a {
+        justify-content: space-between;
+        width: 100%;
     }
 
     .footer-photo-gallery {
@@ -5336,33 +5334,65 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 }
 
 @media (max-width: 640px) {
+    :root {
+        --shell-side-space: 1rem;
+    }
+
+    html,
+    body {
+        max-width: 100%;
+        overflow-x: hidden;
+    }
+
     .page-shell {
+        width: 100%;
+        max-width: 100vw;
         padding-inline: 1rem;
+        transform: none !important;
+        will-change: auto;
+    }
+
+    html.is-page-transition-entering .page-shell,
+    html.is-page-transition-leaving .page-shell {
+        animation: none;
+        transform: none !important;
     }
 
     .site-header {
+        position: fixed;
+        left: 1rem;
+        right: 1rem;
+        top: 1rem;
+        z-index: 30;
         gap: 0.75rem;
         font-size: 0.68rem;
     }
 
-    .home-page .site-header {
+    .site-header.is-hidden {
+        transform: none;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .site-header {
         grid-template-columns: 1fr auto;
         justify-items: stretch;
         align-items: center;
     }
 
-    .home-page .brand {
+    .brand {
         justify-self: start;
     }
 
-    .home-page .header-clock {
+    .header-clock {
         display: none;
     }
 
-    .home-page .nav-toggle {
+    .nav-toggle {
         justify-self: end;
         display: inline-grid;
-        place-items: center;
+        place-content: center;
+        justify-items: center;
         gap: 0.22rem;
         width: 2.55rem;
         height: 2.35rem;
@@ -5373,7 +5403,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
         backdrop-filter: blur(14px);
     }
 
-    .home-page .nav-toggle-line {
+    .nav-toggle-line {
         display: block;
         width: 1.05rem;
         height: 1px;
@@ -5384,15 +5414,19 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
             opacity 180ms ease;
     }
 
-    .home-page .nav-toggle[aria-expanded="true"] .nav-toggle-line:first-child {
-        transform: translateY(0.115rem) rotate(45deg);
+    .nav-toggle[aria-expanded="true"] .nav-toggle-line:first-child {
+        transform: translateY(0.28rem) rotate(45deg);
     }
 
-    .home-page .nav-toggle[aria-expanded="true"] .nav-toggle-line:last-child {
-        transform: translateY(-0.115rem) rotate(-45deg);
+    .nav-toggle[aria-expanded="true"] .nav-toggle-line:nth-child(2) {
+        opacity: 0;
     }
 
-    .home-page .site-nav {
+    .nav-toggle[aria-expanded="true"] .nav-toggle-line:last-child {
+        transform: translateY(-0.28rem) rotate(-45deg);
+    }
+
+    .site-nav {
         position: absolute;
         top: calc(100% + 0.65rem);
         right: 0;
@@ -5415,14 +5449,14 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
             visibility 180ms ease;
     }
 
-    .home-page .site-nav.is-open {
+    .site-nav.is-open {
         opacity: 1;
         visibility: visible;
         transform: translateY(0);
         pointer-events: auto;
     }
 
-    .home-page .site-nav a {
+    .site-nav a {
         display: flex;
         justify-content: space-between;
         padding: 0.82rem 0.9rem;
@@ -5789,11 +5823,25 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .about-page-gallery {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        width: min(100%, 18rem);
-        margin-inline: auto;
-        gap: 0.7rem;
-        padding-top: 0.9rem;
+        display: grid;
+        grid-auto-flow: column;
+        grid-auto-columns: minmax(13rem, 72vw);
+        grid-template-columns: none;
+        width: calc(100% + 2rem);
+        margin-inline: -1rem;
+        gap: 0.8rem;
+        padding: 0.9rem 1rem 0.35rem;
+        overflow-x: auto;
+        overflow-y: hidden;
+        overscroll-behavior-inline: contain;
+        scroll-padding-inline: 1rem;
+        scroll-snap-type: inline mandatory;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .about-page-gallery::-webkit-scrollbar {
+        display: none;
     }
 
     .about-page-photo-one,
@@ -5803,33 +5851,27 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
         aspect-ratio: 3 / 4;
         width: 100%;
         justify-self: stretch;
+        grid-column: auto;
+        grid-row: auto;
+        margin: 0;
+        transform: none;
+        scroll-snap-align: start;
     }
 
     .about-page-photo-one {
-        grid-column: 2;
-        grid-row: 1;
-        margin-bottom: -1.8rem;
+        z-index: 1;
     }
 
     .about-page-photo-two {
-        grid-column: 1;
-        grid-row: 2;
-        margin-top: -30%;
-        transform: translateX(18%);
         z-index: 4;
     }
 
     .about-page-photo-three {
-        grid-column: 2;
-        grid-row: 2;
-        margin-top: 14%;
         z-index: 2;
     }
 
     .about-page-photo-four {
-        grid-column: 1;
-        grid-row: 4;
-        margin-top: -0.95rem;
+        z-index: 4;
     }
 
     .education-bagdes {
@@ -5852,7 +5894,18 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .core-foundations-section {
+        width: 100%;
+
+        max-width: 100%;
+        overflow: hidden;
         padding-top: 3.2rem;
+    }
+
+    .core-foundations-shell {
+        width: 100%;
+        max-width: 100%;
+        margin-inline: 0;
+        padding-inline: 1rem;
     }
 
     .core-foundations-header {
@@ -5862,14 +5915,21 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     .core-foundations-title {
         font-size: clamp(2rem, 11vw, 3.2rem);
         gap: 0.3rem;
+        letter-spacing: 0;
+        overflow-wrap: anywhere;
     }
 
     .core-foundations-grid {
         row-gap: 2rem;
+        width: 100%;
+        max-width: 100%;
     }
 
     .core-foundations-item {
-        gap: 0.75rem;
+        min-width: 0;
+        grid-template-columns: auto minmax(0, 1fr);
+        column-gap: 0.85rem;
+        row-gap: 0.75rem;
     }
 
     .core-foundations-index {
@@ -5881,6 +5941,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .core-foundations-copy {
+        grid-column: 2;
         font-size: 0.95rem;
     }
 
@@ -5897,22 +5958,43 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .about-toolkit-grid {
-        grid-template-columns: 1fr;
-        gap: 0.9rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
     }
 
     .about-toolkit-card {
-        min-height: 10.6rem;
-        gap: 0.7rem;
-        padding: 1.2rem;
+        min-height: 8.8rem;
+        gap: 0.48rem;
+        padding: 0.82rem 0.62rem;
+        border-radius: 0.75rem;
+    }
+
+    .about-toolkit-icon {
+        width: 2.25rem;
+        height: 2.25rem;
+    }
+
+    .about-toolkit-icon i,
+    .about-toolkit-icon img {
+        width: 1.55rem;
+        height: 1.55rem;
+    }
+
+    .about-toolkit-icon i {
+        font-size: 1.55rem;
     }
 
     .about-toolkit-card-title {
-        font-size: clamp(1.15rem, 7vw, 1.5rem);
+        font-size: clamp(0.9rem, 4.8vw, 1.12rem);
+        line-height: 1.08;
+        overflow-wrap: anywhere;
     }
 
     .about-toolkit-card-copy {
-        font-size: 0.88rem;
+        max-width: 8rem;
+        font-size: 0.68rem;
+        line-height: 1.35;
+        letter-spacing: 0.04em;
     }
 
     .toolkit-title {
@@ -5948,9 +6030,12 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .featured-title {
-        position: fixed;
-
         font-size: clamp(1.6rem, 10vw, 2.8rem);
+    }
+
+    .featured-header {
+        position: static;
+        margin-bottom: 1rem;
     }
 
     .featured-copy {
@@ -6081,6 +6166,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .site-footer-links {
+        grid-template-columns: 1fr;
         width: 100%;
         gap: 0.72rem;
         padding-bottom: 0;
