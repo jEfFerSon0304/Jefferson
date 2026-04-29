@@ -3,7 +3,974 @@
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>CEIT Thesis Hub | Jeffeson</title>
+        <meta
+            name="description"
+            content="CEIT Thesis Hub case study page for Jefferson's portfolio."
+        />
+
+        <script>
+            (() => {
+                try {
+                    if (
+                        window.sessionStorage.getItem(
+                            "jeffersonPortfolioPageTransition",
+                        ) === "true"
+                    ) {
+                        document.documentElement.classList.add(
+                            "is-page-transition-entering",
+                        );
+
+                        window.sessionStorage.removeItem(
+                            "jeffersonPortfolioPageTransition",
+                        );
+                    }
+                } catch (error) {
+                    // Keep transitions optional if session storage is unavailable.
+                }
+            })();
+        </script>
+
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="../../Assets/faviconDark.jpg"
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="../../CSS/style.css" />
+
+        <title>CEIT Thesis Hub | Jefferson</title>
     </head>
-    <body></body>
+    <body id="top">
+        <div class="page-transition-shell" aria-hidden="true">
+            <span
+                class="page-transition-panel page-transition-panel-top"
+            ></span>
+            <span
+                class="page-transition-panel page-transition-panel-bottom"
+            ></span>
+            <span class="page-transition-line"></span>
+        </div>
+
+        <div class="page-shell">
+            <header class="site-header case-study-site-header">
+                <a class="brand" href="../../index.html#hero">JEFFERSON</a>
+                <p class="header-clock" id="clock">Manila, PH - --:--:-- PHT</p>
+                <nav class="site-nav" aria-label="Primary">
+                    <a href="../work.html">WORK</a>
+                    <a href="../about.html">ABOUT</a>
+                </nav>
+            </header>
+
+            <main class="case-study-main">
+                <section class="case-study-hero case-study-hero-ceit">
+                    <div
+                        class="case-study-hero-media-layer"
+                        aria-hidden="true"
+                    ></div>
+
+                    <div class="case-study-hero-shell">
+                        <div class="case-study-hero-stage">
+                            <div class="case-study-hero-copy">
+                                <p class="case-study-hero-kicker">
+                                    Web-Based Thesis Catalog / PLV CEIT Library
+                                </p>
+                                <h1 class="case-study-hero-title">
+                                    CEIT Thesis Hub
+                                    <span>Digital Thesis Catalog</span>
+                                </h1>
+                            </div>
+
+                            <p class="case-study-hero-index" aria-hidden="true">
+                                02
+                            </p>
+                        </div>
+
+                        <div class="case-study-hero-summary">
+                            <article class="case-study-hero-summary-card">
+                                <span class="case-study-hero-summary-label">
+                                    Project
+                                </span>
+                                <p class="case-study-hero-summary-value">
+                                    CEIT Thesis Hub
+                                </p>
+                            </article>
+
+                            <article class="case-study-hero-summary-card">
+                                <span class="case-study-hero-summary-label">
+                                    Year
+                                </span>
+                                <p class="case-study-hero-summary-value">
+                                    2025
+                                </p>
+                            </article>
+
+                            <article class="case-study-hero-summary-card">
+                                <span class="case-study-hero-summary-label">
+                                    Role
+                                </span>
+                                <p class="case-study-hero-summary-value">
+                                    Frontend & Backend Developer
+                                </p>
+                            </article>
+
+                            <article class="case-study-hero-summary-card">
+                                <span class="case-study-hero-summary-label">
+                                    Focus
+                                </span>
+                                <p class="case-study-hero-summary-value">
+                                    Thesis Search / Archive Management
+                                </p>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="case-study-content-section">
+                    <div class="the-overview">
+                        <p class="the-overview-copy">
+                            <strong>CEIT Thesis Hub</strong> is a web-based
+                            digital thesis catalog built for the PLV CEIT
+                            Library. The goal was to make archived research
+                            easier to search, browse, and manage by turning
+                            scattered records into a clearer academic reference
+                            system for students, faculty, and administrators.
+                        </p>
+                    </div>
+                    <div
+                        class="case-study-content-shell case-study-story-shell"
+                    >
+                        <div class="case-study-story-flow">
+                            <section
+                                class="case-study-story-lead"
+                                aria-labelledby="ceit-introduction"
+                            >
+                                <div class="case-study-story-section-head">
+                                    <span
+                                        class="case-study-story-bullet"
+                                        aria-hidden="true"
+                                    ></span>
+                                    <p class="case-study-story-section-label">
+                                        Introduction
+                                    </p>
+                                </div>
+                                <h2
+                                    class="case-study-story-intro"
+                                    id="ceit-introduction"
+                                >
+                                    CEIT Thesis Hub was designed to give the
+                                    library a single digital place for
+                                    organizing thesis records. Instead of
+                                    depending on manual lookup and physical
+                                    browsing alone, the platform lets users
+                                    search by title, author, year, and keywords
+                                    while giving administrators a more
+                                    structured way to maintain the catalog.
+                                </h2>
+                            </section>
+
+                            <aside
+                                class="case-study-story-details"
+                                aria-label="Project details"
+                            >
+                                <p class="case-study-story-details-label">
+                                    Details
+                                </p>
+                                <div class="case-study-story-details-table">
+                                    <div class="case-study-story-detail-row">
+                                        <span
+                                            class="case-study-story-detail-label"
+                                        >
+                                            Project Name
+                                        </span>
+                                        <span
+                                            class="case-study-story-detail-value"
+                                        >
+                                            CEIT Thesis Hub
+                                        </span>
+                                    </div>
+
+                                    <div class="case-study-story-detail-row">
+                                        <span
+                                            class="case-study-story-detail-label"
+                                        >
+                                            Timeframe
+                                        </span>
+                                        <span
+                                            class="case-study-story-detail-value"
+                                        >
+                                            2025
+                                        </span>
+                                    </div>
+
+                                    <div class="case-study-story-detail-row">
+                                        <span
+                                            class="case-study-story-detail-label"
+                                        >
+                                            Type
+                                        </span>
+                                        <span
+                                            class="case-study-story-detail-value"
+                                        >
+                                            Web-Based Thesis Catalog
+                                        </span>
+                                    </div>
+
+                                    <div class="case-study-story-detail-row">
+                                        <span
+                                            class="case-study-story-detail-label"
+                                        >
+                                            Stack
+                                        </span>
+                                        <span
+                                            class="case-study-story-detail-value"
+                                        >
+                                            PHP / JavaScript / MySQL
+                                        </span>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="case-study-feature-section">
+                    <div class="case-study-feature-shell">
+                        <div class="case-study-feature-copy">
+                            <p class="case-study-feature-label">
+                                Featured Screen
+                            </p>
+                            <p class="case-study-feature-text">
+                                The main catalog screen was designed around
+                                clarity first. Thesis records are surfaced in a
+                                way that helps students discover relevant work
+                                faster, while still giving the library a more
+                                organized and maintainable archive.
+                            </p>
+                        </div>
+
+                        <figure class="case-study-feature-card">
+                            <div class="case-study-feature-media">
+                                <img
+                                    class="case-study-feature-image"
+                                    src="../../Assets/ProjectImages/PLVCeitThesisHub/Screenshot 2026-04-22 184334.png"
+                                    alt="CEIT Thesis Hub featured catalog screen"
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                        </figure>
+                    </div>
+                </section>
+
+                <section class="case-study-task-grid-section">
+                    <div class="case-study-shot-shell">
+                        <div class="case-study-shot-copy">
+                            <p class="case-study-shot-label">Core Modules</p>
+                            <p class="case-study-shot-text">
+                                The system was shaped around a few practical
+                                needs: help users discover research quickly,
+                                surface the right thesis details, and make
+                                archive management simpler for the people
+                                maintaining the collection.
+                            </p>
+                        </div>
+                    </div>
+                    <br /><br />
+                    <div class="case-study-task-grid-shell">
+                        <div class="case-study-task-grid">
+                            <article class="case-study-task-card">
+                                <p class="case-study-task-card-label">
+                                    Module 01
+                                </p>
+                                <span
+                                    class="case-study-task-card-icon"
+                                    aria-hidden="true"
+                                >
+                                    &#128269;
+                                </span>
+                                <h3 class="case-study-task-card-title">
+                                    Search thesis titles
+                                </h3>
+                                <p class="case-study-task-card-copy">
+                                    Let users quickly find research through
+                                    keywords instead of relying on manual shelf
+                                    browsing alone.
+                                </p>
+                            </article>
+
+                            <article class="case-study-task-card">
+                                <p class="case-study-task-card-label">
+                                    Module 02
+                                </p>
+                                <span
+                                    class="case-study-task-card-icon"
+                                    aria-hidden="true"
+                                >
+                                    &#128218;
+                                </span>
+                                <h3 class="case-study-task-card-title">
+                                    Browse by category
+                                </h3>
+                                <p class="case-study-task-card-copy">
+                                    Organize the archive by course, year, and
+                                    topic so the catalog feels easier to scan
+                                    and narrower to explore.
+                                </p>
+                            </article>
+
+                            <article class="case-study-task-card">
+                                <p class="case-study-task-card-label">
+                                    Module 03
+                                </p>
+                                <span
+                                    class="case-study-task-card-icon"
+                                    aria-hidden="true"
+                                >
+                                    &#128196;
+                                </span>
+                                <h3 class="case-study-task-card-title">
+                                    Open thesis details
+                                </h3>
+                                <p class="case-study-task-card-copy">
+                                    Surface metadata, authorship, and other key
+                                    information clearly before a user requests
+                                    or references the material.
+                                </p>
+                            </article>
+
+                            <article class="case-study-task-card">
+                                <p class="case-study-task-card-label">
+                                    Module 04
+                                </p>
+                                <span
+                                    class="case-study-task-card-icon"
+                                    aria-hidden="true"
+                                >
+                                    &#128451;
+                                </span>
+                                <h3 class="case-study-task-card-title">
+                                    Add new records
+                                </h3>
+                                <p class="case-study-task-card-copy">
+                                    Give administrators a structured way to
+                                    register incoming theses and keep the
+                                    archive growing cleanly.
+                                </p>
+                            </article>
+
+                            <article class="case-study-task-card">
+                                <p class="case-study-task-card-label">
+                                    Module 05
+                                </p>
+                                <span
+                                    class="case-study-task-card-icon"
+                                    aria-hidden="true"
+                                >
+                                    &#9998;
+                                </span>
+                                <h3 class="case-study-task-card-title">
+                                    Update archive entries
+                                </h3>
+                                <p class="case-study-task-card-copy">
+                                    Make it easier to correct metadata, refine
+                                    records, and keep the catalog accurate over
+                                    time.
+                                </p>
+                            </article>
+
+                            <article
+                                class="case-study-task-card case-study-task-card-finale"
+                            >
+                                <span
+                                    class="case-study-task-card-icon"
+                                    aria-hidden="true"
+                                >
+                                    &#127942;
+                                </span>
+                                <h3 class="case-study-task-card-title">
+                                    Maintain a reliable archive
+                                </h3>
+                                <p class="case-study-task-card-copy">
+                                    The end goal was a library tool that stays
+                                    useful daily for both academic discovery and
+                                    archive upkeep.
+                                </p>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="case-study-learnings-section">
+                    <div class="case-study-learnings-shell">
+                        <header class="case-study-learnings-header">
+                            <p class="case-study-learnings-label">
+                                Lessons Learned
+                            </p>
+                        </header>
+
+                        <div class="case-study-learnings-list">
+                            <article class="case-study-learnings-item">
+                                <span class="case-study-learnings-index">
+                                    01
+                                </span>
+                                <div class="case-study-learnings-content">
+                                    <h2 class="case-study-learnings-title">
+                                        Clear structure improves discoverability
+                                    </h2>
+                                    <p class="case-study-learnings-text">
+                                        Users move faster when the archive is
+                                        organized around the way they actually
+                                        search: by title, year, topic, and
+                                        familiar academic cues.
+                                    </p>
+                                </div>
+                            </article>
+
+                            <article class="case-study-learnings-item">
+                                <span class="case-study-learnings-index">
+                                    02
+                                </span>
+                                <div class="case-study-learnings-content">
+                                    <h2 class="case-study-learnings-title">
+                                        Metadata matters as much as visuals
+                                    </h2>
+                                    <p class="case-study-learnings-text">
+                                        A catalog is only useful when the
+                                        records are complete. Searchability
+                                        depends on consistent fields, clear
+                                        labeling, and dependable data entry.
+                                    </p>
+                                </div>
+                            </article>
+
+                            <article class="case-study-learnings-item">
+                                <span class="case-study-learnings-index">
+                                    03
+                                </span>
+                                <div class="case-study-learnings-content">
+                                    <h2 class="case-study-learnings-title">
+                                        Admin flows need the same care
+                                    </h2>
+                                    <p class="case-study-learnings-text">
+                                        The system is not just for viewers of
+                                        research. The people maintaining the
+                                        archive need clean workflows too, or the
+                                        catalog becomes harder to trust.
+                                    </p>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="case-study-zigzag-section">
+                    <div class="case-study-zigzag-shell">
+                        <article class="case-study-zigzag-row">
+                            <div class="case-study-zigzag-copy">
+                                <p class="case-study-zigzag-label">Screen 01</p>
+                                <h2 class="case-study-zigzag-title">
+                                    Make the archive easy to scan
+                                </h2>
+                                <p class="case-study-zigzag-text">
+                                    The first priority was readability. The
+                                    catalog needed to feel approachable to
+                                    students while still presenting enough
+                                    academic context to make search results
+                                    useful.
+                                </p>
+                            </div>
+
+                            <figure class="case-study-zigzag-media-card">
+                                <div class="case-study-zigzag-media">
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/PLVCeitThesisHub/PLVThesisCatalogSystem.png"
+                                        alt="CEIT Thesis Hub archive overview screen"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+                        </article>
+
+                        <article
+                            class="case-study-zigzag-row case-study-zigzag-row-reverse"
+                        >
+                            <figure class="case-study-zigzag-media-card">
+                                <div class="case-study-zigzag-media">
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/PLVCeitThesisHub/Screenshot 2026-04-22 185638.png"
+                                        alt="CEIT Thesis Hub thesis detail screen"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+
+                            <div class="case-study-zigzag-copy">
+                                <p class="case-study-zigzag-label">Screen 02</p>
+                                <h2 class="case-study-zigzag-title">
+                                    Surface thesis details clearly
+                                </h2>
+                                <p class="case-study-zigzag-text">
+                                    Once a user finds a relevant record, the
+                                    next job is clarity. This view helps them
+                                    understand what the thesis is, who authored
+                                    it, and why it belongs in their research
+                                    path.
+                                </p>
+                            </div>
+                        </article>
+
+                        <article class="case-study-zigzag-row">
+                            <div class="case-study-zigzag-copy">
+                                <p class="case-study-zigzag-label">Screen 03</p>
+                                <h2 class="case-study-zigzag-title">
+                                    Keep admin management straightforward
+                                </h2>
+                                <p class="case-study-zigzag-text">
+                                    The catalog becomes sustainable only when
+                                    adding and maintaining records is simple.
+                                    This part of the system focused on reducing
+                                    friction for the people updating the
+                                    library's collection.
+                                </p>
+                            </div>
+
+                            <figure class="case-study-zigzag-media-card">
+                                <div class="case-study-zigzag-media">
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/PLVCeitThesisHub/Screenshot 2026-04-22 185700.png"
+                                        alt="CEIT Thesis Hub admin management screen"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="case-study-next-project-section">
+                    <a
+                        class="case-study-next-project-link case-study-next-project-link-hannah"
+                        href="HannahsCreations.html"
+                    >
+                        <div
+                            class="case-study-next-project-media"
+                            aria-hidden="true"
+                        ></div>
+
+                        <div class="case-study-next-project-shell">
+                            <p class="case-study-next-project-label">
+                                Next Project
+                            </p>
+                            <h2 class="case-study-next-project-title">
+                                Hannah's Creations
+                            </h2>
+                            <p class="case-study-next-project-copy">
+                                Continue to the next case study and explore a
+                                creative platform built to showcase Filipino
+                                handmade works with a warmer, more craft-driven
+                                visual direction.
+                            </p>
+                            <span class="case-study-next-project-cta">
+                                Open Case Study
+                            </span>
+                        </div>
+                    </a>
+                </section>
+            </main>
+
+            <footer class="site-footer" id="contact">
+                <div class="site-footer-inner">
+                    <div class="site-footer-topline">
+                        <p class="site-footer-kicker">
+                            FOOTER / DRAGGABLE IMAGE STACK
+                        </p>
+                        <p class="site-footer-status">
+                            5 FRAMES / 1 SOURCE / CLICK TO OPEN
+                        </p>
+                    </div>
+
+                    <div class="site-footer-hero">
+                        <div class="site-footer-title-wrap">
+                            <p class="site-footer-caption">
+                                hehehehehehehehehehehe
+                            </p>
+
+                            <h2 class="site-footer-title">
+                                <span class="site-footer-title-solid">
+                                    JEFFERSON
+                                </span>
+                                <span class="site-footer-title-outline">
+                                    GARCIA
+                                </span>
+                            </h2>
+                        </div>
+
+                        <div class="site-footer-stage">
+                            <nav
+                                class="site-footer-links"
+                                aria-label="Footer links"
+                            >
+                                <a href="https://github.com/jEfFerSon0304">
+                                    Github
+                                    <span aria-hidden="true">&#8599;</span>
+                                </a>
+                                <a href="mailto:jefferson.garcia3435.com">
+                                    Contact
+                                    <span aria-hidden="true">&#8593;</span>
+                                </a>
+                                <a
+                                    href="https://www.instagram.com/j.garcia304/?hl=en"
+                                    target="_blank"
+                                >
+                                    Instagram
+                                    <span aria-hidden="true">&#8599;</span>
+                                </a>
+                            </nav>
+
+                            <div
+                                class="footer-photo-gallery"
+                                data-footer-gallery
+                            >
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/ImageFooter2.jpg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 1"
+                                    style="
+                                        --photo-left: 14%;
+                                        --photo-top: 11%;
+                                        --photo-width: clamp(
+                                            6.8rem,
+                                            10vw,
+                                            8.8rem
+                                        );
+                                        --photo-aspect: 0.92;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 1;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Image
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/ImageFooter2.jpg"
+                                        alt="Footer collage preview 1"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/ImageFooter4.jpg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 2"
+                                    style="
+                                        --photo-left: 28%;
+                                        --photo-top: 28%;
+                                        --photo-width: clamp(
+                                            7.6rem,
+                                            11.5vw,
+                                            10rem
+                                        );
+                                        --photo-aspect: 0.84;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 2;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Image
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/ImageFooter4.jpg"
+                                        alt="Footer collage preview 2"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/ImageFooter3.jpg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 3"
+                                    style="
+                                        --photo-left: 48%;
+                                        --photo-top: 2%;
+                                        --photo-width: clamp(
+                                            4.8rem,
+                                            7vw,
+                                            6.2rem
+                                        );
+                                        --photo-aspect: 1;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 3;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Image
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/ImageFooter3.jpg"
+                                        alt="Footer collage preview 3"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/ImageFooter5.jpg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 4"
+                                    style="
+                                        --photo-left: 60%;
+                                        --photo-top: 17%;
+                                        --photo-width: clamp(
+                                            8.8rem,
+                                            13.5vw,
+                                            11.2rem
+                                        );
+                                        --photo-aspect: 1.18;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 4;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Image
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/ImageFooter5.jpg"
+                                        alt="Footer collage preview 4"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/ImageFooter1.jpg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 5"
+                                    style="
+                                        --photo-left: 78%;
+                                        --photo-top: 46%;
+                                        --photo-width: clamp(6rem, 9vw, 8rem);
+                                        --photo-aspect: 0.88;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 5;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Image
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/ImageFooter1.jpg"
+                                        alt="Footer collage preview 5"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+                            </div>
+
+                            <a class="site-footer-side-rail" href="#top">
+                                <span class="site-footer-side-mark">
+                                    <span aria-hidden="true">&#8593;</span>
+                                </span>
+                                <span class="site-footer-side-label">
+                                    Top
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="site-footer-bottom">
+                        <span class="site-footer-copy">
+                            &copy; 2026 Jefferson. All rights reserved.
+                        </span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <script src="../../JAVASCRIPT/script.js"></script>
+    </body>
 </html>
+
