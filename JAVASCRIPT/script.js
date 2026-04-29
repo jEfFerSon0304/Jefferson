@@ -184,6 +184,49 @@ function setupPageTransitions() {
     });
 }
 
+function setupMobileNavigation() {
+    const navToggle = document.querySelector(".nav-toggle");
+    const siteNav = document.querySelector(".site-nav");
+
+    if (!navToggle || !siteNav) {
+        return;
+    }
+
+    const mobileQuery = window.matchMedia("(max-width: 640px)");
+
+    function setMenuState(isOpen) {
+        navToggle.setAttribute("aria-expanded", String(isOpen));
+        navToggle.setAttribute(
+            "aria-label",
+            isOpen ? "Close navigation" : "Open navigation",
+        );
+        siteNav.classList.toggle("is-open", isOpen);
+    }
+
+    navToggle.addEventListener("click", () => {
+        const isOpen = navToggle.getAttribute("aria-expanded") === "true";
+        setMenuState(!isOpen);
+    });
+
+    siteNav.addEventListener("click", (event) => {
+        if (event.target.closest("a")) {
+            setMenuState(false);
+        }
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+            setMenuState(false);
+        }
+    });
+
+    mobileQuery.addEventListener("change", (event) => {
+        if (!event.matches) {
+            setMenuState(false);
+        }
+    });
+}
+
 function setupSiteCursor() {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
@@ -1920,6 +1963,7 @@ function setupFooterPhotoGallery() {
 
 updateClock();
 setupPageTransitions();
+setupMobileNavigation();
 setupSiteCursor();
 setupAutoHidingHeader();
 setupDraggableWordmarks();
