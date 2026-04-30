@@ -457,6 +457,11 @@ function wait(duration) {
     });
 }
 
+function unlockIntroScrolling() {
+    document.body.classList.remove("is-intro-loading");
+    window.dispatchEvent(new CustomEvent("portfolio:intro-scroll-unlocked"));
+}
+
 function waitForWindowLoad() {
     if (document.readyState === "complete") {
         return Promise.resolve();
@@ -500,12 +505,12 @@ function playHeroWordmarkEntrance() {
 
 async function setupIntroLoader() {
     if (!introLoader || !introLoaderCount) {
-        document.body.classList.remove("is-intro-loading");
+        unlockIntroScrolling();
         return;
     }
 
     if (document.documentElement.classList.contains("has-seen-intro")) {
-        document.body.classList.remove("is-intro-loading");
+        unlockIntroScrolling();
         introLoader.setAttribute("hidden", "");
         return;
     }
@@ -541,7 +546,7 @@ async function setupIntroLoader() {
         await wait(120);
         introLoader.classList.add("is-opening");
         playHeroWordmarkEntrance();
-        document.body.classList.remove("is-intro-loading");
+        unlockIntroScrolling();
         await wait(40);
         introLoader.classList.add("is-hidden");
         introLoader.setAttribute("hidden", "");
@@ -562,7 +567,7 @@ async function setupIntroLoader() {
     await wait(520);
     introLoader.classList.add("is-opening");
     playHeroWordmarkEntrance();
-    document.body.classList.remove("is-intro-loading");
+    unlockIntroScrolling();
     await wait(900);
     introLoader.classList.add("is-hidden");
     await wait(340);
@@ -1484,26 +1489,27 @@ function setupStackTransition() {
         });
     }
 
+    function refreshStackLayout() {
+        syncStackHeight();
+        requestUpdate();
+    }
+
+    function refreshStackLayoutAfterPaint() {
+        window.requestAnimationFrame(refreshStackLayout);
+    }
+
     syncStackHeight();
     render();
     window.addEventListener("scroll", requestUpdate, { passive: true });
-    window.addEventListener("resize", () => {
-        syncStackHeight();
-        requestUpdate();
-    });
-    window.visualViewport?.addEventListener("resize", () => {
-        if (mobileStackMedia.matches) {
-            requestUpdate();
-            return;
-        }
-
-        syncStackHeight();
-        requestUpdate();
-    });
-    mobileStackMedia.addEventListener("change", () => {
-        syncStackHeight();
-        requestUpdate();
-    });
+    window.addEventListener("resize", refreshStackLayout);
+    window.addEventListener("load", refreshStackLayout, { once: true });
+    window.addEventListener(
+        "portfolio:intro-scroll-unlocked",
+        refreshStackLayoutAfterPaint,
+        { once: true },
+    );
+    window.visualViewport?.addEventListener("resize", refreshStackLayout);
+    mobileStackMedia.addEventListener("change", refreshStackLayout);
 }
 
 function setupFeaturedMediaParallax() {
