@@ -1750,7 +1750,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 .work-page-list {
     display: grid;
     width: min(100%, 82rem);
-    margin: 5rem auto 10rem;
+    margin: 2rem auto 10rem;
     gap: clamp(3rem, 4vw, 3.45rem);
 }
 
@@ -1759,7 +1759,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
     min-height: clamp(24rem, 36vw, 29rem);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.95rem;
+    border-radius: 0.45rem;
     overflow: hidden;
     background: linear-gradient(
         180deg,
@@ -5068,7 +5068,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .work-project-title {
-        max-width: 12ch;
+        max-width: 100%;
     }
 
     .case-study-hero-shell {
@@ -5153,12 +5153,22 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .about-page-gallery {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        width: min(100%, 22rem);
-        margin-inline: auto;
+        display: flex;
+        grid-template-columns: none;
+        width: calc(100% + (var(--shell-side-space) * 2));
+        margin-inline: calc(var(--shell-side-space) * -1);
         gap: 0.9rem;
-        padding-top: 1.4rem;
-        padding-bottom: 0;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        padding: 1.4rem var(--shell-side-space) 0.35rem;
+        scroll-padding-inline: var(--shell-side-space);
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .about-page-gallery::-webkit-scrollbar {
+        display: none;
     }
 
     .about-page-photo-one,
@@ -5167,38 +5177,35 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     .about-page-photo-four {
         grid-column: auto;
         grid-row: auto;
-        width: 100%;
-        margin-top: 0;
-        margin-bottom: 0;
+        flex: 0 0 min(52vw, 18rem);
+        width: auto;
+        margin: 0;
         align-self: auto;
         aspect-ratio: 3 / 4;
+        transform: none;
+        scroll-snap-align: start;
     }
 
     .about-page-photo-one {
-        grid-column: 2;
-        grid-row: 1;
-        margin-bottom: -2.4rem;
+        grid-column: auto;
+        grid-row: auto;
     }
 
     .about-page-photo-two {
-        grid-column: 1;
-        grid-row: 2;
-        margin-top: -34%;
-        transform: translateX(20%);
-        z-index: 4;
+        grid-column: auto;
+        grid-row: auto;
+        z-index: auto;
     }
 
     .about-page-photo-three {
-        grid-column: 2;
-        grid-row: 2;
-        margin-top: 16%;
-        z-index: 2;
+        grid-column: auto;
+        grid-row: auto;
+        z-index: auto;
     }
 
     .about-page-photo-four {
-        grid-column: 1;
-        grid-row: 4;
-        margin-top: -1.1rem;
+        grid-column: auto;
+        grid-row: auto;
     }
 
     .education-bagdes {
@@ -5250,7 +5257,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .featured-project-title {
-        max-width: 12ch;
+        max-width: 100%;
     }
 
     .profile-card {
@@ -5330,30 +5337,135 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
 }
 
 @media (max-width: 640px) {
+    :root {
+        --shell-top-space: 0.85rem;
+        --shell-side-space: 1rem;
+    }
+
+    body {
+        background-size:
+            auto,
+            auto,
+            18px 18px,
+            auto;
+    }
+
     .page-shell {
         padding-inline: 1rem;
     }
 
+    .home-page .site-header,
+    .work-page .site-header,
+    .about-page .site-header,
     .site-header {
-        gap: 0.75rem;
+        left: 1rem;
+        right: 1rem;
+        top: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 0.65rem;
+        padding: 0.72rem 0.8rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.8rem;
+        background: rgba(5, 5, 5, 0.72);
+        backdrop-filter: blur(18px);
         font-size: 0.68rem;
+        letter-spacing: 0.14em;
+    }
+
+    .brand {
+        justify-self: start;
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .header-clock {
+        display: none;
+    }
+
+    .site-nav {
+        justify-self: end;
+        flex: 0 0 auto;
+        gap: 0.56rem;
+        min-width: 0;
+    }
+
+    .site-nav a {
+        font-size: 0.62rem;
+        letter-spacing: 0;
+        white-space: nowrap;
+    }
+
+    .stack-transition {
+        min-height: 260svh;
+    }
+
+    .stack-stage {
+        min-height: 100svh;
+    }
+
+    .hero {
+        justify-content: center;
+        min-height: 100svh;
+        gap: 0.85rem;
+        padding: 5.2rem 0 2.2rem;
+    }
+
+    .hero-panel::before {
+        background: radial-gradient(
+            circle at 50% 42%,
+            rgba(0, 0, 0, 0) 0%,
+            rgba(0, 0, 0, 0.08) 48%,
+            rgba(0, 0, 0, 0.42) 100%
+        );
     }
 
     .hero-kicker {
-        font-size: 0.74rem;
-        letter-spacing: 0.26em;
+        max-width: 24ch;
+        font-size: 0.62rem;
+        line-height: 1.35;
+        letter-spacing: 0.18em;
     }
 
     .wordmark-stage {
         width: 100%;
+        overflow: visible;
+    }
+
+    .wordmark-layout {
+        gap: 0.52rem;
     }
 
     .wordmark-panel {
-        max-width: 88vw;
+        max-width: 100%;
+    }
+
+    .wordmark-panel-solid,
+    .wordmark-panel-outline {
+        padding-inline: 0.32rem;
+    }
+
+    .wordmark-panel-solid .wordmark-text,
+    .wordmark-panel-outline .wordmark-text {
+        font-size: clamp(4.4rem, 22vw, 6.35rem);
+        line-height: 0.84;
+    }
+
+    .wordmark-panel-outline .wordmark-text {
+        -webkit-text-stroke-width: 1px;
+    }
+
+    .drag-chip,
+    .drag-indicator,
+    .drag-tether-layer {
+        display: none;
     }
 
     .hero-orbit-outline,
-    .hero-orbit-note {
+    .hero-orbit-note,
+    .hero-orbit-badge,
+    .hero-orbit-chip {
         display: none;
     }
 
@@ -5365,23 +5477,71 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     .hero-orbit-ring {
         width: 4.75rem;
         height: 4.75rem;
+        opacity: 0.68;
     }
 
     .hero-description {
-        max-width: 18rem;
+        width: min(100%, 20rem);
+        max-width: 20rem;
+        min-height: 2.6em;
+        padding-inline: 0.3rem;
+        font-size: clamp(1rem, 5vw, 1.18rem);
+        line-height: 1.3;
+        white-space: normal;
+        text-wrap: balance;
+    }
+
+    .reveal-panel {
+        padding: 1rem;
+    }
+
+    .reveal-editor {
+        top: 56%;
+        max-width: calc(100vw - 2rem);
+    }
+
+    .reveal-editor-label {
+        top: -1.45rem;
+        font-size: 0.62rem;
+    }
+
+    .reveal-editor-status {
+        bottom: -2.25rem;
+        font-size: 0.62rem;
     }
 
     .reveal-message {
-        top: 59%;
+        top: auto;
+        max-width: calc(100vw - 2rem);
     }
 
     .reveal-line {
-        max-width: 12ch;
-        font-size: clamp(1.6rem, 7vw, 2.35rem);
+        max-width: 11ch;
+        font-size: clamp(1.75rem, 9vw, 2.35rem);
+        line-height: 1.12;
+        letter-spacing: 0;
     }
 
     .toolkit-section {
-        padding-top: 3.6rem;
+        padding-top: 3.4rem;
+    }
+
+    .toolkit-shell,
+    .featured-shell,
+    .profile-shell,
+    .site-footer-inner {
+        padding-inline: 1rem;
+    }
+
+    .toolkit-header {
+        gap: 1rem;
+        margin-bottom: 1.4rem;
+    }
+
+    .toolkit-subtitle {
+        max-width: 22rem;
+        font-size: 0.9rem;
+        line-height: 1.5;
     }
 
     .work-page-section {
@@ -5400,7 +5560,8 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .work-page-list {
-        gap: 0.82rem;
+        margin-top: 0.4rem;
+        gap: 2.82rem;
     }
 
     .work-page-title {
@@ -5698,11 +5859,22 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .about-page-gallery {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        width: min(100%, 18rem);
-        margin-inline: auto;
-        gap: 0.7rem;
-        padding-top: 0.9rem;
+        display: flex;
+        grid-template-columns: none;
+        width: calc(100% + 2rem);
+        margin-inline: -1rem;
+        gap: 0.8rem;
+        overflow-x: auto;
+        overscroll-behavior-inline: contain;
+        padding: 0.9rem 1rem 0.35rem;
+        scroll-padding-inline: 1rem;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .about-page-gallery::-webkit-scrollbar {
+        display: none;
     }
 
     .about-page-photo-one,
@@ -5710,35 +5882,38 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     .about-page-photo-three,
     .about-page-photo-four {
         aspect-ratio: 3 / 4;
-        width: 100%;
-        justify-self: stretch;
+        flex: 0 0 min(74vw, 18rem);
+        width: auto;
+        min-width: 0;
+        justify-self: auto;
+        scroll-snap-align: start;
     }
 
     .about-page-photo-one {
-        grid-column: 2;
-        grid-row: 1;
-        margin-bottom: -1.8rem;
+        grid-column: auto;
+        grid-row: auto;
+        margin: 0;
     }
 
     .about-page-photo-two {
-        grid-column: 1;
-        grid-row: 2;
-        margin-top: -30%;
-        transform: translateX(18%);
-        z-index: 4;
+        grid-column: auto;
+        grid-row: auto;
+        margin: 0;
+        transform: none;
+        z-index: auto;
     }
 
     .about-page-photo-three {
-        grid-column: 2;
-        grid-row: 2;
-        margin-top: 14%;
-        z-index: 2;
+        grid-column: auto;
+        grid-row: auto;
+        margin: 0;
+        z-index: auto;
     }
 
     .about-page-photo-four {
-        grid-column: 1;
-        grid-row: 4;
-        margin-top: -0.95rem;
+        grid-column: auto;
+        grid-row: auto;
+        margin: 0;
     }
 
     .education-bagdes {
@@ -5761,44 +5936,62 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .core-foundations-section {
-        padding-top: 3.2rem;
+        padding-top: 7.6rem;
+    }
+
+    .core-foundations-shell {
+        width: 100%;
+        margin: 0;
+        padding-inline: 1rem;
     }
 
     .core-foundations-header {
-        margin-bottom: 2.4rem;
+        margin-bottom: 1.35rem;
     }
 
     .core-foundations-title {
-        font-size: clamp(2rem, 11vw, 3.2rem);
+        display: grid;
+        font-size: clamp(2rem, 10vw, 3rem);
+        line-height: 0.96;
+        letter-spacing: 0;
         gap: 0.3rem;
     }
 
     .core-foundations-grid {
-        row-gap: 2rem;
+        row-gap: 0.85rem;
     }
 
     .core-foundations-item {
-        gap: 0.75rem;
+        gap: 0.65rem;
+        padding: 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.09);
+        border-radius: 0.55rem;
+        background: rgba(255, 255, 255, 0.025);
     }
 
     .core-foundations-index {
-        font-size: 0.96rem;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
     }
 
     .core-foundations-item-title {
-        font-size: clamp(1.25rem, 7.2vw, 1.75rem);
+        font-size: clamp(1.1rem, 6vw, 1.45rem);
+        letter-spacing: 0;
     }
 
     .core-foundations-copy {
-        font-size: 0.95rem;
+        max-width: 100%;
+        font-size: 0.9rem;
+        line-height: 1.5;
     }
 
     .about-toolkit-section {
-        padding-top: 3.4rem;
+        padding-top: 0;
     }
 
     .about-toolkit-header {
         margin-bottom: 2rem;
+        margin-inline: 1rem;
     }
 
     .about-toolkit-title {
@@ -5806,22 +5999,23 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .about-toolkit-grid {
-        grid-template-columns: 1fr;
-        gap: 0.9rem;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.75rem;
+        margin-inline: 1rem;
     }
 
     .about-toolkit-card {
-        min-height: 10.6rem;
-        gap: 0.7rem;
-        padding: 1.2rem;
+        min-height: 8.8rem;
+        gap: 0.58rem;
+        padding: 1rem 0.75rem;
     }
 
     .about-toolkit-card-title {
-        font-size: clamp(1.15rem, 7vw, 1.5rem);
+        font-size: clamp(1rem, 5vw, 1.25rem);
     }
 
     .about-toolkit-card-copy {
-        font-size: 0.88rem;
+        font-size: 0.76rem;
     }
 
     .toolkit-title {
@@ -5853,23 +6047,38 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .featured-section {
-        padding-top: 3.8rem;
+        padding-top: 3.4rem;
+        padding-bottom: 4rem;
+    }
+
+    .featured-header {
+        margin-bottom: 3rem;
     }
 
     .featured-title {
+        position: fixed;
         font-size: clamp(1.6rem, 10vw, 2.8rem);
+        line-height: 1;
     }
 
     .featured-copy {
+        gap: 1rem;
         padding: 1.2rem;
+    }
+
+    .featured-card {
+        border-radius: 0.5rem;
     }
 
     .featured-project-title {
         font-size: clamp(1.45rem, 8vw, 2.25rem);
+        line-height: 1.05;
+        letter-spacing: 0;
     }
 
     .featured-description {
         font-size: 0.86rem;
+        line-height: 1.5;
     }
 
     .featured-metrics {
@@ -5881,16 +6090,41 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .featured-media {
-        min-height: 13.5rem;
+        min-height: clamp(11.5rem, 56vw, 15rem);
     }
 
     .featured-image {
-        width: calc(100% + 6rem);
-        margin-left: -3rem;
+        width: calc(100% + 5rem);
+        height: 100%;
+        margin-left: -2.5rem;
+        object-fit: cover;
+        transform: translate3d(var(--featured-image-shift, 0px), 0, 0)
+            scale(1.01);
+    }
+
+    .featured-link,
+    .profile-link,
+    .profile-preview-link {
+        min-height: 2.75rem;
+        align-items: center;
+    }
+
+    .featured-link {
+        width: 100%;
+        justify-content: center;
+        padding: 0.85rem 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 0.72rem;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .featured-link::after {
+        content: none;
     }
 
     .profile-title {
         font-size: clamp(1.6rem, 10vw, 2.8rem);
+        line-height: 1;
     }
 
     .profile-copy,
@@ -5898,8 +6132,14 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
         padding: 1.2rem;
     }
 
+    .profile-card {
+        border-radius: 0.8rem;
+    }
+
     .profile-headline {
         font-size: clamp(1.45rem, 8vw, 2.2rem);
+        line-height: 1.05;
+        letter-spacing: 0;
     }
 
     .profile-description,
@@ -5920,7 +6160,8 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     #profile-preview {
-        padding-top: 4.4rem;
+        padding-top: 4rem;
+        padding-bottom: 4.4rem;
     }
 
     #profile-preview .profile-shell {
@@ -5930,6 +6171,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     .profile-preview-title {
         font-size: clamp(2rem, 11vw, 3.4rem);
         line-height: 0.95;
+        letter-spacing: 0;
     }
 
     .profile-preview-copy {
@@ -5943,32 +6185,74 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .site-footer {
-        padding-top: 2.6rem;
-        padding-bottom: 5rem;
+        display: flex;
+        flex-direction: column;
+        min-height: auto;
+        justify-content: flex-end;
+        padding-top: 3rem;
+        padding-bottom: 1.35rem;
+    }
+
+    .site-footer-inner {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        gap: 1.2rem;
+        min-height: auto;
     }
 
     .site-footer-topline {
-        font-size: 0.64rem;
+        display: none;
     }
 
     .site-footer-caption {
-        max-width: 15rem;
-        font-size: 0.8rem;
+        display: none;
+    }
+
+    .site-footer-title-wrap {
+        justify-items: center;
+        text-align: center;
     }
 
     .site-footer-title {
         font-size: clamp(2.4rem, 13vw, 4rem);
         line-height: 0.84;
+        letter-spacing: 0;
+        justify-items: center;
+        text-align: center;
+    }
+
+    .site-footer-title-outline {
+        padding-left: 0;
+    }
+
+    .site-footer-stage {
+        display: block;
+        margin-top: 1rem;
+        min-height: auto;
     }
 
     .site-footer-links {
         grid-auto-flow: row;
-        gap: 0.68rem;
+        width: 100%;
+        gap: 0.72rem;
+        padding-bottom: 0;
+    }
+
+    .site-footer-links a {
+        width: 100%;
+        min-height: 3rem;
+        justify-content: space-between;
+        padding: 0.88rem 1rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 0.72rem;
+        background: rgba(255, 255, 255, 0.04);
+        color: rgba(255, 255, 255, 0.82);
     }
 
     .footer-photo-gallery {
-        width: 100%;
-        min-height: 15rem;
+        display: none;
     }
 
     .footer-photo:nth-child(1) {
@@ -6002,13 +6286,19 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .site-footer-bottom {
+        width: 100%;
+        margin-top: 0;
         flex-direction: column;
-        align-items: flex-start;
+        align-items: center;
+        justify-content: center;
+        padding-top: 1rem;
+        text-align: center;
     }
 
     .site-footer-copy,
     .site-footer-top {
         font-size: 0.82rem;
+        white-space: normal;
     }
 
     .featured-card + .featured-card {
@@ -6019,6 +6309,46 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
         left: 1rem;
         right: 1rem;
         justify-content: center;
+    }
+}
+
+@media (max-width: 420px) {
+    .home-page .site-header,
+    .work-page .site-header,
+    .about-page .site-header,
+    .site-header {
+        gap: 0.65rem;
+        padding-inline: 0.68rem;
+        font-size: 0.62rem;
+        letter-spacing: 0.1em;
+    }
+
+    .site-nav {
+        gap: 0.42rem;
+    }
+
+    .site-nav a {
+        font-size: 0.58rem;
+        letter-spacing: 0;
+    }
+
+    .wordmark-panel-solid .wordmark-text,
+    .wordmark-panel-outline .wordmark-text {
+        font-size: clamp(3.6rem, 19vw, 4.55rem);
+    }
+
+    .hero-description {
+        max-width: 17.5rem;
+        font-size: 0.98rem;
+    }
+
+    .toolkit-head-row,
+    .toolkit-row {
+        grid-template-columns: minmax(0, 1fr) 3.65rem;
+    }
+
+    .toolkit-name {
+        font-size: clamp(1.55rem, 9.4vw, 2.45rem);
     }
 }
 
