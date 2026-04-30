@@ -1918,6 +1918,75 @@ function setupFooterPhotoGallery() {
     });
 }
 
+function setupGalleryPagination() {
+    const gallery = document.querySelector(
+        ".case-study-theme-wildclash .case-study-gallery-stack",
+    );
+    const dots = Array.from(
+        document.querySelectorAll(
+            ".case-study-theme-wildclash .case-study-gallery-pagination-dot",
+        ),
+    );
+
+    if (!gallery || !dots.length) {
+        return;
+    }
+
+    const slides = Array.from(
+        gallery.querySelectorAll(".case-study-gallery-card"),
+    );
+
+    if (!slides.length) {
+        return;
+    }
+
+    let ticking = false;
+
+    function setActiveDot(activeIndex) {
+        dots.forEach((dot, index) => {
+            dot.classList.toggle("is-active", index === activeIndex);
+        });
+    }
+
+    function getActiveIndex() {
+        const galleryRect = gallery.getBoundingClientRect();
+        const galleryCenter = galleryRect.left + galleryRect.width / 2;
+        let activeIndex = 0;
+        let closestDistance = Number.POSITIVE_INFINITY;
+
+        slides.forEach((slide, index) => {
+            const slideRect = slide.getBoundingClientRect();
+            const slideCenter = slideRect.left + slideRect.width / 2;
+            const distance = Math.abs(galleryCenter - slideCenter);
+
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                activeIndex = index;
+            }
+        });
+
+        return activeIndex;
+    }
+
+    function updatePagination() {
+        ticking = false;
+        setActiveDot(getActiveIndex());
+    }
+
+    function requestUpdate() {
+        if (ticking) {
+            return;
+        }
+
+        ticking = true;
+        window.requestAnimationFrame(updatePagination);
+    }
+
+    setActiveDot(0);
+    gallery.addEventListener("scroll", requestUpdate, { passive: true });
+    window.addEventListener("resize", requestUpdate);
+}
+
 updateClock();
 setupPageTransitions();
 setupSiteCursor();
@@ -1930,6 +1999,7 @@ setupFeaturedCardStack();
 setupFeaturedMediaParallax();
 setupWorkProjectImageScroll();
 setupFooterPhotoGallery();
+setupGalleryPagination();
 setupIntroLoader().finally(() => {
     setupHeroDescriptionTypewriter();
 });
