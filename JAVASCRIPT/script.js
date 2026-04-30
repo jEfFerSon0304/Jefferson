@@ -1304,15 +1304,43 @@ function setupStackTransition() {
         );
     }
 
+    function getViewportHeight() {
+        return Math.max(window.visualViewport?.height ?? window.innerHeight, 1);
+    }
+
+    function getStackTimings() {
+        const viewportHeight = getViewportHeight();
+        const isMobile = window.matchMedia("(max-width: 640px)").matches;
+
+        return {
+            viewportHeight,
+            transitionDistance: Math.max(
+                viewportHeight * (isMobile ? 0.62 : 0.95),
+                1,
+            ),
+            typingDistance: Math.max(
+                viewportHeight * (isMobile ? 0.52 : 0.8),
+                1,
+            ),
+            holdDistance: Math.max(
+                viewportHeight * (isMobile ? 0.22 : 0.55),
+                1,
+            ),
+        };
+    }
+
     function syncStackHeight() {
-        const transitionDistance = Math.max(window.innerHeight * 0.95, 1);
-        const typingDistance = Math.max(window.innerHeight * 0.8, 1);
-        const holdDistance = Math.max(window.innerHeight * 0.55, 1);
+        const {
+            viewportHeight,
+            transitionDistance,
+            typingDistance,
+            holdDistance,
+        } = getStackTimings();
         const totalScrollDistance =
             panelStates.length * (transitionDistance + typingDistance) +
             holdDistance;
 
-        stackTransition.style.minHeight = `${window.innerHeight + totalScrollDistance}px`;
+        stackTransition.style.minHeight = `${viewportHeight + totalScrollDistance}px`;
     }
 
     function renderSegments(panelState, textProgress) {
@@ -1359,8 +1387,7 @@ function setupStackTransition() {
 
         const rect = stackTransition.getBoundingClientRect();
         const scrolledDistance = clamp(-rect.top, 0, Number.MAX_SAFE_INTEGER);
-        const transitionDistance = Math.max(window.innerHeight * 0.95, 1);
-        const typingDistance = Math.max(window.innerHeight * 0.8, 1);
+        const { transitionDistance, typingDistance } = getStackTimings();
         const transitionProgresses = panelStates.map(() => 0);
         const textProgresses = panelStates.map(() => 0);
         let cursor = 0;
