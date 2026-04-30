@@ -920,11 +920,7 @@ function setupAutoHidingHeader() {
         previousScrollY = currentScrollY;
     }
 
-    window.addEventListener(
-        "scroll",
-        updateHeaderState,
-        { passive: true },
-    );
+    window.addEventListener("scroll", updateHeaderState, { passive: true });
 
     window.addEventListener("pageshow", () => {
         previousScrollY = Math.max(

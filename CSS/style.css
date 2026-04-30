@@ -816,6 +816,7 @@ main {
 .stack-stage {
     position: sticky;
     top: 0;
+    height: 100vh;
     height: 100svh;
     overflow: clip;
     isolation: isolate;
@@ -849,6 +850,7 @@ main {
     z-index: 1;
     overflow: hidden;
     isolation: isolate;
+    min-height: 100vh;
     min-height: 100svh;
     padding-inline: var(--shell-side-space);
     background: #050505;
@@ -5547,18 +5549,22 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .stack-stage {
+        height: 100vh;
         height: 100svh;
+        min-height: 100vh;
         min-height: 100svh;
     }
 
     .hero {
         justify-content: center;
+        min-height: 100vh;
         min-height: 100svh;
         gap: 0.85rem;
         padding: 5.2rem 0 2.2rem;
     }
 
     .hero-panel {
+        min-height: 100vh;
         min-height: 100svh;
     }
 
