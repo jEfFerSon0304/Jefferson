@@ -887,6 +887,7 @@ function setupAutoHidingHeader() {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
+    const mobileHeaderMedia = window.matchMedia("(max-width: 640px)");
 
     if (prefersReducedMotion) {
         showHeader();
@@ -904,7 +905,9 @@ function setupAutoHidingHeader() {
         const isScrollingUp = currentScrollY < previousScrollY;
         const isScrollingDown = currentScrollY > previousScrollY;
 
-        if (isMenuOpen()) {
+        if (mobileHeaderMedia.matches) {
+            showHeader();
+        } else if (isMenuOpen()) {
             showHeader();
         } else if (currentScrollY <= topRevealDistance) {
             showHeader();
@@ -931,6 +934,7 @@ function setupAutoHidingHeader() {
         showHeader();
     });
 
+    mobileHeaderMedia.addEventListener("change", showHeader);
     showHeader();
 }
 
@@ -1242,6 +1246,7 @@ function setupStackTransition() {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
+    const mobileStackMedia = window.matchMedia("(max-width: 640px)");
     const panelStates = revealPanels
         .map((panel) => {
             const editor = panel.querySelector(".reveal-editor");
@@ -1278,6 +1283,7 @@ function setupStackTransition() {
                 segments,
                 segmentTexts,
                 totalCharacters,
+                lastVisibleCharacters: -1,
             };
         })
         .filter(Boolean);
@@ -1305,25 +1311,32 @@ function setupStackTransition() {
     }
 
     function getViewportHeight() {
+        if (mobileStackMedia.matches) {
+            return Math.max(
+                document.documentElement.clientHeight || window.innerHeight,
+                1,
+            );
+        }
+
         return Math.max(window.visualViewport?.height ?? window.innerHeight, 1);
     }
 
     function getStackTimings() {
         const viewportHeight = getViewportHeight();
-        const isMobile = window.matchMedia("(max-width: 640px)").matches;
+        const isMobile = mobileStackMedia.matches;
 
         return {
             viewportHeight,
             transitionDistance: Math.max(
-                viewportHeight * (isMobile ? 0.62 : 0.95),
+                viewportHeight * (isMobile ? 0.78 : 0.95),
                 1,
             ),
             typingDistance: Math.max(
-                viewportHeight * (isMobile ? 0.52 : 0.8),
+                viewportHeight * (isMobile ? 0.68 : 0.8),
                 1,
             ),
             holdDistance: Math.max(
-                viewportHeight * (isMobile ? 0.22 : 0.55),
+                viewportHeight * (isMobile ? 0.24 : 0.55),
                 1,
             ),
         };
@@ -1347,6 +1360,12 @@ function setupStackTransition() {
         const visibleCharacters = Math.floor(
             panelState.totalCharacters * textProgress,
         );
+
+        if (visibleCharacters === panelState.lastVisibleCharacters) {
+            return;
+        }
+
+        panelState.lastVisibleCharacters = visibleCharacters;
         let remainingCharacters = visibleCharacters;
 
         panelState.segments.forEach((segment, index) => {
@@ -1385,6 +1404,7 @@ function setupStackTransition() {
             return;
         }
 
+        const isMobile = mobileStackMedia.matches;
         const rect = stackTransition.getBoundingClientRect();
         const scrolledDistance = clamp(-rect.top, 0, Number.MAX_SAFE_INTEGER);
         const { transitionDistance, typingDistance } = getStackTimings();
@@ -1422,10 +1442,10 @@ function setupStackTransition() {
 
         const panelProgress = transitionProgresses[0];
 
-        const pushBack = -150 * panelProgress;
-        const scale = 1 - 0.06 * panelProgress;
-        const tiltX = 8.5 * panelProgress;
-        const tiltZ = -2.6 * panelProgress;
+        const pushBack = (isMobile ? -52 : -150) * panelProgress;
+        const scale = 1 - (isMobile ? 0.025 : 0.06) * panelProgress;
+        const tiltX = (isMobile ? 2.4 : 8.5) * panelProgress;
+        const tiltZ = (isMobile ? -0.8 : -2.6) * panelProgress;
 
         stackStage.style.setProperty(
             "--stack-progress",
@@ -1475,6 +1495,19 @@ function setupStackTransition() {
         syncStackHeight();
         requestUpdate();
     });
+    window.visualViewport?.addEventListener("resize", () => {
+        if (mobileStackMedia.matches) {
+            requestUpdate();
+            return;
+        }
+
+        syncStackHeight();
+        requestUpdate();
+    });
+    mobileStackMedia.addEventListener("change", () => {
+        syncStackHeight();
+        requestUpdate();
+    });
 }
 
 function setupFeaturedMediaParallax() {
@@ -1485,6 +1518,7 @@ function setupFeaturedMediaParallax() {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
+    const mobileParallaxMedia = window.matchMedia("(max-width: 640px)");
 
     function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
@@ -1520,6 +1554,10 @@ function setupFeaturedMediaParallax() {
 
     let frameId = null;
 
+    function getViewportHeight() {
+        return Math.max(window.visualViewport?.height ?? window.innerHeight, 1);
+    }
+
     function measureTargetShift(media) {
         const rect = media.getBoundingClientRect();
 
@@ -1527,13 +1565,15 @@ function setupFeaturedMediaParallax() {
             return 0;
         }
 
-        const viewportHeight = Math.max(window.innerHeight, 1);
+        const viewportHeight = getViewportHeight();
         const progress = clamp(
             (viewportHeight - rect.top) / (viewportHeight + rect.height),
             0,
             1,
         );
-        const maxTravel = Math.min(144, rect.width * 0.24);
+        const maxTravel = mobileParallaxMedia.matches
+            ? Math.min(44, rect.width * 0.1)
+            : Math.min(144, rect.width * 0.24);
         return (0.5 - progress) * maxTravel;
     }
 
@@ -1552,7 +1592,8 @@ function setupFeaturedMediaParallax() {
         mediaStates.forEach((state) => {
             const delta = state.targetShift - state.currentShift;
 
-            state.currentShift += delta * 0.09;
+            state.currentShift +=
+                delta * (mobileParallaxMedia.matches ? 0.16 : 0.09);
 
             if (Math.abs(delta) < 0.05) {
                 state.currentShift = state.targetShift;
@@ -1590,11 +1631,28 @@ function setupFeaturedMediaParallax() {
     mediaStates.forEach((state) => {
         state.currentShift = measureTargetShift(state.media);
         state.targetShift = state.currentShift;
+
+        if (!state.image.complete) {
+            state.image.addEventListener("load", syncTarget, { once: true });
+        }
     });
     renderShifts();
 
     window.addEventListener("scroll", syncTarget, { passive: true });
     window.addEventListener("resize", syncTarget);
+    window.addEventListener("orientationchange", syncTarget);
+    window.addEventListener("pageshow", syncTarget);
+    window.visualViewport?.addEventListener("resize", syncTarget);
+    window.visualViewport?.addEventListener(
+        "scroll",
+        () => {
+            if (!mobileParallaxMedia.matches) {
+                syncTarget();
+            }
+        },
+        { passive: true },
+    );
+    mobileParallaxMedia.addEventListener("change", syncTarget);
 }
 
 function setupWorkProjectImageScroll() {
@@ -1605,6 +1663,7 @@ function setupWorkProjectImageScroll() {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
+    const mobileParallaxMedia = window.matchMedia("(max-width: 640px)");
 
     function clamp(value, min, max) {
         return Math.min(Math.max(value, min), max);
@@ -1640,6 +1699,10 @@ function setupWorkProjectImageScroll() {
 
     let frameId = null;
 
+    function getViewportHeight() {
+        return Math.max(window.visualViewport?.height ?? window.innerHeight, 1);
+    }
+
     function measureTargetShift(media) {
         const rect = media.getBoundingClientRect();
 
@@ -1647,13 +1710,15 @@ function setupWorkProjectImageScroll() {
             return 0;
         }
 
-        const viewportHeight = Math.max(window.innerHeight, 1);
+        const viewportHeight = getViewportHeight();
         const progress = clamp(
             (viewportHeight - rect.top) / (viewportHeight + rect.height),
             0,
             1,
         );
-        const maxTravel = Math.min(88, rect.width * 0.16);
+        const maxTravel = mobileParallaxMedia.matches
+            ? Math.min(32, rect.width * 0.08)
+            : Math.min(88, rect.width * 0.16);
         return (0.5 - progress) * maxTravel;
     }
 
@@ -1672,7 +1737,8 @@ function setupWorkProjectImageScroll() {
         mediaStates.forEach((state) => {
             const delta = state.targetShift - state.currentShift;
 
-            state.currentShift += delta * 0.09;
+            state.currentShift +=
+                delta * (mobileParallaxMedia.matches ? 0.16 : 0.09);
 
             if (Math.abs(delta) < 0.05) {
                 state.currentShift = state.targetShift;
@@ -1710,11 +1776,28 @@ function setupWorkProjectImageScroll() {
     mediaStates.forEach((state) => {
         state.currentShift = measureTargetShift(state.media);
         state.targetShift = state.currentShift;
+
+        if (!state.image.complete) {
+            state.image.addEventListener("load", syncTarget, { once: true });
+        }
     });
     renderShifts();
 
     window.addEventListener("scroll", syncTarget, { passive: true });
     window.addEventListener("resize", syncTarget);
+    window.addEventListener("orientationchange", syncTarget);
+    window.addEventListener("pageshow", syncTarget);
+    window.visualViewport?.addEventListener("resize", syncTarget);
+    window.visualViewport?.addEventListener(
+        "scroll",
+        () => {
+            if (!mobileParallaxMedia.matches) {
+                syncTarget();
+            }
+        },
+        { passive: true },
+    );
+    mobileParallaxMedia.addEventListener("change", syncTarget);
 }
 
 function setupFeaturedCardStack() {

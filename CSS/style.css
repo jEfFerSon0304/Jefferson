@@ -5547,19 +5547,19 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .stack-stage {
-        height: 100dvh;
-        min-height: 100dvh;
+        height: 100svh;
+        min-height: 100svh;
     }
 
     .hero {
         justify-content: center;
-        min-height: 100dvh;
+        min-height: 100svh;
         gap: 0.85rem;
         padding: 5.2rem 0 2.2rem;
     }
 
     .hero-panel {
-        min-height: 100dvh;
+        min-height: 100svh;
     }
 
     .hero-panel::before {
@@ -6360,7 +6360,7 @@ body.is-intro-loading .draggable-wordmark .wordmark-text {
     }
 
     .featured-title {
-        position: fixed;
+        position: static;
         font-size: clamp(1.6rem, 10vw, 2.8rem);
         line-height: 1;
     }
