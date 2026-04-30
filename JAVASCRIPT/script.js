@@ -864,58 +864,74 @@ function setupAutoHidingHeader() {
         return;
     }
 
+    const headers = Array.from(document.querySelectorAll(".site-header"));
+
+    function showHeader() {
+        headers.forEach((header) => {
+            header.classList.remove("is-hidden");
+        });
+    }
+
+    function hideHeader() {
+        headers.forEach((header) => {
+            header.classList.add("is-hidden");
+        });
+    }
+
+    function isMenuOpen() {
+        return headers.some((header) =>
+            header.classList.contains("is-menu-open"),
+        );
+    }
+
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
     ).matches;
 
     if (prefersReducedMotion) {
-        siteHeader.classList.remove("is-hidden");
+        showHeader();
         return;
     }
 
-    let lastScrollY = window.scrollY;
-    let ticking = false;
+    let previousScrollY = window.scrollY;
     const topRevealDistance = 24;
-    const hideDistance = 10;
-    let downwardScrollDistance = 0;
 
     function updateHeaderState() {
-        const currentScrollY = window.scrollY;
-        const scrollDelta = currentScrollY - lastScrollY;
+        const currentScrollY = Math.max(
+            window.pageYOffset || document.documentElement.scrollTop || 0,
+            0,
+        );
+        const isScrollingUp = currentScrollY < previousScrollY;
+        const isScrollingDown = currentScrollY > previousScrollY;
 
-        if (siteHeader.classList.contains("is-menu-open")) {
-            siteHeader.classList.remove("is-hidden");
-            downwardScrollDistance = 0;
+        if (isMenuOpen()) {
+            showHeader();
         } else if (currentScrollY <= topRevealDistance) {
-            siteHeader.classList.remove("is-hidden");
-            downwardScrollDistance = 0;
-        } else if (scrollDelta < 0) {
-            siteHeader.classList.remove("is-hidden");
-            downwardScrollDistance = 0;
-        } else if (scrollDelta > 0) {
-            downwardScrollDistance += scrollDelta;
-
-            if (downwardScrollDistance >= hideDistance) {
-                siteHeader.classList.add("is-hidden");
-            }
+            showHeader();
+        } else if (isScrollingUp) {
+            showHeader();
+        } else if (isScrollingDown) {
+            hideHeader();
         }
 
-        lastScrollY = currentScrollY;
-        ticking = false;
+        previousScrollY = currentScrollY;
     }
 
     window.addEventListener(
         "scroll",
-        () => {
-            if (ticking) {
-                return;
-            }
-
-            ticking = true;
-            window.requestAnimationFrame(updateHeaderState);
-        },
+        updateHeaderState,
         { passive: true },
     );
+
+    window.addEventListener("pageshow", () => {
+        previousScrollY = Math.max(
+            window.pageYOffset || document.documentElement.scrollTop || 0,
+            0,
+        );
+        showHeader();
+    });
+
+    showHeader();
 }
 
 function setupHeroDescriptionTypewriter() {
