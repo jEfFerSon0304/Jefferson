@@ -376,6 +376,63 @@ function setupSiteCursor() {
     });
 }
 
+function setupMobileMenu() {
+    const headers = Array.from(document.querySelectorAll(".site-header"));
+
+    headers.forEach((header) => {
+        const nav = header.querySelector(".site-nav");
+
+        if (!nav || header.querySelector(".site-menu-toggle")) {
+            return;
+        }
+
+        const toggle = document.createElement("button");
+        const toggleLine = document.createElement("span");
+
+        toggle.className = "site-menu-toggle";
+        toggle.type = "button";
+        toggle.setAttribute("aria-label", "Open menu");
+        toggle.setAttribute("aria-expanded", "false");
+        toggle.append(toggleLine);
+        header.insertBefore(toggle, nav);
+
+        function closeMenu() {
+            header.classList.remove("is-menu-open");
+            toggle.setAttribute("aria-expanded", "false");
+            toggle.setAttribute("aria-label", "Open menu");
+        }
+
+        function openMenu() {
+            header.classList.add("is-menu-open");
+            toggle.setAttribute("aria-expanded", "true");
+            toggle.setAttribute("aria-label", "Close menu");
+        }
+
+        toggle.addEventListener("click", () => {
+            if (header.classList.contains("is-menu-open")) {
+                closeMenu();
+                return;
+            }
+
+            openMenu();
+        });
+
+        nav.addEventListener("click", (event) => {
+            if (event.target.closest("a")) {
+                closeMenu();
+            }
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!header.contains(event.target)) {
+                closeMenu();
+            }
+        });
+
+        window.addEventListener("resize", closeMenu);
+    });
+}
+
 function updateClock() {
     if (!clockElement) {
         return;
@@ -818,28 +875,27 @@ function setupAutoHidingHeader() {
 
     let lastScrollY = window.scrollY;
     let ticking = false;
-    let hidePrimed = false;
-    let revealAnchorY = window.scrollY;
-    const secondScrollDistance = 96;
+    const topRevealDistance = 24;
+    const hideDistance = 10;
+    let downwardScrollDistance = 0;
 
     function updateHeaderState() {
         const currentScrollY = window.scrollY;
         const scrollDelta = currentScrollY - lastScrollY;
 
-        if (currentScrollY <= 24) {
+        if (siteHeader.classList.contains("is-menu-open")) {
             siteHeader.classList.remove("is-hidden");
-            hidePrimed = false;
-            revealAnchorY = currentScrollY;
-        } else if (scrollDelta < -4) {
+            downwardScrollDistance = 0;
+        } else if (currentScrollY <= topRevealDistance) {
             siteHeader.classList.remove("is-hidden");
-            hidePrimed = false;
-            revealAnchorY = currentScrollY;
-        } else if (scrollDelta > 4) {
-            if (!hidePrimed) {
-                hidePrimed = true;
-                revealAnchorY = currentScrollY;
-                siteHeader.classList.remove("is-hidden");
-            } else if (currentScrollY - revealAnchorY >= secondScrollDistance) {
+            downwardScrollDistance = 0;
+        } else if (scrollDelta < 0) {
+            siteHeader.classList.remove("is-hidden");
+            downwardScrollDistance = 0;
+        } else if (scrollDelta > 0) {
+            downwardScrollDistance += scrollDelta;
+
+            if (downwardScrollDistance >= hideDistance) {
                 siteHeader.classList.add("is-hidden");
             }
         }
@@ -1990,6 +2046,7 @@ function setupGalleryPagination() {
 updateClock();
 setupPageTransitions();
 setupSiteCursor();
+setupMobileMenu();
 setupAutoHidingHeader();
 setupDraggableWordmarks();
 setupHeroSpotlight();
