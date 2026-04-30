@@ -37,6 +37,28 @@ const draggableWordmarks = Array.from(
     document.querySelectorAll("[data-draggable-wordmark]"),
 );
 
+if ("scrollRestoration" in window.history) {
+    window.history.scrollRestoration = "manual";
+}
+
+function resetHomeScrollPosition() {
+    const shouldReset =
+        stackTransition &&
+        (!window.location.hash || window.location.hash === "#hero");
+
+    if (!shouldReset) {
+        return;
+    }
+
+    window.scrollTo({
+        left: 0,
+        top: 0,
+        behavior: "auto",
+    });
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
+}
+
 function setupPageTransitions() {
     const prefersReducedMotion = window.matchMedia(
         "(prefers-reduced-motion: reduce)",
@@ -458,6 +480,7 @@ function wait(duration) {
 }
 
 function unlockIntroScrolling() {
+    resetHomeScrollPosition();
     document.body.classList.remove("is-intro-loading");
     window.dispatchEvent(new CustomEvent("portfolio:intro-scroll-unlocked"));
 }
@@ -522,7 +545,7 @@ async function setupIntroLoader() {
     const runCounter = () =>
         new Promise((resolve) => {
             let value = 1;
-            const intervalDelay = prefersReducedMotion ? 8 : 18;
+            const intervalDelay = 18;
 
             introLoaderCount.textContent = `${value}%`;
 
@@ -537,13 +560,16 @@ async function setupIntroLoader() {
             }, intervalDelay);
         });
 
-    window.scrollTo(0, 0);
+    resetHomeScrollPosition();
 
     await Promise.all([runCounter(), waitForWindowLoad()]);
 
     if (prefersReducedMotion) {
+        await wait(360);
+        introLoader.classList.add("is-complete");
+        await wait(280);
         introLoader.classList.add("is-fading-count", "is-line-visible");
-        await wait(120);
+        await wait(220);
         introLoader.classList.add("is-opening");
         playHeroWordmarkEntrance();
         unlockIntroScrolling();
@@ -1495,9 +1521,13 @@ function setupStackTransition() {
     }
 
     function refreshStackLayoutAfterPaint() {
-        window.requestAnimationFrame(refreshStackLayout);
+        window.requestAnimationFrame(() => {
+            resetHomeScrollPosition();
+            refreshStackLayout();
+        });
     }
 
+    resetHomeScrollPosition();
     syncStackHeight();
     render();
     window.addEventListener("scroll", requestUpdate, { passive: true });
