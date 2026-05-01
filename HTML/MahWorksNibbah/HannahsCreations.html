@@ -11,6 +11,14 @@
         <script>
             (() => {
                 try {
+                    const savedTheme = window.localStorage.getItem(
+                        "jeffersonPortfolioTheme",
+                    );
+
+                    if (savedTheme === "light") {
+                        document.documentElement.classList.add("theme-light");
+                    }
+
                     if (
                         window.sessionStorage.getItem(
                             "jeffersonPortfolioPageTransition",
@@ -46,7 +54,7 @@
 
         <title>Hannah's Creations | Jefferson</title>
     </head>
-    <body id="top">
+    <body id="top" class="case-study-theme case-study-theme-hannah">
         <div class="page-transition-shell" aria-hidden="true">
             <span
                 class="page-transition-panel page-transition-panel-top"

@@ -11,6 +11,14 @@
         <script>
             (() => {
                 try {
+                    const savedTheme = window.localStorage.getItem(
+                        "jeffersonPortfolioTheme",
+                    );
+
+                    if (savedTheme === "light") {
+                        document.documentElement.classList.add("theme-light");
+                    }
+
                     if (
                         window.sessionStorage.getItem(
                             "jeffersonPortfolioPageTransition",

@@ -11,6 +11,14 @@
         <script>
             (() => {
                 try {
+                    const savedTheme = window.localStorage.getItem(
+                        "jeffersonPortfolioTheme",
+                    );
+
+                    if (savedTheme === "light") {
+                        document.documentElement.classList.add("theme-light");
+                    }
+
                     if (
                         window.sessionStorage.getItem(
                             "jeffersonPortfolioPageTransition",
@@ -322,6 +330,8 @@
                                     >
                                         <img
                                             src="../Assets/LogoForAbout/cursorDarkmode.png"
+                                            data-dark-src="../Assets/LogoForAbout/cursorDarkmode.png"
+                                            data-light-src="../Assets/LogoForAbout/cursorlightmode.png"
                                             alt="Cursor logo"
                                             loading="lazy"
                                             decoding="async"
@@ -439,6 +449,8 @@
                                     >
                                         <img
                                             src="../Assets/LogoForAbout/openaiDark.png"
+                                            data-dark-src="../Assets/LogoForAbout/openaiDark.png"
+                                            data-light-src="../Assets/LogoForAbout/chatgptlightmode.png"
                                             alt="ChatGPT logo"
                                             loading="lazy"
                                             decoding="async"
@@ -512,6 +524,8 @@
                                     >
                                         <img
                                             src="../Assets/LogoForAbout/github (2).png"
+                                            data-dark-src="../Assets/LogoForAbout/github (2).png"
+                                            data-light-src="../Assets/LogoForAbout/githublightmode.png"
                                             alt="GitHub logo"
                                             loading="lazy"
                                             decoding="async"
@@ -535,6 +549,8 @@
                                     >
                                         <img
                                             src="../Assets/LogoForAbout/githubcopilot (1).png"
+                                            data-dark-src="../Assets/LogoForAbout/githubcopilot (1).png"
+                                            data-light-src="../Assets/LogoForAbout/githubcopilotlightmode.png"
                                             alt="GitHub Copilot logo"
                                             loading="lazy"
                                             decoding="async"

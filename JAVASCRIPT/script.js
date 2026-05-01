@@ -10,11 +10,24 @@ const introLoaderCount = document.getElementById("siteIntroLoaderCount");
 const INTRO_SESSION_KEY = "jeffersonPortfolioIntroSeen";
 const PAGE_TRANSITION_SESSION_KEY = "jeffersonPortfolioPageTransition";
 const SKIP_INTRO_ONCE_SESSION_KEY = "jeffersonPortfolioSkipIntroOnce";
+const THEME_STORAGE_KEY = "jeffersonPortfolioTheme";
+
+try {
+    document.documentElement.classList.toggle(
+        "theme-light",
+        window.localStorage.getItem(THEME_STORAGE_KEY) === "light",
+    );
+} catch (error) {
+    // Keep the default dark theme if local storage is unavailable.
+}
+
 const siteHeader = document.querySelector(".site-header");
 const stackTransition = document.querySelector(".stack-transition");
 const stackStage = document.getElementById("stackStage");
 const heroPanel = document.querySelector(".hero-panel");
 const heroOrbits = Array.from(document.querySelectorAll("[data-hero-orbit]"));
+const themeToggle = document.querySelector("[data-theme-toggle]");
+const themedImages = Array.from(document.querySelectorAll("[data-light-src]"));
 const featuredCards = Array.from(document.querySelectorAll(".featured-card"));
 const featuredMediaItems = Array.from(
     document.querySelectorAll(".featured-media"),
@@ -476,6 +489,77 @@ function updateClock() {
 function wait(duration) {
     return new Promise((resolve) => {
         window.setTimeout(resolve, duration);
+    });
+}
+
+function setupThemeToggle() {
+    if (!themeToggle) {
+        return;
+    }
+
+    const root = document.documentElement;
+
+    function syncToggleState() {
+        const isLightTheme = root.classList.contains("theme-light");
+        themeToggle.setAttribute("aria-pressed", `${isLightTheme}`);
+        themeToggle.setAttribute(
+            "aria-label",
+            isLightTheme ? "Switch to dark mode" : "Switch to light mode",
+        );
+        themeToggle.title = isLightTheme
+            ? "Switch to dark mode"
+            : "Switch to light mode";
+    }
+
+    syncToggleState();
+
+    themeToggle.addEventListener("click", () => {
+        const isLightTheme = root.classList.toggle("theme-light");
+
+        try {
+            window.localStorage.setItem(
+                THEME_STORAGE_KEY,
+                isLightTheme ? "light" : "dark",
+            );
+        } catch (error) {
+            // Keep the toggle usable if local storage is unavailable.
+        }
+
+        syncToggleState();
+    });
+}
+
+function syncThemedImages() {
+    if (!themedImages.length) {
+        return;
+    }
+
+    const isLightTheme = document.documentElement.classList.contains(
+        "theme-light",
+    );
+
+    themedImages.forEach((image) => {
+        const nextSource = isLightTheme
+            ? image.dataset.lightSrc
+            : image.dataset.darkSrc;
+
+        if (nextSource && image.getAttribute("src") !== nextSource) {
+            image.setAttribute("src", nextSource);
+        }
+    });
+}
+
+function setupThemedImages() {
+    if (!themedImages.length) {
+        return;
+    }
+
+    syncThemedImages();
+
+    const observer = new MutationObserver(syncThemedImages);
+    observer.observe(document.documentElement, {
+        attributeFilter: ["class"],
+        attributes: true,
     });
 }
 
@@ -2202,6 +2286,8 @@ function setupGalleryPagination() {
 }
 
 updateClock();
+setupThemedImages();
+setupThemeToggle();
 setupPageTransitions();
 setupSiteCursor();
 setupMobileMenu();
