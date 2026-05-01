@@ -43,16 +43,10 @@ body {
             rgba(228, 255, 111, 0.08),
             transparent 24%
         ),
-        radial-gradient(
-            circle,
-            rgba(150, 102, 255, 0.22) 1.4px,
-            transparent 1.7px
-        ),
         var(--bg);
     background-size:
         auto,
         auto,
-        24px 24px,
         auto;
 }
 
