@@ -43,6 +43,10 @@ const footerPhotoGallery = document.querySelector("[data-footer-gallery]");
 const footerPhotos = Array.from(
     document.querySelectorAll("[data-footer-photo]"),
 );
+const aboutPageGallery = document.querySelector(".about-page-gallery");
+const aboutPagePhotos = Array.from(
+    document.querySelectorAll(".about-page-gallery .about-page-photo"),
+);
 const revealPanels = Array.from(
     document.querySelectorAll("[data-reveal-panel]"),
 );
@@ -301,12 +305,26 @@ function setupSiteCursor() {
             return { mode: "default", label: "You" };
         }
 
-        if (target.closest(".draggable-wordmark, .footer-photo")) {
+        if (
+            target.closest(
+                ".draggable-wordmark, .footer-photo, .about-page-photo",
+            )
+        ) {
             return { mode: "drag", label: "DRAG" };
         }
 
         if (target.closest("#heroDescription.is-restartable")) {
             return { mode: "action", label: "REPLAY" };
+        }
+
+        if (target.closest("[data-theme-toggle]")) {
+            const isLightTheme =
+                document.documentElement.classList.contains("theme-light");
+
+            return {
+                mode: "action",
+                label: isLightTheme ? "Switch to dark mode" : "Switch to light mode",
+            };
         }
 
         if (target.closest("a[href], button, [role='button']")) {
@@ -506,9 +524,7 @@ function setupThemeToggle() {
             "aria-label",
             isLightTheme ? "Switch to dark mode" : "Switch to light mode",
         );
-        themeToggle.title = isLightTheme
-            ? "Switch to dark mode"
-            : "Switch to light mode";
+        themeToggle.removeAttribute("title");
     }
 
     syncToggleState();
@@ -2293,6 +2309,336 @@ function setupFooterPhotoGallery() {
     });
 }
 
+function setupAboutPagePhotoDrag() {
+    if (!aboutPageGallery || !aboutPagePhotos.length) {
+        return;
+    }
+
+    const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
+    const photoStates = [];
+    const returnQueue = [];
+    const returnWorkerMessages = [
+        "dud, stop destroying the layout",
+        "Again? really?",
+        "Please, stop!",
+        "i said stop destroying the layout -_-",
+    ];
+    let isReturnWorkerActive = false;
+    let returnWorkerMessageIndex = 0;
+    let zIndexSeed = aboutPagePhotos.length + 20;
+
+    function bringToFront(element) {
+        element.style.zIndex = `${zIndexSeed}`;
+        zIndexSeed += 1;
+    }
+
+    function getNextReturnWorkerMessage() {
+        const message =
+            returnWorkerMessages[
+                returnWorkerMessageIndex % returnWorkerMessages.length
+            ];
+
+        returnWorkerMessageIndex += 1;
+        return message;
+    }
+
+    function animateReturnCursor(element, offsetX, offsetY, onComplete) {
+        if (!offsetX && !offsetY) {
+            onComplete?.();
+            return;
+        }
+
+        const galleryRect = aboutPageGallery.getBoundingClientRect();
+        const elementRect = element.getBoundingClientRect();
+        const cursor = document.createElement("span");
+        const cursorHalo = document.createElement("span");
+        const cursorFrame = document.createElement("span");
+        const cursorCore = document.createElement("span");
+        const cursorLabel = document.createElement("span");
+        const cursorMessage = document.createElement("span");
+        const pickupX =
+            elementRect.left + elementRect.width / 2 - galleryRect.left;
+        const pickupY =
+            elementRect.top + elementRect.height / 2 - galleryRect.top;
+        const startX = galleryRect.width + 42;
+        const startY = pickupY - 36;
+        const endX = pickupX - offsetX;
+        const endY = pickupY - offsetY;
+
+        cursor.className = "about-photo-reset-cursor";
+        cursorHalo.className = "about-photo-reset-cursor-halo";
+        cursorFrame.className = "about-photo-reset-cursor-frame";
+        cursorCore.className = "about-photo-reset-cursor-core";
+        cursorLabel.className = "about-photo-reset-cursor-label";
+        cursorMessage.className = "about-photo-reset-cursor-message";
+        cursorLabel.textContent = "DRAG";
+        cursorMessage.textContent = getNextReturnWorkerMessage();
+        cursor.setAttribute("aria-hidden", "true");
+        cursor.style.setProperty("--reset-cursor-start-x", `${startX}px`);
+        cursor.style.setProperty("--reset-cursor-start-y", `${startY}px`);
+        cursor.style.setProperty("--reset-cursor-pickup-x", `${pickupX}px`);
+        cursor.style.setProperty("--reset-cursor-pickup-y", `${pickupY}px`);
+        cursor.style.setProperty("--reset-cursor-end-x", `${endX}px`);
+        cursor.style.setProperty("--reset-cursor-end-y", `${endY}px`);
+        cursor.append(
+            cursorHalo,
+            cursorFrame,
+            cursorCore,
+            cursorLabel,
+            cursorMessage,
+        );
+        aboutPageGallery.append(cursor);
+
+        cursor.addEventListener(
+            "animationend",
+            () => {
+                cursor.remove();
+                onComplete?.();
+            },
+            { once: true },
+        );
+    }
+
+    function removeQueuedReturn(element) {
+        for (let index = returnQueue.length - 1; index >= 0; index -= 1) {
+            if (returnQueue[index].element === element) {
+                returnQueue.splice(index, 1);
+            }
+        }
+    }
+
+    function processReturnQueue() {
+        if (isReturnWorkerActive) {
+            return;
+        }
+
+        const task = returnQueue.shift();
+
+        if (!task) {
+            return;
+        }
+
+        isReturnWorkerActive = true;
+        bringToFront(task.element);
+
+        animateReturnCursor(
+            task.element,
+            task.offsetX,
+            task.offsetY,
+            () => {
+                task.element.classList.remove("is-return-pending");
+                task.element.classList.remove("is-returning");
+                task.state.returnTimerId = null;
+                task.state.returnCleanupTimerId = null;
+                isReturnWorkerActive = false;
+                processReturnQueue();
+            },
+        );
+
+        task.state.returnTimerId = window.setTimeout(() => {
+            task.element.classList.remove("is-return-pending");
+            task.element.classList.add("is-returning");
+            task.state.offsetX = 0;
+            task.state.offsetY = 0;
+            task.applyOffset();
+            task.state.returnTimerId = null;
+        }, 1230);
+
+        task.state.returnCleanupTimerId = window.setTimeout(() => {
+            task.element.classList.remove("is-return-pending");
+            task.element.classList.remove("is-returning");
+            task.state.returnCleanupTimerId = null;
+        }, 1980);
+    }
+
+    function queuePhotoReturn(task) {
+        removeQueuedReturn(task.element);
+        task.element.classList.add("is-return-pending");
+        returnQueue.push(task);
+        processReturnQueue();
+    }
+
+    aboutPagePhotos.forEach((element) => {
+        const state = {
+            pointerId: null,
+            offsetX: 0,
+            offsetY: 0,
+            startX: 0,
+            startY: 0,
+            initialOffsetX: 0,
+            initialOffsetY: 0,
+            minX: Number.NEGATIVE_INFINITY,
+            maxX: Number.POSITIVE_INFINITY,
+            minY: Number.NEGATIVE_INFINITY,
+            maxY: Number.POSITIVE_INFINITY,
+            moved: false,
+            returnTimerId: null,
+            returnCleanupTimerId: null,
+        };
+
+        function applyOffset() {
+            element.style.setProperty(
+                "--about-photo-drag-x",
+                `${state.offsetX}px`,
+            );
+            element.style.setProperty(
+                "--about-photo-drag-y",
+                `${state.offsetY}px`,
+            );
+        }
+
+        function constrainToGallery() {
+            const galleryRect = aboutPageGallery.getBoundingClientRect();
+            const rect = element.getBoundingClientRect();
+            const padding = 8;
+            const minX =
+                state.offsetX + (galleryRect.left + padding - rect.left);
+            const maxX =
+                state.offsetX + (galleryRect.right - padding - rect.right);
+            const minY =
+                state.offsetY + (galleryRect.top + padding - rect.top);
+            const maxY =
+                state.offsetY + (galleryRect.bottom - padding - rect.bottom);
+
+            state.offsetX = clamp(state.offsetX, minX, maxX);
+            state.offsetY = clamp(state.offsetY, minY, maxY);
+            applyOffset();
+        }
+
+        function endDrag(event) {
+            if (event.pointerId !== state.pointerId) {
+                return;
+            }
+
+            const releasedPointerId = state.pointerId;
+            const shouldReturn = state.moved;
+            const returnOffsetX = state.offsetX;
+            const returnOffsetY = state.offsetY;
+
+            state.pointerId = null;
+
+            if (element.hasPointerCapture(releasedPointerId)) {
+                element.releasePointerCapture(releasedPointerId);
+            }
+
+            element.classList.remove("is-dragging");
+
+            if (shouldReturn) {
+                queuePhotoReturn({
+                    element,
+                    state,
+                    applyOffset,
+                    offsetX: returnOffsetX,
+                    offsetY: returnOffsetY,
+                });
+            }
+        }
+
+        applyOffset();
+        photoStates.push({ constrainToGallery });
+
+        element.addEventListener("dragstart", (event) => {
+            event.preventDefault();
+        });
+
+        element.addEventListener("pointerenter", () => {
+            bringToFront(element);
+        });
+
+        element.addEventListener("pointerdown", (event) => {
+            if (state.pointerId !== null) {
+                return;
+            }
+
+            if (event.button !== undefined && event.button !== 0) {
+                return;
+            }
+
+            if (state.returnTimerId !== null) {
+                window.clearTimeout(state.returnTimerId);
+                state.returnTimerId = null;
+            }
+
+            if (state.returnCleanupTimerId !== null) {
+                window.clearTimeout(state.returnCleanupTimerId);
+                state.returnCleanupTimerId = null;
+            }
+
+            removeQueuedReturn(element);
+            element.classList.remove("is-return-pending");
+            element.classList.remove("is-returning");
+
+            const galleryRect = aboutPageGallery.getBoundingClientRect();
+            const rect = element.getBoundingClientRect();
+            const padding = 8;
+
+            state.pointerId = event.pointerId;
+            state.startX = event.clientX;
+            state.startY = event.clientY;
+            state.initialOffsetX = state.offsetX;
+            state.initialOffsetY = state.offsetY;
+            state.moved = false;
+            state.minX =
+                state.offsetX + (galleryRect.left + padding - rect.left);
+            state.maxX =
+                state.offsetX + (galleryRect.right - padding - rect.right);
+            state.minY =
+                state.offsetY + (galleryRect.top + padding - rect.top);
+            state.maxY =
+                state.offsetY + (galleryRect.bottom - padding - rect.bottom);
+
+            bringToFront(element);
+            element.setPointerCapture(state.pointerId);
+        });
+
+        element.addEventListener("pointermove", (event) => {
+            if (event.pointerId !== state.pointerId) {
+                return;
+            }
+
+            const rawX = state.initialOffsetX + (event.clientX - state.startX);
+            const rawY = state.initialOffsetY + (event.clientY - state.startY);
+
+            state.offsetX = clamp(rawX, state.minX, state.maxX);
+            state.offsetY = clamp(rawY, state.minY, state.maxY);
+
+            if (
+                !state.moved &&
+                Math.hypot(
+                    state.offsetX - state.initialOffsetX,
+                    state.offsetY - state.initialOffsetY,
+                ) > 3
+            ) {
+                state.moved = true;
+                element.classList.add("is-dragging");
+            }
+
+            applyOffset();
+
+            if (state.moved) {
+                event.preventDefault();
+            }
+        });
+
+        element.addEventListener("pointerup", endDrag);
+        element.addEventListener("pointercancel", endDrag);
+        element.addEventListener("lostpointercapture", () => {
+            if (state.pointerId === null) {
+                return;
+            }
+
+            state.pointerId = null;
+            element.classList.remove("is-dragging");
+        });
+    });
+
+    window.addEventListener("resize", () => {
+        photoStates.forEach((photoState) => {
+            photoState.constrainToGallery();
+        });
+    });
+}
+
 function setupGalleryPagination() {
     const gallery = document.querySelector(
         ".case-study-theme-wildclash .case-study-gallery-stack",
@@ -2377,6 +2723,7 @@ setupFeaturedCardStack();
 setupFeaturedMediaParallax();
 setupWorkProjectImageScroll();
 setupFooterPhotoGallery();
+setupAboutPagePhotoDrag();
 setupGalleryPagination();
 setupIntroLoader().finally(() => {
     setupHeroDescriptionTypewriter();
