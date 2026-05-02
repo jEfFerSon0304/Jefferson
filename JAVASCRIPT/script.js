@@ -2052,10 +2052,13 @@ function setupFooterPhotoGallery() {
             element.style.getPropertyValue("--photo-rotate").trim() || "0deg";
         const state = {
             pointerId: null,
+            action: "move",
+            resizeHandle: null,
             offsetX: 0,
             offsetY: 0,
             startX: 0,
             startY: 0,
+            startWidth: 0,
             initialOffsetX: 0,
             initialOffsetY: 0,
             minX: Number.NEGATIVE_INFINITY,
@@ -2094,12 +2097,14 @@ function setupFooterPhotoGallery() {
 
             const releasedPointerId = state.pointerId;
             state.pointerId = null;
+            state.resizeHandle = null;
 
             if (element.hasPointerCapture(releasedPointerId)) {
                 element.releasePointerCapture(releasedPointerId);
             }
 
             element.classList.remove("is-dragging");
+            element.classList.remove("is-resizing");
         }
 
         applyTransform();
@@ -2129,10 +2134,14 @@ function setupFooterPhotoGallery() {
             const boundsRect = dragBoundsElement.getBoundingClientRect();
             const rect = element.getBoundingClientRect();
             const padding = 8;
+            const resizeHandle = event.target.closest(".footer-photo-handle");
 
             state.pointerId = event.pointerId;
+            state.action = resizeHandle ? "resize" : "move";
+            state.resizeHandle = resizeHandle;
             state.startX = event.clientX;
             state.startY = event.clientY;
+            state.startWidth = rect.width;
             state.initialOffsetX = state.offsetX;
             state.initialOffsetY = state.offsetY;
             state.moved = false;
@@ -2146,11 +2155,77 @@ function setupFooterPhotoGallery() {
                 state.offsetY + (boundsRect.bottom - padding - rect.bottom);
 
             bringToFront(element);
+            if (state.action === "resize") {
+                element.classList.add("is-resizing");
+                event.preventDefault();
+            }
             element.setPointerCapture(state.pointerId);
         });
 
         element.addEventListener("pointermove", (event) => {
             if (event.pointerId !== state.pointerId) {
+                return;
+            }
+
+            if (state.action === "resize") {
+                const handleClasses = state.resizeHandle?.classList;
+                const horizontalDelta = handleClasses?.contains(
+                    "footer-photo-handle-middle-left",
+                )
+                    ? state.startX - event.clientX
+                    : handleClasses?.contains("footer-photo-handle-middle-right")
+                      ? event.clientX - state.startX
+                      : 0;
+                const verticalDelta =
+                    handleClasses?.contains("footer-photo-handle-top-left") ||
+                    handleClasses?.contains("footer-photo-handle-top-center") ||
+                    handleClasses?.contains("footer-photo-handle-top-right")
+                        ? state.startY - event.clientY
+                        : handleClasses?.contains(
+                                "footer-photo-handle-bottom-left",
+                            ) ||
+                              handleClasses?.contains(
+                                  "footer-photo-handle-bottom-center",
+                              ) ||
+                              handleClasses?.contains(
+                                  "footer-photo-handle-bottom-right",
+                              )
+                          ? event.clientY - state.startY
+                          : 0;
+                const cornerDelta =
+                    handleClasses?.contains("footer-photo-handle-top-left") ||
+                    handleClasses?.contains("footer-photo-handle-bottom-left")
+                        ? state.startX - event.clientX
+                        : handleClasses?.contains(
+                                "footer-photo-handle-top-right",
+                            ) ||
+                              handleClasses?.contains(
+                                  "footer-photo-handle-bottom-right",
+                              )
+                          ? event.clientX - state.startX
+                          : 0;
+                const resizeDelta =
+                    Math.abs(cornerDelta) > Math.abs(verticalDelta)
+                        ? cornerDelta
+                        : verticalDelta || horizontalDelta;
+                const boundsRect = dragBoundsElement.getBoundingClientRect();
+                const minWidth = 72;
+                const maxWidth = Math.min(260, boundsRect.width * 0.72);
+                const nextWidth = clamp(
+                    state.startWidth + resizeDelta,
+                    minWidth,
+                    maxWidth,
+                );
+
+                element.style.width = `${nextWidth}px`;
+                constrainToFooter();
+
+                if (!state.moved && Math.abs(nextWidth - state.startWidth) > 3) {
+                    state.moved = true;
+                    state.suppressClick = true;
+                }
+
+                event.preventDefault();
                 return;
             }
 
@@ -2188,7 +2263,9 @@ function setupFooterPhotoGallery() {
             }
 
             state.pointerId = null;
+            state.resizeHandle = null;
             element.classList.remove("is-dragging");
+            element.classList.remove("is-resizing");
         });
 
         element.addEventListener("click", (event) => {
