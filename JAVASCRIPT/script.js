@@ -2407,6 +2407,10 @@ function setupAboutPagePhotoDrag() {
         }
     }
 
+    function isPhotoAwayFromHome(state) {
+        return Math.hypot(state.offsetX, state.offsetY) > 1;
+    }
+
     function processReturnQueue() {
         if (isReturnWorkerActive) {
             return;
@@ -2431,6 +2435,21 @@ function setupAboutPagePhotoDrag() {
                 task.state.returnTimerId = null;
                 task.state.returnCleanupTimerId = null;
                 isReturnWorkerActive = false;
+
+                if (
+                    task.state.pointerId === null &&
+                    isPhotoAwayFromHome(task.state)
+                ) {
+                    queuePhotoReturn({
+                        element: task.element,
+                        state: task.state,
+                        applyOffset: task.applyOffset,
+                        offsetX: task.state.offsetX,
+                        offsetY: task.state.offsetY,
+                    });
+                    return;
+                }
+
                 processReturnQueue();
             },
         );
@@ -2511,7 +2530,7 @@ function setupAboutPagePhotoDrag() {
             }
 
             const releasedPointerId = state.pointerId;
-            const shouldReturn = state.moved;
+            const shouldReturn = state.moved || isPhotoAwayFromHome(state);
             const returnOffsetX = state.offsetX;
             const returnOffsetY = state.offsetY;
 
