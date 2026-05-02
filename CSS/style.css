@@ -6758,16 +6758,22 @@ html.theme-light .about-toolkit-card-copy {
     }
 
     .case-study-site-header .brand,
-    .case-study-site-header .site-nav a,
-    html.theme-light .case-study-site-header .brand,
-    html.theme-light .case-study-site-header .site-nav a {
-        color: #000000;
+    .case-study-site-header .site-nav a {
+        color: rgba(255, 255, 255, 0.86);
     }
 
     .case-study-site-header .brand:hover,
     .case-study-site-header .brand:focus-visible,
     .case-study-site-header .site-nav a:hover,
-    .case-study-site-header .site-nav a:focus-visible,
+    .case-study-site-header .site-nav a:focus-visible {
+        color: #ffffff;
+    }
+
+    html.theme-light .case-study-site-header .brand,
+    html.theme-light .case-study-site-header .site-nav a {
+        color: #000000;
+    }
+
     html.theme-light .case-study-site-header .brand:hover,
     html.theme-light .case-study-site-header .brand:focus-visible,
     html.theme-light .case-study-site-header .site-nav a:hover,
