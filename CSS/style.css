@@ -2055,6 +2055,7 @@ html.theme-light .work-page-divider {
 }
 
 .work-project-card {
+    position: relative;
     display: grid;
     grid-template-columns: minmax(0, 0.96fr) minmax(0, 1.04fr);
     min-height: clamp(24rem, 36vw, 29rem);
@@ -2202,6 +2203,10 @@ html.theme-light .work-project-tag {
     color: rgba(17, 22, 28, 0.7);
 }
 
+.work-project-action-row {
+    display: contents;
+}
+
 .work-project-metrics {
     display: flex;
     flex-wrap: wrap;
@@ -2280,6 +2285,7 @@ html.theme-light .work-project-media {
 
 .work-project-arrow {
     position: absolute;
+    z-index: 2;
     right: 1rem;
     bottom: 1rem;
     display: inline-flex;
@@ -7081,7 +7087,15 @@ html.theme-light .about-toolkit-card-copy {
         font-size: 0.82rem;
     }
 
+    .work-project-action-row {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 0.8rem;
+    }
+
     .work-project-metrics {
+        flex: 1 1 auto;
         gap: 0.72rem;
         padding-top: 0;
     }
@@ -7099,13 +7113,14 @@ html.theme-light .about-toolkit-card-copy {
     }
 
     .work-project-arrow {
-        right: 0.7rem;
-        bottom: 0.7rem;
-        min-height: 2.35rem;
-        padding: 0.64rem 0.78rem 0.64rem 0.86rem;
-        border-radius: 0.5rem;
-        font-size: 0.62rem;
-        letter-spacing: 0.1em;
+        position: static;
+        flex: 0 0 auto;
+        align-self: flex-end;
+        min-height: 2.58rem;
+        padding: 0.72rem 0.9rem 0.72rem 0.98rem;
+        border-radius: 0.56rem;
+        font-size: 0.68rem;
+        letter-spacing: 0.11em;
     }
 
     .case-study-hero-shell {
