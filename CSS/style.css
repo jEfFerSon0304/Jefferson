@@ -3030,6 +3030,29 @@ html.theme-light .about-page-photo {
     }
 }
 
+@media (hover: none), (pointer: coarse), (max-width: 768px) {
+    .about-page-photo {
+        cursor: auto;
+        touch-action: pan-x;
+        transition: none;
+    }
+
+    .about-page-photo:hover img {
+        filter: grayscale(1) contrast(1.02) brightness(0.9);
+        transform: scale(1);
+    }
+
+    .about-page-photo.is-mobile-revealed img {
+        filter: grayscale(0) contrast(1.03) brightness(0.98) saturate(1.04);
+        transform: scale(1.05);
+    }
+
+    .about-page-photo-editor,
+    .about-photo-reset-cursor {
+        display: none;
+    }
+}
+
 .about-page-photo-label {
     position: absolute;
     left: -1px;

@@ -323,7 +323,9 @@ function setupSiteCursor() {
 
             return {
                 mode: "action",
-                label: isLightTheme ? "Switch to dark mode" : "Switch to light mode",
+                label: isLightTheme
+                    ? "Switch to dark mode"
+                    : "Switch to light mode",
             };
         }
 
@@ -550,9 +552,8 @@ function syncThemedImages() {
         return;
     }
 
-    const isLightTheme = document.documentElement.classList.contains(
-        "theme-light",
-    );
+    const isLightTheme =
+        document.documentElement.classList.contains("theme-light");
 
     themedImages.forEach((image) => {
         const nextSource = isLightTheme
@@ -2189,7 +2190,9 @@ function setupFooterPhotoGallery() {
                     "footer-photo-handle-middle-left",
                 )
                     ? state.startX - event.clientX
-                    : handleClasses?.contains("footer-photo-handle-middle-right")
+                    : handleClasses?.contains(
+                            "footer-photo-handle-middle-right",
+                        )
                       ? event.clientX - state.startX
                       : 0;
                 const verticalDelta =
@@ -2200,12 +2203,12 @@ function setupFooterPhotoGallery() {
                         : handleClasses?.contains(
                                 "footer-photo-handle-bottom-left",
                             ) ||
-                              handleClasses?.contains(
-                                  "footer-photo-handle-bottom-center",
-                              ) ||
-                              handleClasses?.contains(
-                                  "footer-photo-handle-bottom-right",
-                              )
+                            handleClasses?.contains(
+                                "footer-photo-handle-bottom-center",
+                            ) ||
+                            handleClasses?.contains(
+                                "footer-photo-handle-bottom-right",
+                            )
                           ? event.clientY - state.startY
                           : 0;
                 const cornerDelta =
@@ -2215,9 +2218,9 @@ function setupFooterPhotoGallery() {
                         : handleClasses?.contains(
                                 "footer-photo-handle-top-right",
                             ) ||
-                              handleClasses?.contains(
-                                  "footer-photo-handle-bottom-right",
-                              )
+                            handleClasses?.contains(
+                                "footer-photo-handle-bottom-right",
+                            )
                           ? event.clientX - state.startX
                           : 0;
                 const resizeDelta =
@@ -2236,7 +2239,10 @@ function setupFooterPhotoGallery() {
                 element.style.width = `${nextWidth}px`;
                 constrainToFooter();
 
-                if (!state.moved && Math.abs(nextWidth - state.startWidth) > 3) {
+                if (
+                    !state.moved &&
+                    Math.abs(nextWidth - state.startWidth) > 3
+                ) {
                     state.moved = true;
                     state.suppressClick = true;
                 }
@@ -2311,6 +2317,14 @@ function setupFooterPhotoGallery() {
 
 function setupAboutPagePhotoDrag() {
     if (!aboutPageGallery || !aboutPagePhotos.length) {
+        return;
+    }
+
+    const supportsDesktopPointer = window.matchMedia(
+        "(hover: hover) and (pointer: fine) and (min-width: 769px)",
+    ).matches;
+
+    if (!supportsDesktopPointer) {
         return;
     }
 
@@ -2425,34 +2439,29 @@ function setupAboutPagePhotoDrag() {
         isReturnWorkerActive = true;
         bringToFront(task.element);
 
-        animateReturnCursor(
-            task.element,
-            task.offsetX,
-            task.offsetY,
-            () => {
-                task.element.classList.remove("is-return-pending");
-                task.element.classList.remove("is-returning");
-                task.state.returnTimerId = null;
-                task.state.returnCleanupTimerId = null;
-                isReturnWorkerActive = false;
+        animateReturnCursor(task.element, task.offsetX, task.offsetY, () => {
+            task.element.classList.remove("is-return-pending");
+            task.element.classList.remove("is-returning");
+            task.state.returnTimerId = null;
+            task.state.returnCleanupTimerId = null;
+            isReturnWorkerActive = false;
 
-                if (
-                    task.state.pointerId === null &&
-                    isPhotoAwayFromHome(task.state)
-                ) {
-                    queuePhotoReturn({
-                        element: task.element,
-                        state: task.state,
-                        applyOffset: task.applyOffset,
-                        offsetX: task.state.offsetX,
-                        offsetY: task.state.offsetY,
-                    });
-                    return;
-                }
+            if (
+                task.state.pointerId === null &&
+                isPhotoAwayFromHome(task.state)
+            ) {
+                queuePhotoReturn({
+                    element: task.element,
+                    state: task.state,
+                    applyOffset: task.applyOffset,
+                    offsetX: task.state.offsetX,
+                    offsetY: task.state.offsetY,
+                });
+                return;
+            }
 
-                processReturnQueue();
-            },
-        );
+            processReturnQueue();
+        });
 
         task.state.returnTimerId = window.setTimeout(() => {
             task.element.classList.remove("is-return-pending");
@@ -2514,8 +2523,7 @@ function setupAboutPagePhotoDrag() {
                 state.offsetX + (galleryRect.left + padding - rect.left);
             const maxX =
                 state.offsetX + (galleryRect.right - padding - rect.right);
-            const minY =
-                state.offsetY + (galleryRect.top + padding - rect.top);
+            const minY = state.offsetY + (galleryRect.top + padding - rect.top);
             const maxY =
                 state.offsetY + (galleryRect.bottom - padding - rect.bottom);
 
@@ -2601,8 +2609,7 @@ function setupAboutPagePhotoDrag() {
                 state.offsetX + (galleryRect.left + padding - rect.left);
             state.maxX =
                 state.offsetX + (galleryRect.right - padding - rect.right);
-            state.minY =
-                state.offsetY + (galleryRect.top + padding - rect.top);
+            state.minY = state.offsetY + (galleryRect.top + padding - rect.top);
             state.maxY =
                 state.offsetY + (galleryRect.bottom - padding - rect.bottom);
 
@@ -2654,6 +2661,26 @@ function setupAboutPagePhotoDrag() {
     window.addEventListener("resize", () => {
         photoStates.forEach((photoState) => {
             photoState.constrainToGallery();
+        });
+    });
+}
+
+function setupAboutPageMobilePhotoReveal() {
+    if (!aboutPagePhotos.length) {
+        return;
+    }
+
+    const supportsMobilePointer = window.matchMedia(
+        "(hover: none), (pointer: coarse), (max-width: 768px)",
+    ).matches;
+
+    if (!supportsMobilePointer) {
+        return;
+    }
+
+    aboutPagePhotos.forEach((element) => {
+        element.addEventListener("click", () => {
+            element.classList.toggle("is-mobile-revealed");
         });
     });
 }
@@ -2743,6 +2770,7 @@ setupFeaturedMediaParallax();
 setupWorkProjectImageScroll();
 setupFooterPhotoGallery();
 setupAboutPagePhotoDrag();
+setupAboutPageMobilePhotoReveal();
 setupGalleryPagination();
 setupIntroLoader().finally(() => {
     setupHeroDescriptionTypewriter();
