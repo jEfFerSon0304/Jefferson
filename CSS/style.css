@@ -2069,23 +2069,55 @@ html.theme-light .toolkit-row:hover .toolkit-logo-wrap {
 }
 
 .work-page-section {
+    position: relative;
+    isolation: isolate;
     width: calc(100% + (var(--shell-side-space) * 2));
     margin-inline: calc(var(--shell-side-space) * -1);
     padding: clamp(3.1rem, 5vw, 4.4rem) 0 clamp(3rem, 5vw, 4.2rem);
-    background:
-        radial-gradient(
-            circle at top left,
-            rgba(255, 255, 255, 0.03),
-            transparent 30%
-        ),
-        linear-gradient(180deg, rgba(4, 4, 4, 1), rgba(0, 0, 0, 1));
+    overflow: hidden;
+    background: #000000;
 }
 
 html.theme-light .work-page-section {
-    background: var(--bg);
+    background: #ffffff;
+}
+
+.work-page-section::before,
+.work-page-section::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+
+.work-page-section::before {
+    background:
+        linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size:
+        clamp(4.8rem, 8vw, 7rem) clamp(4.8rem, 8vw, 7rem),
+        clamp(4.8rem, 8vw, 7rem) clamp(4.8rem, 8vw, 7rem);
+    opacity: 0.22;
+}
+
+.work-page-section::after {
+    content: none;
+}
+
+html.theme-light .work-page-section::before {
+    background:
+        linear-gradient(90deg, rgba(27, 46, 76, 0.06) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(27, 46, 76, 0.045) 1px, transparent 1px);
+    background-size:
+        4.5rem 4.5rem,
+        4.5rem 4.5rem;
+    opacity: 0.72;
 }
 
 .work-page-shell {
+    position: relative;
+    z-index: 1;
     width: 100%;
     padding: 0 var(--shell-side-space);
     display: grid;
