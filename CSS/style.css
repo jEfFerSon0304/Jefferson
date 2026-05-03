@@ -3155,6 +3155,13 @@ html.theme-light .about-page-photo {
 
 .featured-section {
     --featured-stack-top: clamp(4.5rem, 8vw, 6.5rem);
+    --featured-header-space: clamp(3.6rem, 5.8vw, 4.9rem);
+    --featured-header-stick-top: clamp(0.7rem, 1.6vw, 1.2rem);
+    --featured-sticky-gap: 0.9rem;
+    --featured-card-stick-top: calc(
+        var(--featured-header-stick-top) + var(--featured-header-space) +
+            var(--featured-sticky-gap)
+    );
     width: calc(100% + (var(--shell-side-space) * 2));
     margin-inline: calc(var(--shell-side-space) * -1);
     padding: clamp(4.4rem, 9vw, 7rem) 0 clamp(5rem, 10vw, 7.4rem);
@@ -3181,10 +3188,16 @@ html.theme-light .featured-section {
 
 .featured-header {
     position: sticky;
-    top: clamp(0.9rem, 2vw, 1.4rem);
+    top: var(--featured-header-stick-top);
     z-index: 8;
     margin-bottom: clamp(2rem, 4vw, 3rem);
     padding: 0.35rem 0 0.9rem;
+    background: linear-gradient(
+        180deg,
+        var(--bg) 0%,
+        var(--bg) 72%,
+        transparent 100%
+    );
 }
 
 .featured-title {
@@ -3215,7 +3228,7 @@ html.theme-light .featured-title-outline {
     display: grid;
     grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.25fr);
     position: sticky;
-    top: var(--featured-stack-top);
+    top: var(--featured-card-stick-top);
     z-index: var(--featured-layer, 1);
     min-height: clamp(29rem, 50vw, 38rem);
     border: 1px solid rgba(255, 255, 255, 0.08);
@@ -3442,6 +3455,98 @@ html.theme-light .featured-media {
     object-position: center;
     transform: translate3d(var(--featured-image-shift, 0px), 0, 0) scale(1.01);
     will-change: transform;
+}
+
+@media (min-width: 961px) and (max-height: 760px) {
+    .featured-section {
+        --featured-stack-top: clamp(3.4rem, 9vh, 4.8rem);
+        --featured-header-space: clamp(4.25rem, 9vh, 5.35rem);
+        --featured-header-stick-top: 0.45rem;
+        --featured-sticky-gap: clamp(3.2rem, 8vh, 5rem);
+        --featured-card-stick-top: calc(
+            var(--featured-header-stick-top) + var(--featured-header-space) +
+                var(--featured-sticky-gap)
+        );
+        padding-top: clamp(3.2rem, 7vh, 4.4rem);
+        padding-bottom: clamp(3.5rem, 8vh, 5rem);
+    }
+
+    .featured-header {
+        margin-bottom: clamp(2rem, 4.6vh, 3rem);
+        padding-bottom: 0.45rem;
+    }
+
+    .featured-title {
+        font-size: clamp(1.8rem, 4.5vw, 3.2rem);
+    }
+
+    .featured-card {
+        min-height: min(
+            34rem,
+            calc(100vh - var(--featured-stack-top) - 1.25rem)
+        );
+    }
+
+    .featured-copy {
+        gap: clamp(0.72rem, 1.7vh, 1rem);
+        padding: clamp(1rem, 2.2vw, 1.55rem);
+    }
+
+    .featured-project-title {
+        font-size: clamp(1.45rem, 3vw, 2.3rem);
+        line-height: 1;
+        letter-spacing: -0.055em;
+    }
+
+    .featured-description {
+        font-size: 0.86rem;
+        line-height: 1.45;
+    }
+
+    .featured-metrics {
+        gap: 1rem;
+    }
+
+    .featured-metric-value {
+        font-size: clamp(1.45rem, 3.2vw, 2.25rem);
+    }
+
+    .featured-link {
+        min-height: 2.45rem;
+        padding-block: 0.62rem;
+    }
+}
+
+@media (min-width: 961px) and (max-height: 640px) {
+    .featured-section {
+        --featured-stack-top: 3rem;
+        --featured-header-space: 2.55rem;
+        --featured-header-stick-top: 0.35rem;
+        --featured-sticky-gap: clamp(2rem, 6vh, 3.5rem);
+        --featured-card-stick-top: calc(
+            var(--featured-header-stick-top) + var(--featured-header-space) +
+                var(--featured-sticky-gap)
+        );
+    }
+
+    .featured-card {
+        min-height: min(
+            30rem,
+            calc(100vh - var(--featured-stack-top) - 0.8rem)
+        );
+    }
+
+    .featured-copy {
+        gap: 0.58rem;
+        padding: 0.9rem 1.1rem;
+    }
+
+    .featured-description {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
 }
 
 .profile-section {
@@ -7216,6 +7321,11 @@ html.theme-light .about-toolkit-card-copy {
         transform: none;
         filter: none;
         opacity: 1;
+    }
+
+    .featured-header {
+        position: relative;
+        top: auto;
     }
 
     .featured-media {
