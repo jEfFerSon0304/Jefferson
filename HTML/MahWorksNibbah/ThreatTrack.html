@@ -1,0 +1,913 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta
+            name="description"
+            content="ThreatTrack case study page for Jefferson's portfolio."
+        />
+
+        <script>
+            (() => {
+                try {
+                    const savedTheme = window.localStorage.getItem(
+                        "jeffersonPortfolioTheme",
+                    );
+
+                    if (savedTheme === "light") {
+                        document.documentElement.classList.add("theme-light");
+                    }
+
+                    if (
+                        window.sessionStorage.getItem(
+                            "jeffersonPortfolioPageTransition",
+                        ) === "true"
+                    ) {
+                        document.documentElement.classList.add(
+                            "is-page-transition-entering",
+                        );
+
+                        window.sessionStorage.removeItem(
+                            "jeffersonPortfolioPageTransition",
+                        );
+                    }
+                } catch (error) {
+                    // Keep transitions optional if session storage is unavailable.
+                }
+            })();
+        </script>
+
+        <link
+            rel="icon"
+            type="image/x-icon"
+            href="../../Assets/faviconDark.jpg"
+        />
+
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap"
+            rel="stylesheet"
+        />
+        <link rel="stylesheet" href="../../CSS/style.css" />
+
+        <title>ThreatTrack | Jefferson</title>
+    </head>
+    <body id="top" class="case-study-theme case-study-theme-threattrack">
+        <div class="page-transition-shell" aria-hidden="true">
+            <span
+                class="page-transition-panel page-transition-panel-top"
+            ></span>
+            <span
+                class="page-transition-panel page-transition-panel-bottom"
+            ></span>
+            <span class="page-transition-line"></span>
+        </div>
+
+        <div class="page-shell">
+            <header class="site-header case-study-site-header">
+                <a class="brand" href="../../index.html#hero">JEFFERSON</a>
+                <p class="header-clock" id="clock">Manila, PH - --:--:-- PHT</p>
+                <nav class="site-nav" aria-label="Primary">
+                    <a href="../work.html">WORK</a>
+                    <a href="../about.html">ABOUT</a>
+                </nav>
+            </header>
+
+            <main class="case-study-main">
+                <section class="case-study-hero case-study-hero-threattrack">
+                    <div
+                        class="case-study-hero-media-layer"
+                        aria-hidden="true"
+                    ></div>
+
+                    <div class="case-study-hero-shell">
+                        <div class="case-study-hero-stage">
+                            <div class="case-study-hero-copy">
+                                <p class="case-study-hero-kicker">
+                                    Capstone Project
+                                </p>
+                                <h1 class="case-study-hero-title">
+                                    ThreatTrack
+                                    <span>
+                                        An Android-based Crime Reporting System
+                                        with Hotspot Mapping for the Resident of
+                                        Valenzuela City
+                                    </span>
+                                </h1>
+                            </div>
+
+                            <p class="case-study-hero-index" aria-hidden="true">
+                                05
+                            </p>
+                        </div>
+
+                        <div class="case-study-hero-summary">
+                            <article class="case-study-hero-summary-card">
+                                <span class="case-study-hero-summary-label">
+                                    Project
+                                </span>
+                                <p class="case-study-hero-summary-value">
+                                    ThreatTrack
+                                </p>
+                            </article>
+
+                            <article class="case-study-hero-summary-card">
+                                <span class="case-study-hero-summary-label">
+                                    Year
+                                </span>
+                                <p class="case-study-hero-summary-value">
+                                    2025
+                                </p>
+                            </article>
+
+                            <article class="case-study-hero-summary-card">
+                                <span class="case-study-hero-summary-label">
+                                    Role
+                                </span>
+                                <p class="case-study-hero-summary-value">
+                                    Backend & Frontend Developer
+                                </p>
+                            </article>
+
+                            <article class="case-study-hero-summary-card">
+                                <span class="case-study-hero-summary-label">
+                                    Focus
+                                </span>
+                                <p class="case-study-hero-summary-value">
+                                    Reporting / Real-Time Mapping
+                                </p>
+                            </article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="case-study-content-section">
+                    <div class="the-overview">
+                        <p class="the-overview-copy">
+                            <strong>ThreatTrack</strong> is an Android-based
+                            crime reporting system with hotspot mapping for
+                            residents of Valenzuela City. The project focuses on
+                            making incident submission, location awareness, and
+                            response-oriented information easier to access from
+                            a mobile-first experience.
+                        </p>
+                    </div>
+                    <div
+                        class="case-study-content-shell case-study-story-shell"
+                    >
+                        <div class="case-study-story-flow">
+                            <section
+                                class="case-study-story-lead"
+                                aria-labelledby="threattrack-introduction"
+                            >
+                                <div class="case-study-story-section-head">
+                                    <span
+                                        class="case-study-story-bullet"
+                                        aria-hidden="true"
+                                    ></span>
+                                    <p class="case-study-story-section-label">
+                                        Introduction
+                                    </p>
+                                </div>
+                                <h2
+                                    class="case-study-story-intro"
+                                    id="threattrack-introduction"
+                                >
+                                    ThreatTrack was designed around a practical
+                                    public-safety workflow: residents can report
+                                    incidents, attach location context, and help
+                                    surface areas that need attention. The
+                                    system pairs mobile reporting with mapped
+                                    crime hotspots so information can be viewed
+                                    more clearly instead of staying scattered
+                                    across separate channels.
+                                </h2>
+                            </section>
+
+                            <aside
+                                class="case-study-story-details"
+                                aria-label="Project details"
+                            >
+                                <p class="case-study-story-details-label">
+                                    Details
+                                </p>
+                                <div class="case-study-story-details-table">
+                                    <div class="case-study-story-detail-row">
+                                        <span
+                                            class="case-study-story-detail-label"
+                                        >
+                                            Project Name
+                                        </span>
+                                        <span
+                                            class="case-study-story-detail-value"
+                                        >
+                                            ThreatTrack
+                                        </span>
+                                    </div>
+
+                                    <div class="case-study-story-detail-row">
+                                        <span
+                                            class="case-study-story-detail-label"
+                                        >
+                                            Timeframe
+                                        </span>
+                                        <span
+                                            class="case-study-story-detail-value"
+                                        >
+                                            2025
+                                        </span>
+                                    </div>
+
+                                    <div class="case-study-story-detail-row">
+                                        <span
+                                            class="case-study-story-detail-label"
+                                        >
+                                            Type
+                                        </span>
+                                        <span
+                                            class="case-study-story-detail-value"
+                                        >
+                                            Android Crime Reporting System
+                                        </span>
+                                    </div>
+
+                                    <div class="case-study-story-detail-row">
+                                        <span
+                                            class="case-study-story-detail-label"
+                                        >
+                                            Stack
+                                        </span>
+                                        <span
+                                            class="case-study-story-detail-value"
+                                        >
+                                            React Native / Firebase
+                                        </span>
+                                    </div>
+                                </div>
+                            </aside>
+                        </div>
+                    </div>
+                </section>
+
+                <section
+                    class="case-study-zigzag-section threattrack-gallery-section"
+                >
+                    <div
+                        class="case-study-zigzag-shell case-study-zigzag-shell-gallery"
+                    >
+                        <header class="case-study-zigzag-header">
+                            <p class="case-study-zigzag-label">
+                                Mobile User Side
+                            </p>
+                            <h2 class="case-study-zigzag-title">
+                                Resident reporting flow
+                            </h2>
+                            <p class="case-study-zigzag-text">
+                                The mobile side focuses on fast resident
+                                actions: opening the app, starting a report,
+                                adding context, and staying oriented through a
+                                phone-first interface.
+                            </p>
+                        </header>
+
+                        <div
+                            class="case-study-zigzag-media-grid threattrack-gallery-grid threattrack-gallery-grid-mobile"
+                        >
+                            <figure class="case-study-zigzag-media-card">
+                                <div
+                                    class="case-study-zigzag-media threattrack-gallery-media threattrack-gallery-media-mobile"
+                                >
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/ThreatTrack/ChatGPT Image May 25, 2026, 12_15_57 PM.png"
+                                        alt="ThreatTrack mobile user screen 1"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+
+                            <figure class="case-study-zigzag-media-card">
+                                <div
+                                    class="case-study-zigzag-media threattrack-gallery-media threattrack-gallery-media-mobile"
+                                >
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/ThreatTrack/ChatGPT Image May 25, 2026, 12_19_56 PM.png"
+                                        alt="ThreatTrack mobile user screen 2"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+
+                            <figure class="case-study-zigzag-media-card">
+                                <div
+                                    class="case-study-zigzag-media threattrack-gallery-media threattrack-gallery-media-mobile"
+                                >
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/ThreatTrack/ChatGPT Image May 25, 2026, 12_21_22 PM.png"
+                                        alt="ThreatTrack mobile user screen 3"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+
+                            <figure class="case-study-zigzag-media-card">
+                                <div
+                                    class="case-study-zigzag-media threattrack-gallery-media threattrack-gallery-media-mobile"
+                                >
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/ThreatTrack/ChatGPT Image May 25, 2026, 12_22_56 PM.png"
+                                        alt="ThreatTrack mobile user screen 4"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+                        </div>
+                    </div>
+                </section>
+
+                <section
+                    class="case-study-zigzag-section threattrack-gallery-section"
+                >
+                    <div
+                        class="case-study-zigzag-shell case-study-zigzag-shell-gallery"
+                    >
+                        <header class="case-study-zigzag-header">
+                            <p class="case-study-zigzag-label">
+                                Web Admin Side
+                            </p>
+                            <h2 class="case-study-zigzag-title">
+                                Admin monitoring workspace
+                            </h2>
+                            <p class="case-study-zigzag-text">
+                                The web admin side gives reviewers a wider
+                                workspace for checking reports, scanning
+                                incident data, and managing activity from a
+                                desktop-oriented view.
+                            </p>
+                        </header>
+
+                        <div
+                            class="case-study-zigzag-media-grid threattrack-gallery-grid threattrack-gallery-grid-admin"
+                        >
+                            <figure class="case-study-zigzag-media-card">
+                                <div
+                                    class="case-study-zigzag-media threattrack-gallery-media threattrack-gallery-media-admin"
+                                >
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/ThreatTrack/Screenshot 2026-05-25 123223.png"
+                                        alt="ThreatTrack web admin screen 1"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+
+                            <figure class="case-study-zigzag-media-card">
+                                <div
+                                    class="case-study-zigzag-media threattrack-gallery-media threattrack-gallery-media-admin"
+                                >
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/ThreatTrack/Screenshot 2026-05-25 122905.png"
+                                        alt="ThreatTrack web admin screen 2"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+
+                            <figure class="case-study-zigzag-media-card">
+                                <div
+                                    class="case-study-zigzag-media threattrack-gallery-media threattrack-gallery-media-admin"
+                                >
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/ThreatTrack/Screenshot 2026-05-25 122749.png"
+                                        alt="ThreatTrack web admin screen 3"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+
+                            <figure class="case-study-zigzag-media-card">
+                                <div
+                                    class="case-study-zigzag-media threattrack-gallery-media threattrack-gallery-media-admin"
+                                >
+                                    <img
+                                        class="case-study-zigzag-image"
+                                        src="../../Assets/ProjectImages/ThreatTrack/Screenshot 2026-05-25 123151.png"
+                                        alt="ThreatTrack web admin screen 4"
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+                            </figure>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="case-study-next-project-section">
+                    <a
+                        class="case-study-next-project-link case-study-next-project-link-thesession"
+                        href="TheSession.html"
+                    >
+                        <div
+                            class="case-study-next-project-media"
+                            aria-hidden="true"
+                        ></div>
+
+                        <div class="case-study-next-project-shell">
+                            <p class="case-study-next-project-label">
+                                Next Project
+                            </p>
+                            <h2 class="case-study-next-project-title">
+                                The Session
+                            </h2>
+                            <p class="case-study-next-project-copy">
+                                Continue back to the first case study and
+                                explore a Unity-built slasher experience with a
+                                darker, story-driven visual direction.
+                            </p>
+                            <span class="case-study-next-project-cta">
+                                Open Case Study
+                            </span>
+                        </div>
+                    </a>
+                </section>
+            </main>
+
+            <footer class="site-footer" id="contact">
+                <div class="site-footer-inner">
+                    <div class="site-footer-hero">
+                        <div class="site-footer-title-wrap">
+                            <h2 class="site-footer-title">
+                                <span class="site-footer-title-solid">
+                                    JEFFERSON
+                                </span>
+                                <span class="site-footer-title-outline">
+                                    GARCIA
+                                </span>
+                            </h2>
+                        </div>
+
+                        <div class="site-footer-stage">
+                            <nav
+                                class="site-footer-links"
+                                aria-label="Footer links"
+                            >
+                                <a href="https://github.com/jEfFerSon0304">
+                                    Github
+                                    <span aria-hidden="true">&#8599;</span>
+                                </a>
+                                <a href="mailto:jefferson.garcia3435.com">
+                                    Contact
+                                    <span aria-hidden="true">&#8593;</span>
+                                </a>
+                                <a
+                                    href="https://www.instagram.com/j.garcia304/?hl=en"
+                                    target="_blank"
+                                >
+                                    Instagram
+                                    <span aria-hidden="true">&#8599;</span>
+                                </a>
+                            </nav>
+
+                            <div
+                                class="footer-photo-gallery"
+                                data-footer-gallery
+                            >
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/FooterImages/IMG_20260307_224315.jpg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 1"
+                                    style="
+                                        --photo-left: 8%;
+                                        --photo-top: 34%;
+                                        --photo-width: clamp(7.2rem, 10.6vw, 9.2rem);
+                                        --photo-aspect: 1.34;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 1;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Photography
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/FooterImages/IMG_20260307_224315.jpg"
+                                        alt="Footer collage preview 1"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/FooterImages/IMG_20260525_140105.jpg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 2"
+                                    style="
+                                        --photo-left: 18%;
+                                        --photo-top: 5%;
+                                        --photo-width: clamp(6.2rem, 9vw, 7.8rem);
+                                        --photo-aspect: 0.75;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 2;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Photography
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/FooterImages/IMG_20260525_140105.jpg"
+                                        alt="Footer collage preview 2"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/FooterImages/Messenger_creation_7027512973652047080.jpeg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 3"
+                                    style="
+                                        --photo-left: 28%;
+                                        --photo-top: 50%;
+                                        --photo-width: clamp(7rem, 10.2vw, 9rem);
+                                        --photo-aspect: 1.34;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 3;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Photography
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/FooterImages/Messenger_creation_7027512973652047080.jpeg"
+                                        alt="Footer collage preview 3"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/FooterImages/Messenger_creation_7027513228117554577.jpeg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 4"
+                                    style="
+                                        --photo-left: 42%;
+                                        --photo-top: 18%;
+                                        --photo-width: clamp(7.3rem, 10.8vw, 9.5rem);
+                                        --photo-aspect: 1.34;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 4;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Photography
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/FooterImages/Messenger_creation_7027513228117554577.jpeg"
+                                        alt="Footer collage preview 4"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/FooterImages/Messenger_creation_7027513228119710264.jpeg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 5"
+                                    style="
+                                        --photo-left: 55%;
+                                        --photo-top: 45%;
+                                        --photo-width: clamp(6.1rem, 8.8vw, 7.7rem);
+                                        --photo-aspect: 0.75;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 5;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Photography
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/FooterImages/Messenger_creation_7027513228119710264.jpeg"
+                                        alt="Footer collage preview 5"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/FooterImages/Messenger_creation_7124381550934629389.jpeg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 6"
+                                    style="
+                                        --photo-left: 66%;
+                                        --photo-top: 8%;
+                                        --photo-width: clamp(6.5rem, 9.4vw, 8.1rem);
+                                        --photo-aspect: 0.75;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 6;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Photography
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/FooterImages/Messenger_creation_7124381550934629389.jpeg"
+                                        alt="Footer collage preview 6"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+                                <a
+                                    class="footer-photo"
+                                    href="../../Assets/FooterImages/Messenger_creation_7124381550938969219.jpeg"
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    data-footer-photo
+                                    aria-label="Open footer image 7"
+                                    style="
+                                        --photo-left: 78%;
+                                        --photo-top: 37%;
+                                        --photo-width: clamp(5.8rem, 8.4vw, 7.2rem);
+                                        --photo-aspect: 0.75;
+                                        --photo-rotate: 0deg;
+                                        --photo-layer: 7;
+                                    "
+                                >
+                                    <span
+                                        class="footer-photo-editor"
+                                        aria-hidden="true"
+                                    >
+                                        <span class="footer-photo-tag">
+                                            Photography
+                                        </span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-top-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-middle-right"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-left"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-center"
+                                        ></span>
+                                        <span
+                                            class="footer-photo-handle footer-photo-handle-bottom-right"
+                                        ></span>
+                                    </span>
+
+                                    <img
+                                        src="../../Assets/FooterImages/Messenger_creation_7124381550938969219.jpeg"
+                                        alt="Footer collage preview 7"
+                                        loading="lazy"
+                                        decoding="async"
+                                        draggable="false"
+                                    />
+                                </a>
+                            </div>
+
+                            <a class="site-footer-side-rail" href="#top">
+                                <span class="site-footer-side-mark">
+                                    <span aria-hidden="true">&#8593;</span>
+                                </span>
+                                <span class="site-footer-side-label">
+                                    Top
+                                </span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="site-footer-bottom">
+                        <span class="site-footer-copy">
+                            &copy; 2026 Jefferson. All rights reserved.
+                        </span>
+                    </div>
+                </div>
+            </footer>
+        </div>
+
+        <script src="../../JAVASCRIPT/script.js"></script>
+    </body>
+</html>

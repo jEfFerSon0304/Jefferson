@@ -1026,27 +1026,48 @@ function setupAutoHidingHeader() {
         return;
     }
 
-    let previousScrollY = window.scrollY;
+    let previousScrollY = Math.max(
+        window.pageYOffset || document.documentElement.scrollTop || 0,
+        0,
+    );
+    let upwardScrollDistance = 0;
+    let downwardScrollDistance = 0;
     const topRevealDistance = 24;
+    const revealDistance = 6;
+    const hideDistance = 12;
+    const scrollNoiseThreshold = 1;
 
     function updateHeaderState() {
         const currentScrollY = Math.max(
             window.pageYOffset || document.documentElement.scrollTop || 0,
             0,
         );
-        const isScrollingUp = currentScrollY < previousScrollY;
-        const isScrollingDown = currentScrollY > previousScrollY;
+        const scrollDelta = currentScrollY - previousScrollY;
 
-        if (mobileHeaderMedia.matches) {
-            showHeader();
-        } else if (isMenuOpen()) {
+        if (Math.abs(scrollDelta) <= scrollNoiseThreshold) {
+            return;
+        }
+
+        if (isMenuOpen()) {
             showHeader();
         } else if (currentScrollY <= topRevealDistance) {
             showHeader();
-        } else if (isScrollingUp) {
-            showHeader();
-        } else if (isScrollingDown) {
-            hideHeader();
+            upwardScrollDistance = 0;
+            downwardScrollDistance = 0;
+        } else if (scrollDelta < 0) {
+            upwardScrollDistance += Math.abs(scrollDelta);
+            downwardScrollDistance = 0;
+
+            if (upwardScrollDistance >= revealDistance) {
+                showHeader();
+            }
+        } else {
+            downwardScrollDistance += scrollDelta;
+            upwardScrollDistance = 0;
+
+            if (downwardScrollDistance >= hideDistance) {
+                hideHeader();
+            }
         }
 
         previousScrollY = currentScrollY;
@@ -1059,6 +1080,8 @@ function setupAutoHidingHeader() {
             window.pageYOffset || document.documentElement.scrollTop || 0,
             0,
         );
+        upwardScrollDistance = 0;
+        downwardScrollDistance = 0;
         showHeader();
     });
 
