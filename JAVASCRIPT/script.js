@@ -547,6 +547,87 @@ function setupThemeToggle() {
     });
 }
 
+function setupThemeToggleGuide() {
+    if (!document.body.classList.contains("home-page") || !themeToggle) {
+        return;
+    }
+
+    const prefersReducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const supportsFinePointer = window.matchMedia(
+        "(hover: hover) and (pointer: fine)",
+    ).matches;
+
+    if (prefersReducedMotion || !supportsFinePointer) {
+        return;
+    }
+
+    let hasPlayed = false;
+
+    function createGuide() {
+        if (hasPlayed || !document.body.contains(themeToggle)) {
+            return;
+        }
+
+        hasPlayed = true;
+
+        const toggleRect = themeToggle.getBoundingClientRect();
+        const targetX = toggleRect.left + toggleRect.width / 2;
+        const targetY = toggleRect.top + toggleRect.height / 2;
+        const startX = window.innerWidth + 92;
+        const startY = Math.min(
+            Math.max(targetY + 92, 120),
+            window.innerHeight - 90,
+        );
+        const guide = document.createElement("div");
+        const halo = document.createElement("span");
+        const frame = document.createElement("span");
+        const core = document.createElement("span");
+        const label = document.createElement("span");
+        const message = document.createElement("span");
+        const isLightTheme =
+            document.documentElement.classList.contains("theme-light");
+
+        guide.className = "theme-toggle-guide";
+        halo.className = "theme-toggle-guide-halo";
+        frame.className = "theme-toggle-guide-frame";
+        core.className = "theme-toggle-guide-core";
+        label.className = "theme-toggle-guide-label";
+        message.className = "theme-toggle-guide-message";
+        label.textContent = "TIP";
+        message.textContent = isLightTheme
+            ? "You can switch back to dark mode here."
+            : "You can switch to light mode here.";
+        guide.setAttribute("aria-hidden", "true");
+        guide.style.setProperty("--theme-guide-start-x", `${startX}px`);
+        guide.style.setProperty("--theme-guide-start-y", `${startY}px`);
+        guide.style.setProperty("--theme-guide-target-x", `${targetX}px`);
+        guide.style.setProperty("--theme-guide-target-y", `${targetY}px`);
+        guide.append(halo, frame, core, label, message);
+
+        themeToggle.classList.add("is-guide-target");
+        document.body.append(guide);
+
+        guide.addEventListener(
+            "animationend",
+            () => {
+                guide.remove();
+                themeToggle.classList.remove("is-guide-target");
+            },
+            { once: true },
+        );
+    }
+
+    window.addEventListener(
+        "portfolio:intro-scroll-unlocked",
+        () => {
+            window.setTimeout(createGuide, 1150);
+        },
+        { once: true },
+    );
+}
+
 function syncThemedImages() {
     if (!themedImages.length) {
         return;
@@ -2070,6 +2151,17 @@ function setupFooterPhotoGallery() {
     const photoStates = [];
     let zIndexSeed = footerPhotos.length + 10;
 
+    footerPhotoGallery.querySelectorAll("img").forEach((image) => {
+        image.loading = "eager";
+        image.decoding = "async";
+
+        if (!image.complete && typeof image.decode === "function") {
+            image.decode().catch(() => {
+                // The regular image load path still handles decode failures.
+            });
+        }
+    });
+
     function bringToFront(element) {
         element.style.zIndex = `${zIndexSeed}`;
         zIndexSeed += 1;
@@ -2357,7 +2449,7 @@ function setupAboutPagePhotoDrag() {
     const returnWorkerMessages = [
         "dud, stop destroying the layout",
         "Again? really?",
-        "Please, stop!",
+        "This dud doesn't kno how to listen",
         "i said stop destroying the layout -_-",
     ];
     let isReturnWorkerActive = false;
@@ -2538,20 +2630,26 @@ function setupAboutPagePhotoDrag() {
             );
         }
 
-        function constrainToGallery() {
-            const galleryRect = aboutPageGallery.getBoundingClientRect();
+        function getViewportDragLimits() {
             const rect = element.getBoundingClientRect();
             const padding = 8;
-            const minX =
-                state.offsetX + (galleryRect.left + padding - rect.left);
-            const maxX =
-                state.offsetX + (galleryRect.right - padding - rect.right);
-            const minY = state.offsetY + (galleryRect.top + padding - rect.top);
-            const maxY =
-                state.offsetY + (galleryRect.bottom - padding - rect.bottom);
 
-            state.offsetX = clamp(state.offsetX, minX, maxX);
-            state.offsetY = clamp(state.offsetY, minY, maxY);
+            return {
+                minX: state.offsetX + (padding - rect.left),
+                maxX:
+                    state.offsetX + (window.innerWidth - padding - rect.right),
+                minY: state.offsetY + (padding - rect.top),
+                maxY:
+                    state.offsetY +
+                    (window.innerHeight - padding - rect.bottom),
+            };
+        }
+
+        function constrainToViewport() {
+            const limits = getViewportDragLimits();
+
+            state.offsetX = clamp(state.offsetX, limits.minX, limits.maxX);
+            state.offsetY = clamp(state.offsetY, limits.minY, limits.maxY);
             applyOffset();
         }
 
@@ -2585,7 +2683,7 @@ function setupAboutPagePhotoDrag() {
         }
 
         applyOffset();
-        photoStates.push({ constrainToGallery });
+        photoStates.push({ constrainToViewport });
 
         element.addEventListener("dragstart", (event) => {
             event.preventDefault();
@@ -2618,9 +2716,7 @@ function setupAboutPagePhotoDrag() {
             element.classList.remove("is-return-pending");
             element.classList.remove("is-returning");
 
-            const galleryRect = aboutPageGallery.getBoundingClientRect();
-            const rect = element.getBoundingClientRect();
-            const padding = 8;
+            const limits = getViewportDragLimits();
 
             state.pointerId = event.pointerId;
             state.startX = event.clientX;
@@ -2628,13 +2724,10 @@ function setupAboutPagePhotoDrag() {
             state.initialOffsetX = state.offsetX;
             state.initialOffsetY = state.offsetY;
             state.moved = false;
-            state.minX =
-                state.offsetX + (galleryRect.left + padding - rect.left);
-            state.maxX =
-                state.offsetX + (galleryRect.right - padding - rect.right);
-            state.minY = state.offsetY + (galleryRect.top + padding - rect.top);
-            state.maxY =
-                state.offsetY + (galleryRect.bottom - padding - rect.bottom);
+            state.minX = limits.minX;
+            state.maxX = limits.maxX;
+            state.minY = limits.minY;
+            state.maxY = limits.maxY;
 
             bringToFront(element);
             element.setPointerCapture(state.pointerId);
@@ -2683,7 +2776,7 @@ function setupAboutPagePhotoDrag() {
 
     window.addEventListener("resize", () => {
         photoStates.forEach((photoState) => {
-            photoState.constrainToGallery();
+            photoState.constrainToViewport();
         });
     });
 }
@@ -2780,6 +2873,7 @@ function setupGalleryPagination() {
 updateClock();
 setupThemedImages();
 setupThemeToggle();
+setupThemeToggleGuide();
 setupPageTransitions();
 setupSiteCursor();
 setupMobileMenu();

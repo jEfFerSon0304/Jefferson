@@ -1188,7 +1188,8 @@ html.theme-light .hero-orbit-outline {
 }
 
 .hero-orbit-ring:hover,
-.hero-orbit-ring:focus-visible {
+.hero-orbit-ring:focus-visible,
+.hero-orbit-ring.is-guide-target {
     border-color: rgb(var(--hero-accent-rgb) / 0.74);
     box-shadow:
         inset 0 0 0 1px rgb(var(--hero-accent-rgb) / 0.2),
@@ -1316,6 +1317,243 @@ html.theme-light .theme-toggle-icon-moon {
 html.theme-light .theme-toggle-icon-sun {
     opacity: 1;
     transform: scale(1) rotate(0deg);
+}
+
+.theme-toggle-guide {
+    --theme-guide-stroke: rgba(150, 102, 255, 0.98);
+    --theme-guide-label-bg: rgba(102, 40, 182, 0.94);
+    --theme-guide-label-border: rgba(195, 158, 255, 0.48);
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 34;
+    width: 0;
+    height: 0;
+    pointer-events: none;
+    isolation: isolate;
+    transform: translate(
+        var(--theme-guide-start-x),
+        var(--theme-guide-start-y)
+    );
+    animation: themeToggleGuide 5200ms cubic-bezier(0.16, 1, 0.2, 1) forwards;
+}
+
+.theme-toggle-guide-halo,
+.theme-toggle-guide-frame,
+.theme-toggle-guide-core,
+.theme-toggle-guide-label,
+.theme-toggle-guide-message {
+    position: absolute;
+    left: 0;
+    top: 0;
+    pointer-events: none;
+}
+
+.theme-toggle-guide-halo {
+    width: 4.35rem;
+    height: 4.35rem;
+    border-radius: 999px;
+    opacity: 0.88;
+    filter: blur(9px);
+    transform: translate(-50%, -50%) scale(1.38);
+    background: radial-gradient(
+        circle,
+        rgb(var(--hero-accent-rgb) / 0.32) 0%,
+        rgb(var(--hero-accent-rgb) / 0.13) 46%,
+        transparent 74%
+    );
+}
+
+.theme-toggle-guide-frame {
+    width: 2.08rem;
+    height: 2.08rem;
+    border-radius: 0.36rem;
+    opacity: 0.98;
+    transform: translate(-50%, -50%) scale(1.24);
+    background:
+        linear-gradient(var(--theme-guide-stroke) 0 0) top left / 0.66rem 2px
+            no-repeat,
+        linear-gradient(var(--theme-guide-stroke) 0 0) top left / 2px 0.66rem
+            no-repeat,
+        linear-gradient(var(--theme-guide-stroke) 0 0) top right / 0.66rem 2px
+            no-repeat,
+        linear-gradient(var(--theme-guide-stroke) 0 0) top right / 2px 0.66rem
+            no-repeat,
+        linear-gradient(var(--theme-guide-stroke) 0 0) bottom left / 0.66rem 2px
+            no-repeat,
+        linear-gradient(var(--theme-guide-stroke) 0 0) bottom left / 2px 0.66rem
+            no-repeat,
+        linear-gradient(var(--theme-guide-stroke) 0 0) bottom right / 0.66rem 2px
+            no-repeat,
+        linear-gradient(var(--theme-guide-stroke) 0 0) bottom right / 2px
+            0.66rem no-repeat;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.32),
+        0 0 1.2rem rgb(var(--hero-accent-rgb) / 0.32);
+}
+
+.theme-toggle-guide-core {
+    width: 0.48rem;
+    height: 0.48rem;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.98);
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow:
+        0 0 18px rgba(255, 255, 255, 0.38),
+        0 0 0 1px rgba(255, 255, 255, 0.26),
+        0 0 0 0.28rem rgb(var(--hero-accent-rgb) / 0.18);
+}
+
+.theme-toggle-guide-label,
+.theme-toggle-guide-message {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--theme-guide-label-border);
+    border-radius: 999px;
+    background: var(--theme-guide-label-bg);
+    color: #ffffff;
+    line-height: 1;
+    white-space: nowrap;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(16px);
+}
+
+.theme-toggle-guide-label {
+    min-width: 2.5rem;
+    padding: 0.3rem 0.54rem 0.28rem;
+    font-size: 0.52rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    transform: translate(1rem, -1.2rem);
+    animation: themeToggleGuideLabel 5200ms ease forwards;
+}
+
+.theme-toggle-guide-message {
+    max-width: min(19.5rem, calc(100vw - 2rem));
+    width: max-content;
+    padding: 0.48rem 0.68rem 0.5rem;
+    opacity: 0;
+    overflow: hidden;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    line-height: 1.15;
+    transform: translate(1rem, -1.2rem) scale(0.92);
+    animation:
+        themeToggleGuideMessage 5200ms ease forwards,
+        themeToggleGuideType 5200ms steps(38, end) forwards;
+}
+
+.theme-toggle-guide-label::after,
+.theme-toggle-guide-message::after {
+    content: "";
+    position: absolute;
+    left: 0.52rem;
+    bottom: -0.28rem;
+    width: 0.54rem;
+    height: 1px;
+    background: var(--theme-guide-stroke);
+    opacity: 0.5;
+    transform: rotate(-34deg);
+    transform-origin: left center;
+}
+
+html.theme-light .theme-toggle-guide {
+    --theme-guide-stroke: rgba(54, 92, 255, 0.98);
+    --theme-guide-label-bg: rgba(17, 22, 28, 0.92);
+    --theme-guide-label-border: rgba(54, 92, 255, 0.4);
+}
+
+@keyframes themeToggleGuide {
+    0% {
+        opacity: 0;
+        transform: translate(
+                var(--theme-guide-start-x),
+                var(--theme-guide-start-y)
+            )
+            scale(0.82);
+    }
+
+    14% {
+        opacity: 1;
+        transform: translate(
+                var(--theme-guide-start-x),
+                var(--theme-guide-start-y)
+            )
+            scale(0.92);
+    }
+
+    38%,
+    84% {
+        opacity: 1;
+        transform: translate(
+                var(--theme-guide-target-x),
+                var(--theme-guide-target-y)
+            )
+            scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(
+                var(--theme-guide-target-x),
+                var(--theme-guide-target-y)
+            )
+            scale(0.92);
+    }
+}
+
+@keyframes themeToggleGuideLabel {
+    0%,
+    42% {
+        opacity: 1;
+        transform: translate(1rem, -1.2rem) scale(1);
+    }
+
+    48%,
+    100% {
+        opacity: 0;
+        transform: translate(1rem, -1.2rem) scale(0.92);
+    }
+}
+
+@keyframes themeToggleGuideMessage {
+    0%,
+    44% {
+        opacity: 0;
+        transform: translate(1rem, -1.2rem) scale(0.92);
+        max-width: 0;
+    }
+
+    52%,
+    88% {
+        opacity: 1;
+        transform: translate(1rem, -1.2rem) scale(1);
+        max-width: min(19.5rem, calc(100vw - 2rem));
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(1rem, -1.2rem) scale(0.96);
+        max-width: min(19.5rem, calc(100vw - 2rem));
+    }
+}
+
+@keyframes themeToggleGuideType {
+    0%,
+    46% {
+        max-width: 0;
+        padding-inline: 0;
+    }
+
+    64%,
+    100% {
+        max-width: min(19.5rem, calc(100vw - 2rem));
+        padding-inline: 0.68rem;
+    }
 }
 
 .reveal-panel {
