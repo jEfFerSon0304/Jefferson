@@ -754,7 +754,9 @@ function setupPortfolioAssistant() {
                 fallbackAnswer ||
                 "The AI endpoint is not available yet. Add the serverless function and set GEMINI_API_KEY to make this live.";
             delete chatMessages[chatMessages.length - 1].isTyping;
-            setStatus(`Using fallback: ${error.message}`);
+            setStatus(
+                "Jefferson AI is taking a short break. Please try again in a moment.",
+            );
         } finally {
             setLoading(false);
             renderMessages();
