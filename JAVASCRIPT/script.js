@@ -512,7 +512,113 @@ function wait(duration) {
     });
 }
 
+function getPortfolioRootPath() {
+    const path = window.location.pathname.replace(/\\/g, "/");
+
+    if (path.includes("/HTML/MahWorksNibbah/")) {
+        return "../../";
+    }
+
+    if (path.includes("/HTML/")) {
+        return "../";
+    }
+
+    return "";
+}
+
+function ensurePortfolioAssistantMarkup() {
+    if (
+        document.getElementById("portfolioAssistant") &&
+        document.querySelector("[data-assistant-toggle]")
+    ) {
+        return;
+    }
+
+    const rootPath = getPortfolioRootPath();
+    const featuredHref = document.body.classList.contains("home-page")
+        ? "#featured"
+        : `${rootPath}index.html#featured`;
+    const workHref = `${rootPath}HTML/work.html`;
+    const assistant = document.createElement("section");
+    const toggle = document.createElement("button");
+
+    assistant.className = "portfolio-assistant";
+    assistant.id = "portfolioAssistant";
+    assistant.setAttribute("aria-label", "Portfolio assistant");
+    assistant.setAttribute("aria-hidden", "true");
+    assistant.innerHTML = `
+        <div class="portfolio-assistant-shell">
+            <header class="portfolio-assistant-header">
+                <div>
+                    <p class="portfolio-assistant-kicker">PORTFOLIO_AI</p>
+                    <h2 class="portfolio-assistant-title">Ask about my work</h2>
+                </div>
+                <button
+                    class="portfolio-assistant-close"
+                    type="button"
+                    data-assistant-close
+                    aria-label="Close portfolio assistant"
+                >
+                    <span aria-hidden="true"></span>
+                </button>
+            </header>
+
+            <div
+                class="portfolio-assistant-answer"
+                data-assistant-messages
+                aria-live="polite"
+            >
+                <div class="portfolio-assistant-message is-assistant">
+                    <span>Jefferson AI</span>
+                    <p>
+                        Hey, ask me anything about Jefferson's work, stack,
+                        projects, or process. Casual questions are okay too.
+                    </p>
+                </div>
+            </div>
+
+            <form class="portfolio-assistant-form" data-assistant-form>
+                <label class="portfolio-assistant-input-label">
+                    <span>Message the assistant</span>
+                    <input
+                        type="text"
+                        name="question"
+                        data-assistant-input
+                        placeholder="Type like you're chatting..."
+                        autocomplete="off"
+                        maxlength="220"
+                    />
+                </label>
+                <button type="submit">Send</button>
+            </form>
+
+            <p class="portfolio-assistant-status" data-assistant-status>
+                Powered by Gemini · Trained on Jefferson's portfolio data
+            </p>
+
+            <div class="portfolio-assistant-actions">
+                <a href="${featuredHref}">View featured work</a>
+                <a href="${workHref}">Open work page</a>
+            </div>
+        </div>
+    `;
+
+    toggle.className = "ask-pill";
+    toggle.type = "button";
+    toggle.dataset.assistantToggle = "";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", "portfolioAssistant");
+    toggle.innerHTML = `
+        <span class="ask-pill-icon" aria-hidden="true">+</span>
+        <span>Ask about my work</span>
+    `;
+
+    document.body.append(assistant, toggle);
+}
+
 function setupPortfolioAssistant() {
+    ensurePortfolioAssistantMarkup();
+
     const assistant = document.getElementById("portfolioAssistant");
     const toggle = document.querySelector("[data-assistant-toggle]");
     const closeButton = document.querySelector("[data-assistant-close]");
@@ -520,9 +626,6 @@ function setupPortfolioAssistant() {
     const form = document.querySelector("[data-assistant-form]");
     const input = document.querySelector("[data-assistant-input]");
     const status = document.querySelector("[data-assistant-status]");
-    const promptButtons = Array.from(
-        document.querySelectorAll("[data-assistant-prompt]"),
-    );
     const assistantEndpoint =
         window.PORTFOLIO_ASSISTANT_API || "/api/portfolio-assistant";
 
@@ -538,28 +641,6 @@ function setupPortfolioAssistant() {
             content: introMessage,
         },
     ];
-    const responses = {
-        projects: {
-            question: "What are Jefferson's best projects?",
-            fallback:
-                "Start with Wild Clash for game systems, PLV CEIT Thesis Hub for practical web development, and The Session for branching interactive storytelling.",
-        },
-        stack: {
-            question: "What tech stack does Jefferson use?",
-            fallback:
-                "The portfolio leans on HTML, CSS, JavaScript, GSAP-style motion, React awareness, Node.js, Laravel, Webflow, Figma, and AI-assisted tooling.",
-        },
-        process: {
-            question: "What is Jefferson's design and development process?",
-            fallback:
-                "My process is structure first: define the user flow, shape the interface, build the interaction, then polish motion, responsiveness, and edge cases.",
-        },
-        contact: {
-            question: "How can someone contact Jefferson?",
-            fallback:
-                "The fastest route is through the contact links in the footer, or you can review the Work and About pages first to see if the fit feels right.",
-        },
-    };
 
     function setOpen(isOpen) {
         assistant.classList.toggle("is-open", isOpen);
@@ -594,10 +675,6 @@ function setupPortfolioAssistant() {
     }
 
     function setLoading(isLoading) {
-        promptButtons.forEach((button) => {
-            button.disabled = isLoading;
-        });
-
         if (input) {
             input.disabled = isLoading;
         }
@@ -610,7 +687,7 @@ function setupPortfolioAssistant() {
         }
     }
 
-    async function askAssistant(question, fallbackAnswer, activeKey = "") {
+    async function askAssistant(question, fallbackAnswer) {
         const cleanQuestion = question.trim();
 
         if (!cleanQuestion) {
@@ -665,13 +742,6 @@ function setupPortfolioAssistant() {
             setLoading(false);
             renderMessages();
         }
-
-        promptButtons.forEach((button) => {
-            button.classList.toggle(
-                "is-active",
-                button.dataset.assistantPrompt === activeKey,
-            );
-        });
     }
 
     toggle.addEventListener("click", () => {
@@ -681,22 +751,6 @@ function setupPortfolioAssistant() {
     closeButton?.addEventListener("click", () => {
         setOpen(false);
         toggle.focus();
-    });
-
-    promptButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            const preset = responses[button.dataset.assistantPrompt];
-
-            if (!preset) {
-                return;
-            }
-
-            askAssistant(
-                preset.question,
-                preset.fallback,
-                button.dataset.assistantPrompt,
-            );
-        });
     });
 
     form?.addEventListener("submit", (event) => {
@@ -787,15 +841,44 @@ function setupThemeToggleGuide() {
     }
 
     let hasPlayed = false;
+    let guideTimeoutId = null;
+    let activeGuide = null;
+
+    function clearGuide() {
+        if (guideTimeoutId !== null) {
+            window.clearTimeout(guideTimeoutId);
+            guideTimeoutId = null;
+        }
+
+        if (activeGuide) {
+            activeGuide.remove();
+            activeGuide = null;
+        }
+
+        themeToggle.classList.remove("is-guide-target");
+    }
 
     function createGuide() {
         if (hasPlayed || !document.body.contains(themeToggle)) {
             return;
         }
 
+        const scrolledAwayFromHero = window.scrollY > 24;
+        const toggleRect = themeToggle.getBoundingClientRect();
+        const toggleIsVisible =
+            toggleRect.bottom > 0 &&
+            toggleRect.top < window.innerHeight &&
+            toggleRect.right > 0 &&
+            toggleRect.left < window.innerWidth;
+
+        if (scrolledAwayFromHero || !toggleIsVisible) {
+            hasPlayed = true;
+            clearGuide();
+            return;
+        }
+
         hasPlayed = true;
 
-        const toggleRect = themeToggle.getBoundingClientRect();
         const targetX = toggleRect.left + toggleRect.width / 2;
         const targetY = toggleRect.top + toggleRect.height / 2;
         const startX = window.innerWidth + 92;
@@ -831,21 +914,38 @@ function setupThemeToggleGuide() {
 
         themeToggle.classList.add("is-guide-target");
         document.body.append(guide);
+        activeGuide = guide;
 
         guide.addEventListener(
             "animationend",
             () => {
-                guide.remove();
-                themeToggle.classList.remove("is-guide-target");
+                if (activeGuide === guide) {
+                    activeGuide = null;
+                    guide.remove();
+                    themeToggle.classList.remove("is-guide-target");
+                }
             },
             { once: true },
         );
     }
 
     window.addEventListener(
+        "scroll",
+        () => {
+            if (window.scrollY > 24) {
+                clearGuide();
+            }
+        },
+        { passive: true },
+    );
+
+    window.addEventListener(
         "portfolio:intro-scroll-unlocked",
         () => {
-            window.setTimeout(createGuide, 1150);
+            guideTimeoutId = window.setTimeout(() => {
+                guideTimeoutId = null;
+                createGuide();
+            }, 1150);
         },
         { once: true },
     );

@@ -7299,22 +7299,15 @@ html.theme-light .ask-pill-icon {
 
 .portfolio-assistant-shell {
     display: grid;
-    gap: 1rem;
-    padding: 1rem;
-    border: 1px solid rgb(var(--hero-accent-rgb) / 0.28);
-    border-radius: 0.7rem;
-    background:
-        radial-gradient(
-            circle at top left,
-            rgb(var(--hero-accent-rgb) / 0.18),
-            transparent 42%
-        ),
-        linear-gradient(180deg, rgba(16, 16, 20, 0.94), rgba(5, 5, 7, 0.92));
+    gap: 0.9rem;
+    padding: 0.95rem;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 0.8rem;
+    background: rgba(8, 9, 11, 0.94);
     box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
-        0 28px 78px rgba(0, 0, 0, 0.48),
-        0 0 38px rgb(var(--hero-accent-rgb) / 0.18);
-    backdrop-filter: blur(22px);
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 24px 72px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(20px) saturate(1.08);
 }
 
 .portfolio-assistant-header {
@@ -7336,46 +7329,84 @@ html.theme-light .ask-pill-icon {
 }
 
 .portfolio-assistant-title {
-    margin: 0.35rem 0 0;
+    margin: 0;
     color: #ffffff;
-    font-size: clamp(1.25rem, 3vw, 1.75rem);
-    line-height: 0.98;
+    font-size: clamp(1.1rem, 2.6vw, 1.45rem);
+    line-height: 1.05;
 }
 
 .portfolio-assistant-close {
+    position: relative;
     display: inline-grid;
     place-items: center;
-    width: 2rem;
-    height: 2rem;
+    width: 2.2rem;
+    height: 2.2rem;
     flex: 0 0 auto;
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.055);
-    color: rgba(255, 255, 255, 0.76);
-    font-size: 0.82rem;
-    font-weight: 700;
+    background: rgba(255, 255, 255, 0.045);
+    color: rgba(255, 255, 255, 0.82);
     cursor: pointer;
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease,
+        background 180ms ease;
+}
+
+.portfolio-assistant-close span,
+.portfolio-assistant-close::before,
+.portfolio-assistant-close::after {
+    position: absolute;
+    width: 0.82rem;
+    height: 2px;
+    border-radius: 999px;
+    background: currentColor;
+    content: "";
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease;
+}
+
+.portfolio-assistant-close span {
+    opacity: 0;
+}
+
+.portfolio-assistant-close::before {
+    transform: rotate(45deg);
+}
+
+.portfolio-assistant-close::after {
+    transform: rotate(-45deg);
 }
 
 .portfolio-assistant-close:hover,
 .portfolio-assistant-close:focus-visible {
-    border-color: rgb(var(--hero-accent-rgb) / 0.52);
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.08);
     color: #ffffff;
+    transform: translateY(-1px) rotate(90deg);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        0 10px 24px rgba(0, 0, 0, 0.24);
+}
+
+.portfolio-assistant-close:focus-visible {
+    outline: 2px solid rgb(var(--hero-accent-rgb) / 0.72);
+    outline-offset: 0.22rem;
 }
 
 .portfolio-assistant-answer {
     display: grid;
     align-content: start;
     gap: 0.7rem;
-    min-height: 12rem;
-    max-height: min(23rem, 42vh);
+    min-height: 15rem;
+    max-height: min(27rem, 48vh);
     overflow: auto;
     padding: 0.9rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.55rem;
-    background:
-        linear-gradient(90deg, rgb(var(--hero-accent-rgb) / 0.08), transparent),
-        rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 0.65rem;
+    background: rgba(255, 255, 255, 0.03);
 }
 
 .portfolio-assistant-message {
@@ -7391,7 +7422,7 @@ html.theme-light .ask-pill-icon {
 }
 
 .portfolio-assistant-message span {
-    color: rgb(var(--hero-accent-rgb) / 0.86);
+    color: rgba(255, 255, 255, 0.58);
     font-size: 0.58rem;
     font-weight: 700;
     letter-spacing: 0.12em;
@@ -7406,51 +7437,31 @@ html.theme-light .ask-pill-icon {
 .portfolio-assistant-message p {
     margin: 0;
     padding: 0.72rem 0.82rem;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 0.65rem;
-    background: rgba(255, 255, 255, 0.055);
-    color: rgba(255, 255, 255, 0.76);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    border-radius: 0.72rem;
+    background: rgba(255, 255, 255, 0.045);
+    color: rgba(255, 255, 255, 0.78);
     font-size: 0.94rem;
     line-height: 1.48;
 }
 
 .portfolio-assistant-message.is-user p {
-    border-color: rgb(var(--hero-accent-rgb) / 0.34);
-    background: rgb(var(--hero-accent-rgb) / 0.16);
+    border-color: rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.09);
     color: rgba(255, 255, 255, 0.92);
 }
 
-.portfolio-assistant-prompts {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.55rem;
-}
-
-.portfolio-assistant-prompt,
 .portfolio-assistant-actions a {
     min-height: 2.65rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 999px;
-    background: rgba(255, 255, 255, 0.045);
+    background: transparent;
     color: rgba(255, 255, 255, 0.76);
     font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
     text-decoration: none;
-}
-
-.portfolio-assistant-prompt {
-    padding: 0 0.85rem;
-    cursor: pointer;
-}
-
-.portfolio-assistant-prompt:hover,
-.portfolio-assistant-prompt:focus-visible,
-.portfolio-assistant-prompt.is-active {
-    border-color: rgb(var(--hero-accent-rgb) / 0.56);
-    background: rgb(var(--hero-accent-rgb) / 0.12);
-    color: #ffffff;
 }
 
 .portfolio-assistant-actions {
@@ -7468,7 +7479,8 @@ html.theme-light .ask-pill-icon {
 
 .portfolio-assistant-actions a:hover,
 .portfolio-assistant-actions a:focus-visible {
-    border-color: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 255, 255, 0.24);
+    background: rgba(255, 255, 255, 0.055);
     color: #ffffff;
 }
 
@@ -7500,7 +7512,7 @@ html.theme-light .ask-pill-icon {
     min-height: 2.75rem;
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 999px;
-    background: rgba(0, 0, 0, 0.24);
+    background: rgba(255, 255, 255, 0.035);
     color: rgba(255, 255, 255, 0.88);
     font: inherit;
     font-size: 0.86rem;
@@ -7513,17 +7525,17 @@ html.theme-light .ask-pill-icon {
 }
 
 .portfolio-assistant-input-label input:focus {
-    border-color: rgb(var(--hero-accent-rgb) / 0.62);
-    box-shadow: 0 0 0 3px rgb(var(--hero-accent-rgb) / 0.12);
+    border-color: rgba(255, 255, 255, 0.24);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.055);
 }
 
 .portfolio-assistant-form button {
     min-height: 2.75rem;
     padding: 0 1rem;
-    border: 1px solid rgb(var(--hero-accent-rgb) / 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.14);
     border-radius: 999px;
-    background: rgb(var(--hero-accent-rgb) / 0.16);
-    color: #ffffff;
+    background: #ffffff;
+    color: #090a0c;
     font-size: 0.74rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -7533,8 +7545,8 @@ html.theme-light .ask-pill-icon {
 
 .portfolio-assistant-form button:hover,
 .portfolio-assistant-form button:focus-visible {
-    border-color: rgb(var(--hero-accent-rgb) / 0.68);
-    background: rgb(var(--hero-accent-rgb) / 0.24);
+    border-color: rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.86);
 }
 
 .portfolio-assistant-form button:disabled,
@@ -7551,14 +7563,11 @@ html.theme-light .ask-pill-icon {
 }
 
 html.theme-light .portfolio-assistant-shell {
-    border-color: rgba(54, 92, 255, 0.18);
-    background:
-        radial-gradient(circle at top left, rgba(54, 92, 255, 0.12), transparent 44%),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(245, 247, 242, 0.92));
+    border-color: rgba(17, 22, 28, 0.12);
+    background: rgba(255, 255, 255, 0.94);
     box-shadow:
-        inset 0 0 0 1px rgba(255, 255, 255, 0.78),
-        0 28px 78px rgba(22, 30, 38, 0.16),
-        0 0 34px rgba(54, 92, 255, 0.12);
+        inset 0 1px 0 rgba(255, 255, 255, 0.84),
+        0 24px 72px rgba(22, 30, 38, 0.14);
 }
 
 html.theme-light .portfolio-assistant-title {
@@ -7567,9 +7576,7 @@ html.theme-light .portfolio-assistant-title {
 
 html.theme-light .portfolio-assistant-answer {
     border-color: rgba(17, 22, 28, 0.1);
-    background:
-        linear-gradient(90deg, rgba(54, 92, 255, 0.08), transparent),
-        rgba(255, 255, 255, 0.52);
+    background: rgba(17, 22, 28, 0.025);
 }
 
 html.theme-light .portfolio-assistant-message p {
@@ -7583,29 +7590,41 @@ html.theme-light .portfolio-assistant-message.is-user span {
 }
 
 html.theme-light .portfolio-assistant-message.is-user p {
-    border-color: rgba(54, 92, 255, 0.24);
-    background: rgba(54, 92, 255, 0.1);
+    border-color: rgba(17, 22, 28, 0.12);
+    background: rgba(17, 22, 28, 0.06);
     color: rgba(17, 22, 28, 0.82);
 }
 
 html.theme-light .portfolio-assistant-close,
-html.theme-light .portfolio-assistant-prompt,
 html.theme-light .portfolio-assistant-actions a {
     border-color: rgba(17, 22, 28, 0.12);
     background: rgba(255, 255, 255, 0.52);
     color: rgba(17, 22, 28, 0.68);
 }
 
+html.theme-light .portfolio-assistant-close {
+    border-color: rgba(17, 22, 28, 0.1);
+    background: rgba(17, 22, 28, 0.035);
+    color: rgba(17, 22, 28, 0.78);
+}
+
 html.theme-light .portfolio-assistant-close:hover,
 html.theme-light .portfolio-assistant-close:focus-visible,
-html.theme-light .portfolio-assistant-prompt:hover,
-html.theme-light .portfolio-assistant-prompt:focus-visible,
-html.theme-light .portfolio-assistant-prompt.is-active,
 html.theme-light .portfolio-assistant-actions a:hover,
 html.theme-light .portfolio-assistant-actions a:focus-visible {
-    border-color: rgba(54, 92, 255, 0.4);
-    background: rgba(54, 92, 255, 0.1);
+    border-color: rgba(17, 22, 28, 0.18);
+    background: rgba(17, 22, 28, 0.055);
     color: #11161c;
+}
+
+html.theme-light .portfolio-assistant-close:hover,
+html.theme-light .portfolio-assistant-close:focus-visible {
+    border-color: rgba(17, 22, 28, 0.18);
+    background: rgba(17, 22, 28, 0.065);
+    color: #11161c;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        0 10px 24px rgba(22, 30, 38, 0.1);
 }
 
 html.theme-light .portfolio-assistant-input-label span,
@@ -7624,9 +7643,9 @@ html.theme-light .portfolio-assistant-input-label input::placeholder {
 }
 
 html.theme-light .portfolio-assistant-form button {
-    border-color: rgba(54, 92, 255, 0.32);
-    background: rgba(54, 92, 255, 0.12);
-    color: #11161c;
+    border-color: rgba(17, 22, 28, 0.82);
+    background: #11161c;
+    color: #ffffff;
 }
 
 .education-bagdes {
