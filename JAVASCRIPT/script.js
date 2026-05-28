@@ -781,7 +781,7 @@ function setupPortfolioAssistant() {
 
         askAssistant(
             input.value,
-            "I can answer portfolio questions once the API endpoint is live. Try asking about Jefferson's projects, stack, process, or contact links.",
+            "I am having trouble reaching the portfolio brain right now. Give me a moment, then ask again.",
         );
         input.value = "";
     });
