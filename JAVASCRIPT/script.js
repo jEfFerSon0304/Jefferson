@@ -2528,7 +2528,7 @@ function setupFooterPhotoGallery() {
     footerPhotoPreviewClose.className = "footer-photo-preview-close";
     footerPhotoPreviewClose.type = "button";
     footerPhotoPreviewClose.setAttribute("aria-label", "Close footer image");
-    footerPhotoPreviewClose.innerHTML = "<span aria-hidden=\"true\"></span>";
+    footerPhotoPreviewClose.innerHTML = '<span aria-hidden="true"></span>';
 
     footerPhotoPreview
         .querySelector(".footer-photo-preview-frame")
@@ -3241,6 +3241,238 @@ function setupAboutPageMobilePhotoReveal() {
     });
 }
 
+function setupEducationBadgesModal() {
+    const educationBadges = Array.from(
+        document.querySelectorAll("[data-education-badge]"),
+    );
+
+    if (!educationBadges.length) {
+        return;
+    }
+
+    let activeEducationBadge = null;
+    const modal = document.createElement("div");
+    const modalLogo = document.createElement("img");
+    const modalKicker = document.createElement("p");
+    const modalTitle = document.createElement("h2");
+    const modalStory = document.createElement("p");
+    const modalClose = document.createElement("button");
+
+    modal.className = "education-modal";
+    modal.setAttribute("aria-hidden", "true");
+    modal.innerHTML = `
+        <div
+            class="education-modal-card"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="educationModalTitle"
+        >
+            <div class="education-modal-crest"></div>
+            <div class="education-modal-content"></div>
+        </div>
+    `;
+
+    modalLogo.className = "education-modal-logo";
+    modalLogo.decoding = "async";
+    modalKicker.className = "education-modal-kicker";
+    modalTitle.className = "education-modal-title";
+    modalTitle.id = "educationModalTitle";
+    modalStory.className = "education-modal-story";
+    modalClose.className = "education-modal-close";
+    modalClose.type = "button";
+    modalClose.setAttribute("aria-label", "Close school story");
+    modalClose.innerHTML = '<span aria-hidden="true"></span>';
+
+    modal.querySelector(".education-modal-crest")?.append(modalLogo);
+    modal
+        .querySelector(".education-modal-content")
+        ?.append(modalKicker, modalTitle, modalStory);
+    modal.querySelector(".education-modal-card")?.append(modalClose);
+    document.body.append(modal);
+
+    function hideEducationModal() {
+        modal.classList.remove("is-open");
+        modal.classList.remove("is-logo-ready");
+        modal.setAttribute("aria-hidden", "true");
+
+        if (activeEducationBadge) {
+            activeEducationBadge.focus();
+            activeEducationBadge = null;
+        }
+    }
+
+    function closeEducationModal() {
+        if (!modal.classList.contains("is-open")) {
+            return;
+        }
+
+        animateEducationLogoToBadge();
+    }
+
+    function openEducationModal(badge) {
+        const logo = badge.querySelector("img");
+        const schoolName = badge.dataset.schoolName || badge.textContent.trim();
+        const schoolKicker = badge.dataset.schoolKicker || "School Days";
+        const story =
+            badge.dataset.schoolStory ||
+            "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+
+        activeEducationBadge = badge;
+        modal.classList.remove("is-logo-ready");
+        modalLogo.src = logo?.currentSrc || logo?.src || "";
+        modalLogo.alt = logo?.alt || `${schoolName} logo`;
+        modalKicker.textContent = schoolKicker;
+        modalTitle.textContent = schoolName;
+        modalStory.textContent = story;
+        modal.classList.add("is-open");
+        modal.setAttribute("aria-hidden", "false");
+        modalClose.focus();
+
+        animateEducationLogoFromBadge(logo);
+    }
+
+    function animateEducationLogoFromBadge(sourceLogo) {
+        if (!sourceLogo) {
+            modal.classList.add("is-logo-ready");
+            return;
+        }
+
+        const startRect = sourceLogo.getBoundingClientRect();
+
+        window.requestAnimationFrame(() => {
+            const endRect = modalLogo.getBoundingClientRect();
+
+            if (!endRect.width || !endRect.height) {
+                modal.classList.add("is-logo-ready");
+                return;
+            }
+
+            const animatedLogo = sourceLogo.cloneNode();
+            animatedLogo.className = "education-modal-logo-flight";
+            animatedLogo.setAttribute("aria-hidden", "true");
+            animatedLogo.style.left = `${startRect.left}px`;
+            animatedLogo.style.top = `${startRect.top}px`;
+            animatedLogo.style.width = `${startRect.width}px`;
+            animatedLogo.style.height = `${startRect.height}px`;
+            document.body.append(animatedLogo);
+
+            const animation = animatedLogo.animate(
+                [
+                    {
+                        transform: "translate3d(0, 0, 0) scale(1)",
+                        borderRadius: getComputedStyle(sourceLogo).borderRadius,
+                    },
+                    {
+                        transform: `translate3d(${endRect.left - startRect.left}px, ${endRect.top - startRect.top}px, 0) scale(${endRect.width / startRect.width})`,
+                        borderRadius: getComputedStyle(modalLogo).borderRadius,
+                    },
+                ],
+                {
+                    duration: 620,
+                    easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+                    fill: "forwards",
+                },
+            );
+
+            animation.onfinish = () => {
+                modal.classList.add("is-logo-ready");
+                window.setTimeout(() => {
+                    animatedLogo.remove();
+                }, 180);
+            };
+
+            animation.oncancel = () => {
+                modal.classList.add("is-logo-ready");
+                window.setTimeout(() => {
+                    animatedLogo.remove();
+                }, 180);
+            };
+        });
+    }
+
+    function animateEducationLogoToBadge() {
+        const targetLogo = activeEducationBadge?.querySelector("img");
+
+        if (!targetLogo || !modalLogo.src) {
+            hideEducationModal();
+            return;
+        }
+
+        const startRect = modalLogo.getBoundingClientRect();
+        const endRect = targetLogo.getBoundingClientRect();
+        const returnFocusTarget = activeEducationBadge;
+
+        if (!startRect.width || !endRect.width) {
+            hideEducationModal();
+            return;
+        }
+
+        const animatedLogo = modalLogo.cloneNode();
+        animatedLogo.className = "education-modal-logo-flight";
+        animatedLogo.setAttribute("aria-hidden", "true");
+        animatedLogo.style.left = `${startRect.left}px`;
+        animatedLogo.style.top = `${startRect.top}px`;
+        animatedLogo.style.width = `${startRect.width}px`;
+        animatedLogo.style.height = `${startRect.height}px`;
+        document.body.append(animatedLogo);
+        targetLogo.classList.add("is-logo-flight-target");
+        modal.classList.remove("is-open");
+        modal.classList.remove("is-logo-ready");
+        modal.setAttribute("aria-hidden", "true");
+        activeEducationBadge = null;
+
+        const animation = animatedLogo.animate(
+            [
+                {
+                    transform: "translate3d(0, 0, 0) scale(1)",
+                    borderRadius: getComputedStyle(modalLogo).borderRadius,
+                },
+                {
+                    transform: `translate3d(${endRect.left - startRect.left}px, ${endRect.top - startRect.top}px, 0) scale(${endRect.width / startRect.width})`,
+                    borderRadius: getComputedStyle(targetLogo).borderRadius,
+                },
+            ],
+            {
+                duration: 520,
+                easing: "cubic-bezier(0.16, 1, 0.3, 1)",
+                fill: "forwards",
+            },
+        );
+
+        animation.onfinish = () => {
+            animatedLogo.remove();
+            targetLogo.classList.remove("is-logo-flight-target");
+            returnFocusTarget?.focus();
+        };
+
+        animation.oncancel = () => {
+            animatedLogo.remove();
+            targetLogo.classList.remove("is-logo-flight-target");
+            returnFocusTarget?.focus();
+        };
+    }
+
+    educationBadges.forEach((badge) => {
+        badge.addEventListener("click", () => {
+            openEducationModal(badge);
+        });
+    });
+
+    modal.addEventListener("click", (event) => {
+        if (event.target === modal) {
+            closeEducationModal();
+        }
+    });
+
+    modalClose.addEventListener("click", closeEducationModal);
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && modal.classList.contains("is-open")) {
+            closeEducationModal();
+        }
+    });
+}
+
 function setupGalleryPagination() {
     const gallery = document.querySelector(
         ".case-study-theme-wildclash .case-study-gallery-stack",
@@ -3329,6 +3561,7 @@ setupWorkProjectImageScroll();
 setupFooterPhotoGallery();
 setupAboutPagePhotoDrag();
 setupAboutPageMobilePhotoReveal();
+setupEducationBadgesModal();
 setupGalleryPagination();
 setupIntroLoader().finally(() => {
     setupHeroDescriptionTypewriter();
