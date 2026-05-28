@@ -2492,6 +2492,39 @@ function setupFooterPhotoGallery() {
     const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
     const photoStates = [];
     let zIndexSeed = footerPhotos.length + 10;
+    let activeFooterPhotoTrigger = null;
+
+    const footerPhotoPreview = document.createElement("div");
+    const footerPhotoPreviewImage = document.createElement("img");
+    const footerPhotoPreviewClose = document.createElement("button");
+
+    footerPhotoPreview.className = "footer-photo-preview";
+    footerPhotoPreview.setAttribute("aria-hidden", "true");
+    footerPhotoPreview.innerHTML = `
+        <span class="footer-photo-preview-title" aria-hidden="true">
+            PHOTOGRAPHY
+        </span>
+        <span
+            class="footer-photo-preview-title footer-photo-preview-title-secondary"
+            aria-hidden="true"
+        >
+            PHOTOGRAPHY
+        </span>
+        <div class="footer-photo-preview-frame"></div>
+    `;
+
+    footerPhotoPreviewImage.className = "footer-photo-preview-image";
+    footerPhotoPreviewImage.decoding = "async";
+
+    footerPhotoPreviewClose.className = "footer-photo-preview-close";
+    footerPhotoPreviewClose.type = "button";
+    footerPhotoPreviewClose.setAttribute("aria-label", "Close footer image");
+    footerPhotoPreviewClose.innerHTML = "<span aria-hidden=\"true\"></span>";
+
+    footerPhotoPreview
+        .querySelector(".footer-photo-preview-frame")
+        ?.append(footerPhotoPreviewImage, footerPhotoPreviewClose);
+    document.body.append(footerPhotoPreview);
 
     footerPhotoGallery.querySelectorAll("img").forEach((image) => {
         image.loading = "eager";
@@ -2508,6 +2541,54 @@ function setupFooterPhotoGallery() {
         element.style.zIndex = `${zIndexSeed}`;
         zIndexSeed += 1;
     }
+
+    function closeFooterPhotoPreview() {
+        footerPhotoPreview.classList.remove("is-open");
+        footerPhotoPreview.setAttribute("aria-hidden", "true");
+        footerPhotoPreviewImage.removeAttribute("src");
+        footerPhotoPreviewImage.removeAttribute("alt");
+
+        if (activeFooterPhotoTrigger) {
+            activeFooterPhotoTrigger.focus();
+            activeFooterPhotoTrigger = null;
+        }
+    }
+
+    function openFooterPhotoPreview(element) {
+        const image = element.querySelector("img");
+        const source = element.getAttribute("href") || image?.currentSrc;
+
+        if (!source) {
+            return;
+        }
+
+        activeFooterPhotoTrigger = element;
+        footerPhotoPreviewImage.src = source;
+        footerPhotoPreviewImage.alt = image?.alt || "Footer image preview";
+        footerPhotoPreview.classList.add("is-open");
+        footerPhotoPreview.setAttribute("aria-hidden", "false");
+        footerPhotoPreviewClose.focus();
+    }
+
+    footerPhotoPreview.addEventListener("click", (event) => {
+        if (
+            event.target === footerPhotoPreview ||
+            event.target.classList.contains("footer-photo-preview-frame")
+        ) {
+            closeFooterPhotoPreview();
+        }
+    });
+
+    footerPhotoPreviewClose.addEventListener("click", closeFooterPhotoPreview);
+
+    document.addEventListener("keydown", (event) => {
+        if (
+            event.key === "Escape" &&
+            footerPhotoPreview.classList.contains("is-open")
+        ) {
+            closeFooterPhotoPreview();
+        }
+    });
 
     footerPhotos.forEach((element, index) => {
         const configuredLayer = Number.parseInt(
@@ -2748,12 +2829,18 @@ function setupFooterPhotoGallery() {
         });
 
         element.addEventListener("click", (event) => {
-            if (!state.suppressClick) {
+            event.preventDefault();
+
+            if (state.suppressClick) {
+                state.suppressClick = false;
                 return;
             }
 
-            event.preventDefault();
-            state.suppressClick = false;
+            if (event.target.closest(".footer-photo-handle")) {
+                return;
+            }
+
+            openFooterPhotoPreview(element);
         });
 
         if (prefersReducedMotion) {
