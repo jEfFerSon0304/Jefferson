@@ -511,7 +511,7 @@ html.theme-light .site-cursor {
 .site-intro-loader {
     position: fixed;
     inset: 0;
-    z-index: 40;
+    z-index: 120;
     overflow: clip;
     isolation: isolate;
     opacity: 1;
@@ -1383,8 +1383,8 @@ html.theme-light .theme-toggle-icon-sun {
             no-repeat,
         linear-gradient(var(--theme-guide-stroke) 0 0) bottom left / 2px 0.66rem
             no-repeat,
-        linear-gradient(var(--theme-guide-stroke) 0 0) bottom right / 0.66rem 2px
-            no-repeat,
+        linear-gradient(var(--theme-guide-stroke) 0 0) bottom right / 0.66rem
+            2px no-repeat,
         linear-gradient(var(--theme-guide-stroke) 0 0) bottom right / 2px
             0.66rem no-repeat;
     box-shadow:
@@ -3430,12 +3430,6 @@ html.theme-light .featured-section {
     z-index: 8;
     margin-bottom: clamp(2rem, 4vw, 3rem);
     padding: 0.35rem 0 0.9rem;
-    background: linear-gradient(
-        180deg,
-        var(--bg) 0%,
-        var(--bg) 72%,
-        transparent 100%
-    );
 }
 
 .featured-title {
@@ -7246,7 +7240,11 @@ html.theme-light .site-footer-links a:focus-visible span {
 html.theme-light .ask-pill {
     border-color: rgba(54, 92, 255, 0.22);
     background:
-        linear-gradient(135deg, rgba(54, 92, 255, 0.14), rgba(255, 255, 255, 0.58)),
+        linear-gradient(
+            135deg,
+            rgba(54, 92, 255, 0.14),
+            rgba(255, 255, 255, 0.58)
+        ),
         rgba(245, 247, 242, 0.82);
     color: rgba(17, 22, 28, 0.82);
     box-shadow:
@@ -7259,7 +7257,11 @@ html.theme-light .ask-pill:hover,
 html.theme-light .ask-pill:focus-visible {
     border-color: rgba(54, 92, 255, 0.46);
     background:
-        linear-gradient(135deg, rgba(54, 92, 255, 0.18), rgba(255, 255, 255, 0.72)),
+        linear-gradient(
+            135deg,
+            rgba(54, 92, 255, 0.18),
+            rgba(255, 255, 255, 0.72)
+        ),
         rgba(245, 247, 242, 0.92);
     box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.82),
@@ -7445,10 +7447,50 @@ html.theme-light .ask-pill-icon {
     line-height: 1.48;
 }
 
+.portfolio-assistant-message p.portfolio-assistant-typing {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.34rem;
+    min-height: 2.3rem;
+    padding-inline: 0.92rem;
+}
+
+.portfolio-assistant-message p.portfolio-assistant-typing span {
+    display: block;
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.34;
+    animation: portfolio-assistant-typing-dot 960ms ease-in-out infinite;
+}
+
+.portfolio-assistant-message p.portfolio-assistant-typing span:nth-child(2) {
+    animation-delay: 140ms;
+}
+
+.portfolio-assistant-message p.portfolio-assistant-typing span:nth-child(3) {
+    animation-delay: 280ms;
+}
+
 .portfolio-assistant-message.is-user p {
     border-color: rgba(255, 255, 255, 0.16);
     background: rgba(255, 255, 255, 0.09);
     color: rgba(255, 255, 255, 0.92);
+}
+
+@keyframes portfolio-assistant-typing-dot {
+    0%,
+    72%,
+    100% {
+        opacity: 0.34;
+        transform: translateY(0);
+    }
+
+    32% {
+        opacity: 0.92;
+        transform: translateY(-0.18rem);
+    }
 }
 
 .portfolio-assistant-actions a {
@@ -7574,6 +7616,12 @@ html.theme-light .portfolio-assistant-title {
     color: #11161c;
 }
 
+html.theme-light .portfolio-assistant-kicker,
+html.theme-light .portfolio-assistant-answer-label,
+html.theme-light .portfolio-assistant-message span {
+    color: rgba(17, 22, 28, 0.56);
+}
+
 html.theme-light .portfolio-assistant-answer {
     border-color: rgba(17, 22, 28, 0.1);
     background: rgba(17, 22, 28, 0.025);
@@ -7688,6 +7736,11 @@ html.theme-light .education-badge {
     object-fit: cover;
     border-radius: 50%;
     border: 2px solid #000000;
+}
+
+.education-badge-logo-plv {
+    width: 8.4rem;
+    height: 8.4rem;
 }
 
 .core-foundations-section {
@@ -9272,6 +9325,11 @@ html.theme-light .about-toolkit-card-copy {
     .education-badge img {
         width: 5.6rem;
         height: 5.6rem;
+    }
+
+    .education-badge-logo-plv {
+        width: 7rem;
+        height: 7rem;
     }
 
     .core-foundations-section {

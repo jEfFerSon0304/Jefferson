@@ -661,7 +661,19 @@ function setupPortfolioAssistant() {
 
         messageElement.className = `portfolio-assistant-message is-${message.role}`;
         label.textContent = message.role === "user" ? "You" : "Jefferson AI";
-        paragraph.textContent = message.content;
+
+        if (message.isTyping) {
+            paragraph.className = "portfolio-assistant-typing";
+            paragraph.setAttribute("aria-label", "Jefferson AI is typing");
+            paragraph.innerHTML = `
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+                <span aria-hidden="true"></span>
+            `;
+        } else {
+            paragraph.textContent = message.content;
+        }
+
         messageElement.append(label, paragraph);
 
         return messageElement;
@@ -697,11 +709,12 @@ function setupPortfolioAssistant() {
         chatMessages.push({ role: "user", content: cleanQuestion });
         chatMessages.push({
             role: "assistant",
-            content: "Thinking with Jefferson's portfolio context...",
+            content: "",
+            isTyping: true,
         });
         renderMessages();
         setLoading(true);
-        setStatus("Thinking with portfolio context...");
+        setStatus("");
 
         try {
             const response = await fetch(assistantEndpoint, {
@@ -732,6 +745,7 @@ function setupPortfolioAssistant() {
 
             chatMessages[chatMessages.length - 1].content =
                 data.answer || fallbackAnswer;
+            delete chatMessages[chatMessages.length - 1].isTyping;
             setStatus(
                 "Powered by Gemini · Trained on Jefferson's portfolio data",
             );
@@ -739,6 +753,7 @@ function setupPortfolioAssistant() {
             chatMessages[chatMessages.length - 1].content =
                 fallbackAnswer ||
                 "The AI endpoint is not available yet. Add the serverless function and set GEMINI_API_KEY to make this live.";
+            delete chatMessages[chatMessages.length - 1].isTyping;
             setStatus(`Using fallback: ${error.message}`);
         } finally {
             setLoading(false);
