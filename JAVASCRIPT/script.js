@@ -647,7 +647,10 @@ function setupPortfolioAssistant() {
             const data = await response.json().catch(() => ({}));
 
             if (!response.ok) {
-                throw new Error(data.error || "The assistant is unavailable.");
+                throw new Error(
+                    data.error ||
+                        `The assistant endpoint returned ${response.status}.`,
+                );
             }
 
             chatMessages[chatMessages.length - 1].content =
@@ -657,7 +660,7 @@ function setupPortfolioAssistant() {
             chatMessages[chatMessages.length - 1].content =
                 fallbackAnswer ||
                 "The AI endpoint is not available yet. Add the serverless function and set GEMINI_API_KEY to make this live.";
-            setStatus("Using local fallback until the API endpoint is live.");
+            setStatus(`Using fallback: ${error.message}`);
         } finally {
             setLoading(false);
             renderMessages();

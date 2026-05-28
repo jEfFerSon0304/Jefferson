@@ -50,13 +50,32 @@ function normalizeMessages(messages, fallbackQuestion) {
         return [{ role: "user", content: fallbackQuestion }];
     }
 
-    return messages
+    const normalized = messages
         .map((message) => ({
             role: message.role === "assistant" ? "assistant" : "user",
             content: String(message.content || "").trim(),
         }))
         .filter((message) => message.content)
         .slice(-10);
+
+    while (normalized.length && normalized[0].role !== "user") {
+        normalized.shift();
+    }
+
+    const alternating = [];
+
+    for (const message of normalized) {
+        const previous = alternating[alternating.length - 1];
+
+        if (!previous || previous.role !== message.role) {
+            alternating.push(message);
+            continue;
+        }
+
+        previous.content = `${previous.content}\n${message.content}`;
+    }
+
+    return alternating.length ? alternating : [{ role: "user", content: fallbackQuestion }];
 }
 
 function toGeminiContents(messages) {
