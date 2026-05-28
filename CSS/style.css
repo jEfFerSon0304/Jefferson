@@ -7409,6 +7409,12 @@ html.theme-light .ask-pill-icon {
     border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 0.65rem;
     background: rgba(255, 255, 255, 0.03);
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.portfolio-assistant-answer::-webkit-scrollbar {
+    display: none;
 }
 
 .portfolio-assistant-message {
@@ -7474,9 +7480,9 @@ html.theme-light .ask-pill-icon {
 }
 
 .portfolio-assistant-message.is-user p {
-    border-color: rgba(255, 255, 255, 0.16);
-    background: rgba(255, 255, 255, 0.09);
-    color: rgba(255, 255, 255, 0.92);
+    border-color: rgb(var(--hero-accent-rgb) / 0.48);
+    background: rgb(var(--hero-accent-rgb) / 0.72);
+    color: #ffffff;
 }
 
 @keyframes portfolio-assistant-typing-dot {
@@ -7638,9 +7644,9 @@ html.theme-light .portfolio-assistant-message.is-user span {
 }
 
 html.theme-light .portfolio-assistant-message.is-user p {
-    border-color: rgba(17, 22, 28, 0.12);
-    background: rgba(17, 22, 28, 0.06);
-    color: rgba(17, 22, 28, 0.82);
+    border-color: rgba(54, 92, 255, 0.34);
+    background: rgba(54, 92, 255, 0.9);
+    color: #ffffff;
 }
 
 html.theme-light .portfolio-assistant-close,
