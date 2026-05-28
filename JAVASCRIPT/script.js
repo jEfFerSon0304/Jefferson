@@ -305,11 +305,20 @@ function setupSiteCursor() {
             return { mode: "default", label: "You" };
         }
 
-        if (
-            target.closest(
-                ".draggable-wordmark, .footer-photo, .about-page-photo",
-            )
-        ) {
+        if (target.closest(".footer-photo-handle")) {
+            return { mode: "drag", label: "RESIZE" };
+        }
+
+        const footerPhoto = target.closest(".footer-photo");
+
+        if (footerPhoto) {
+            return footerPhoto.classList.contains("is-dragging") ||
+                footerPhoto.classList.contains("is-resizing")
+                ? { mode: "drag", label: "DRAG" }
+                : { mode: "action", label: "OPEN" };
+        }
+
+        if (target.closest(".draggable-wordmark, .about-page-photo")) {
             return { mode: "drag", label: "DRAG" };
         }
 
@@ -2713,6 +2722,8 @@ function setupFooterPhotoGallery() {
             if (state.action === "resize") {
                 element.classList.add("is-resizing");
                 event.preventDefault();
+            } else {
+                element.classList.add("is-dragging");
             }
             element.setPointerCapture(state.pointerId);
         });
