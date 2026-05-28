@@ -512,6 +512,226 @@ function wait(duration) {
     });
 }
 
+function setupPortfolioAssistant() {
+    const assistant = document.getElementById("portfolioAssistant");
+    const toggle = document.querySelector("[data-assistant-toggle]");
+    const closeButton = document.querySelector("[data-assistant-close]");
+    const messagesElement = document.querySelector("[data-assistant-messages]");
+    const form = document.querySelector("[data-assistant-form]");
+    const input = document.querySelector("[data-assistant-input]");
+    const status = document.querySelector("[data-assistant-status]");
+    const promptButtons = Array.from(
+        document.querySelectorAll("[data-assistant-prompt]"),
+    );
+    const assistantEndpoint =
+        window.PORTFOLIO_ASSISTANT_API || "/api/portfolio-assistant";
+
+    if (!assistant || !toggle || !messagesElement) {
+        return;
+    }
+
+    const introMessage =
+        "Hey, ask me anything about Jefferson's work, stack, projects, or process. Casual questions are okay too.";
+    const chatMessages = [
+        {
+            role: "assistant",
+            content: introMessage,
+        },
+    ];
+    const responses = {
+        projects: {
+            question: "What are Jefferson's best projects?",
+            fallback:
+                "Start with Wild Clash for game systems, PLV CEIT Thesis Hub for practical web development, and The Session for branching interactive storytelling.",
+        },
+        stack: {
+            question: "What tech stack does Jefferson use?",
+            fallback:
+                "The portfolio leans on HTML, CSS, JavaScript, GSAP-style motion, React awareness, Node.js, Laravel, Webflow, Figma, and AI-assisted tooling.",
+        },
+        process: {
+            question: "What is Jefferson's design and development process?",
+            fallback:
+                "My process is structure first: define the user flow, shape the interface, build the interaction, then polish motion, responsiveness, and edge cases.",
+        },
+        contact: {
+            question: "How can someone contact Jefferson?",
+            fallback:
+                "The fastest route is through the contact links in the footer, or you can review the Work and About pages first to see if the fit feels right.",
+        },
+    };
+
+    function setOpen(isOpen) {
+        assistant.classList.toggle("is-open", isOpen);
+        assistant.setAttribute("aria-hidden", String(!isOpen));
+        toggle.setAttribute("aria-expanded", String(isOpen));
+    }
+
+    function setStatus(message) {
+        if (status) {
+            status.textContent = message;
+        }
+    }
+
+    function renderMessage(message) {
+        const messageElement = document.createElement("div");
+        const label = document.createElement("span");
+        const paragraph = document.createElement("p");
+
+        messageElement.className = `portfolio-assistant-message is-${message.role}`;
+        label.textContent = message.role === "user" ? "You" : "Jefferson AI";
+        paragraph.textContent = message.content;
+        messageElement.append(label, paragraph);
+
+        return messageElement;
+    }
+
+    function renderMessages() {
+        messagesElement.replaceChildren(
+            ...chatMessages.map((message) => renderMessage(message)),
+        );
+        messagesElement.scrollTop = messagesElement.scrollHeight;
+    }
+
+    function setLoading(isLoading) {
+        promptButtons.forEach((button) => {
+            button.disabled = isLoading;
+        });
+
+        if (input) {
+            input.disabled = isLoading;
+        }
+
+        const submitButton = form?.querySelector("button[type='submit']");
+
+        if (submitButton) {
+            submitButton.disabled = isLoading;
+            submitButton.textContent = isLoading ? "Thinking" : "Send";
+        }
+    }
+
+    async function askAssistant(question, fallbackAnswer, activeKey = "") {
+        const cleanQuestion = question.trim();
+
+        if (!cleanQuestion) {
+            return;
+        }
+
+        chatMessages.push({ role: "user", content: cleanQuestion });
+        chatMessages.push({
+            role: "assistant",
+            content: "Thinking with Jefferson's portfolio context...",
+        });
+        renderMessages();
+        setLoading(true);
+        setStatus("Thinking with portfolio context...");
+
+        try {
+            const response = await fetch(assistantEndpoint, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    question: cleanQuestion,
+                    messages: chatMessages
+                        .slice(0, -1)
+                        .slice(-8)
+                        .map((message) => ({
+                            role: message.role,
+                            content: message.content,
+                        })),
+                }),
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(data.error || "The assistant is unavailable.");
+            }
+
+            chatMessages[chatMessages.length - 1].content =
+                data.answer || fallbackAnswer;
+            setStatus("Answered by AI.");
+        } catch (error) {
+            chatMessages[chatMessages.length - 1].content =
+                fallbackAnswer ||
+                "The AI endpoint is not available yet. Add the serverless function and set GEMINI_API_KEY to make this live.";
+            setStatus("Using local fallback until the API endpoint is live.");
+        } finally {
+            setLoading(false);
+            renderMessages();
+        }
+
+        promptButtons.forEach((button) => {
+            button.classList.toggle(
+                "is-active",
+                button.dataset.assistantPrompt === activeKey,
+            );
+        });
+    }
+
+    toggle.addEventListener("click", () => {
+        setOpen(!assistant.classList.contains("is-open"));
+    });
+
+    closeButton?.addEventListener("click", () => {
+        setOpen(false);
+        toggle.focus();
+    });
+
+    promptButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            const preset = responses[button.dataset.assistantPrompt];
+
+            if (!preset) {
+                return;
+            }
+
+            askAssistant(
+                preset.question,
+                preset.fallback,
+                button.dataset.assistantPrompt,
+            );
+        });
+    });
+
+    form?.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        if (!input) {
+            return;
+        }
+
+        askAssistant(
+            input.value,
+            "I can answer portfolio questions once the API endpoint is live. Try asking about Jefferson's projects, stack, process, or contact links.",
+        );
+        input.value = "";
+    });
+
+    document.addEventListener("click", (event) => {
+        if (
+            !assistant.classList.contains("is-open") ||
+            assistant.contains(event.target) ||
+            toggle.contains(event.target)
+        ) {
+            return;
+        }
+
+        setOpen(false);
+    });
+
+    document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && assistant.classList.contains("is-open")) {
+            setOpen(false);
+            toggle.focus();
+        }
+    });
+
+    renderMessages();
+}
+
 function setupThemeToggle() {
     if (!themeToggle) {
         return;
@@ -2877,6 +3097,7 @@ setupThemeToggleGuide();
 setupPageTransitions();
 setupSiteCursor();
 setupMobileMenu();
+setupPortfolioAssistant();
 setupAutoHidingHeader();
 setupDraggableWordmarks();
 setupHeroSpotlight();

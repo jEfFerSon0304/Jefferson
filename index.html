@@ -1415,12 +1415,113 @@
                 </div>
             </footer>
 
-            <!-- <a class="ask-pill" href="#work">
-                <span class="ask-pill-icon">+</span>
-                <span>Ask my work</span>
-                <span class="ask-pill-count">8K</span>
-            </a> -->
         </div>
+
+        <section
+            class="portfolio-assistant"
+            id="portfolioAssistant"
+            aria-label="Portfolio assistant"
+            aria-hidden="true"
+        >
+            <div class="portfolio-assistant-shell">
+                <header class="portfolio-assistant-header">
+                    <div>
+                        <p class="portfolio-assistant-kicker">PORTFOLIO_AI</p>
+                        <h2 class="portfolio-assistant-title">
+                            Ask about my work
+                        </h2>
+                    </div>
+                    <button
+                        class="portfolio-assistant-close"
+                        type="button"
+                        data-assistant-close
+                        aria-label="Close portfolio assistant"
+                    >
+                        x
+                    </button>
+                </header>
+
+                <div
+                    class="portfolio-assistant-answer"
+                    data-assistant-messages
+                    aria-live="polite"
+                >
+                    <div class="portfolio-assistant-message is-assistant">
+                        <span>Jefferson AI</span>
+                        <p>
+                            Hey, ask me anything about Jefferson's work, stack,
+                            projects, or process. Casual questions are okay too.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="portfolio-assistant-prompts">
+                    <button
+                        class="portfolio-assistant-prompt"
+                        type="button"
+                        data-assistant-prompt="projects"
+                    >
+                        Best projects
+                    </button>
+                    <button
+                        class="portfolio-assistant-prompt"
+                        type="button"
+                        data-assistant-prompt="stack"
+                    >
+                        Tech stack
+                    </button>
+                    <button
+                        class="portfolio-assistant-prompt"
+                        type="button"
+                        data-assistant-prompt="process"
+                    >
+                        Process
+                    </button>
+                    <button
+                        class="portfolio-assistant-prompt"
+                        type="button"
+                        data-assistant-prompt="contact"
+                    >
+                        Contact
+                    </button>
+                </div>
+
+                <form class="portfolio-assistant-form" data-assistant-form>
+                    <label class="portfolio-assistant-input-label">
+                        <span>Message the assistant</span>
+                        <input
+                            type="text"
+                            name="question"
+                            data-assistant-input
+                            placeholder="Type like you're chatting..."
+                            autocomplete="off"
+                            maxlength="220"
+                        />
+                    </label>
+                    <button type="submit">Send</button>
+                </form>
+
+                <p class="portfolio-assistant-status" data-assistant-status>
+                    Gemini answers use Jefferson's portfolio context.
+                </p>
+
+                <div class="portfolio-assistant-actions">
+                    <a href="#featured">View featured work</a>
+                    <a href="HTML/work.html">Open work page</a>
+                </div>
+            </div>
+        </section>
+
+        <button
+            class="ask-pill"
+            type="button"
+            data-assistant-toggle
+            aria-expanded="false"
+            aria-controls="portfolioAssistant"
+        >
+            <span class="ask-pill-icon" aria-hidden="true">+</span>
+            <span>Ask about my work</span>
+        </button>
 
         <script src="./JAVASCRIPT/script.js"></script>
     </body>

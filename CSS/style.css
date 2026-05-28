@@ -312,7 +312,7 @@ button {
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 70;
+    z-index: 89;
     opacity: 0;
     pointer-events: none;
     isolation: isolate;
@@ -7173,20 +7173,61 @@ html.theme-light .site-footer-links a:focus-visible span {
 .ask-pill {
     position: fixed;
     right: clamp(1rem, 2.5vw, 2.2rem);
-    bottom: 1.2rem;
-    z-index: 4;
+    bottom: max(1.2rem, env(safe-area-inset-bottom));
+    z-index: 88;
     display: inline-flex;
     align-items: center;
     gap: 0.7rem;
-    padding: 0.95rem 1.25rem;
+    min-height: 3.1rem;
+    padding: 0.9rem 1.15rem;
     border-radius: 999px;
-    background: var(--accent);
-    color: #1c1c1c;
-    font-size: 0.88rem;
-    letter-spacing: 0.12em;
+    border: 1px solid rgb(var(--hero-accent-rgb) / 0.34);
+    background:
+        linear-gradient(
+            135deg,
+            rgb(var(--hero-accent-rgb) / 0.2),
+            rgba(255, 255, 255, 0.055)
+        ),
+        rgba(5, 5, 7, 0.78);
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+    cursor: pointer;
+    backdrop-filter: blur(18px);
+    transition:
+        border-color 180ms ease,
+        box-shadow 180ms ease,
+        transform 180ms ease,
+        background 180ms ease;
     box-shadow:
-        0 0 0 1px rgba(255, 255, 255, 0.08),
-        0 0 38px var(--glow);
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 18px 46px rgba(0, 0, 0, 0.32),
+        0 0 32px rgb(var(--hero-accent-rgb) / 0.18);
+}
+
+.ask-pill:hover,
+.ask-pill:focus-visible {
+    border-color: rgb(var(--hero-accent-rgb) / 0.68);
+    background:
+        linear-gradient(
+            135deg,
+            rgb(var(--hero-accent-rgb) / 0.28),
+            rgba(255, 255, 255, 0.075)
+        ),
+        rgba(5, 5, 7, 0.88);
+    transform: translateY(-2px);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 22px 54px rgba(0, 0, 0, 0.38),
+        0 0 44px rgb(var(--hero-accent-rgb) / 0.28);
+}
+
+.ask-pill:focus-visible {
+    outline: 2px solid rgb(var(--hero-accent-rgb) / 0.82);
+    outline-offset: 0.25rem;
 }
 
 .ask-pill-icon {
@@ -7195,13 +7236,397 @@ html.theme-light .site-footer-links a:focus-visible span {
     width: 1.2rem;
     height: 1.2rem;
     border-radius: 50%;
-    border: 1px solid rgba(0, 0, 0, 0.24);
+    border: 1px solid rgb(var(--hero-accent-rgb) / 0.52);
+    background: rgb(var(--hero-accent-rgb) / 0.14);
+    color: #ffffff;
     font-weight: 700;
     line-height: 1;
 }
 
-.ask-pill-count {
-    color: rgba(0, 0, 0, 0.44);
+html.theme-light .ask-pill {
+    border-color: rgba(54, 92, 255, 0.22);
+    background:
+        linear-gradient(135deg, rgba(54, 92, 255, 0.14), rgba(255, 255, 255, 0.58)),
+        rgba(245, 247, 242, 0.82);
+    color: rgba(17, 22, 28, 0.82);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.72),
+        0 18px 46px rgba(22, 30, 38, 0.12),
+        0 0 30px rgba(54, 92, 255, 0.12);
+}
+
+html.theme-light .ask-pill:hover,
+html.theme-light .ask-pill:focus-visible {
+    border-color: rgba(54, 92, 255, 0.46);
+    background:
+        linear-gradient(135deg, rgba(54, 92, 255, 0.18), rgba(255, 255, 255, 0.72)),
+        rgba(245, 247, 242, 0.92);
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.82),
+        0 22px 54px rgba(22, 30, 38, 0.16),
+        0 0 38px rgba(54, 92, 255, 0.18);
+}
+
+html.theme-light .ask-pill-icon {
+    border-color: rgba(54, 92, 255, 0.38);
+    background: rgba(54, 92, 255, 0.1);
+    color: #365cff;
+}
+
+.portfolio-assistant {
+    position: fixed;
+    right: clamp(1rem, 2.5vw, 2.2rem);
+    bottom: calc(max(1.2rem, env(safe-area-inset-bottom)) + 4.2rem);
+    z-index: 87;
+    width: min(25rem, calc(100vw - 2rem));
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translate3d(0, 0.8rem, 0) scale(0.98);
+    transform-origin: right bottom;
+    transition:
+        opacity 180ms ease,
+        visibility 180ms ease,
+        transform 180ms ease;
+}
+
+.portfolio-assistant.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translate3d(0, 0, 0) scale(1);
+}
+
+.portfolio-assistant-shell {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid rgb(var(--hero-accent-rgb) / 0.28);
+    border-radius: 0.7rem;
+    background:
+        radial-gradient(
+            circle at top left,
+            rgb(var(--hero-accent-rgb) / 0.18),
+            transparent 42%
+        ),
+        linear-gradient(180deg, rgba(16, 16, 20, 0.94), rgba(5, 5, 7, 0.92));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+        0 28px 78px rgba(0, 0, 0, 0.48),
+        0 0 38px rgb(var(--hero-accent-rgb) / 0.18);
+    backdrop-filter: blur(22px);
+}
+
+.portfolio-assistant-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.portfolio-assistant-kicker,
+.portfolio-assistant-answer-label {
+    margin: 0;
+    color: rgb(var(--hero-accent-rgb) / 0.86);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.portfolio-assistant-title {
+    margin: 0.35rem 0 0;
+    color: #ffffff;
+    font-size: clamp(1.25rem, 3vw, 1.75rem);
+    line-height: 0.98;
+}
+
+.portfolio-assistant-close {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.055);
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.portfolio-assistant-close:hover,
+.portfolio-assistant-close:focus-visible {
+    border-color: rgb(var(--hero-accent-rgb) / 0.52);
+    color: #ffffff;
+}
+
+.portfolio-assistant-answer {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    min-height: 12rem;
+    max-height: min(23rem, 42vh);
+    overflow: auto;
+    padding: 0.9rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.55rem;
+    background:
+        linear-gradient(90deg, rgb(var(--hero-accent-rgb) / 0.08), transparent),
+        rgba(255, 255, 255, 0.035);
+}
+
+.portfolio-assistant-message {
+    display: grid;
+    justify-items: start;
+    gap: 0.35rem;
+    max-width: 88%;
+}
+
+.portfolio-assistant-message.is-user {
+    justify-self: end;
+    justify-items: end;
+}
+
+.portfolio-assistant-message span {
+    color: rgb(var(--hero-accent-rgb) / 0.86);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.portfolio-assistant-message.is-user span {
+    color: rgba(255, 255, 255, 0.48);
+}
+
+.portfolio-assistant-message p {
+    margin: 0;
+    padding: 0.72rem 0.82rem;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 0.65rem;
+    background: rgba(255, 255, 255, 0.055);
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 0.94rem;
+    line-height: 1.48;
+}
+
+.portfolio-assistant-message.is-user p {
+    border-color: rgb(var(--hero-accent-rgb) / 0.34);
+    background: rgb(var(--hero-accent-rgb) / 0.16);
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.portfolio-assistant-prompts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.portfolio-assistant-prompt,
+.portfolio-assistant-actions a {
+    min-height: 2.65rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.045);
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.portfolio-assistant-prompt {
+    padding: 0 0.85rem;
+    cursor: pointer;
+}
+
+.portfolio-assistant-prompt:hover,
+.portfolio-assistant-prompt:focus-visible,
+.portfolio-assistant-prompt.is-active {
+    border-color: rgb(var(--hero-accent-rgb) / 0.56);
+    background: rgb(var(--hero-accent-rgb) / 0.12);
+    color: #ffffff;
+}
+
+.portfolio-assistant-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.55rem;
+}
+
+.portfolio-assistant-actions a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 0.85rem;
+}
+
+.portfolio-assistant-actions a:hover,
+.portfolio-assistant-actions a:focus-visible {
+    border-color: rgba(255, 255, 255, 0.28);
+    color: #ffffff;
+}
+
+.portfolio-assistant-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 0.55rem;
+    align-items: end;
+}
+
+.portfolio-assistant-input-label {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+}
+
+.portfolio-assistant-input-label span,
+.portfolio-assistant-status {
+    color: rgba(255, 255, 255, 0.42);
+    font-size: 0.62rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1.25;
+    text-transform: uppercase;
+}
+
+.portfolio-assistant-input-label input {
+    width: 100%;
+    min-height: 2.75rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.24);
+    color: rgba(255, 255, 255, 0.88);
+    font: inherit;
+    font-size: 0.86rem;
+    outline: none;
+    padding: 0 0.95rem;
+}
+
+.portfolio-assistant-input-label input::placeholder {
+    color: rgba(255, 255, 255, 0.34);
+}
+
+.portfolio-assistant-input-label input:focus {
+    border-color: rgb(var(--hero-accent-rgb) / 0.62);
+    box-shadow: 0 0 0 3px rgb(var(--hero-accent-rgb) / 0.12);
+}
+
+.portfolio-assistant-form button {
+    min-height: 2.75rem;
+    padding: 0 1rem;
+    border: 1px solid rgb(var(--hero-accent-rgb) / 0.4);
+    border-radius: 999px;
+    background: rgb(var(--hero-accent-rgb) / 0.16);
+    color: #ffffff;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+}
+
+.portfolio-assistant-form button:hover,
+.portfolio-assistant-form button:focus-visible {
+    border-color: rgb(var(--hero-accent-rgb) / 0.68);
+    background: rgb(var(--hero-accent-rgb) / 0.24);
+}
+
+.portfolio-assistant-form button:disabled,
+.portfolio-assistant-input-label input:disabled {
+    cursor: wait;
+    opacity: 0.62;
+}
+
+.portfolio-assistant-status {
+    min-height: 0.8rem;
+    margin: -0.3rem 0 0;
+    text-transform: none;
+    letter-spacing: 0.02em;
+}
+
+html.theme-light .portfolio-assistant-shell {
+    border-color: rgba(54, 92, 255, 0.18);
+    background:
+        radial-gradient(circle at top left, rgba(54, 92, 255, 0.12), transparent 44%),
+        linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(245, 247, 242, 0.92));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.78),
+        0 28px 78px rgba(22, 30, 38, 0.16),
+        0 0 34px rgba(54, 92, 255, 0.12);
+}
+
+html.theme-light .portfolio-assistant-title {
+    color: #11161c;
+}
+
+html.theme-light .portfolio-assistant-answer {
+    border-color: rgba(17, 22, 28, 0.1);
+    background:
+        linear-gradient(90deg, rgba(54, 92, 255, 0.08), transparent),
+        rgba(255, 255, 255, 0.52);
+}
+
+html.theme-light .portfolio-assistant-message p {
+    border-color: rgba(17, 22, 28, 0.1);
+    background: rgba(255, 255, 255, 0.58);
+    color: rgba(17, 22, 28, 0.68);
+}
+
+html.theme-light .portfolio-assistant-message.is-user span {
+    color: rgba(17, 22, 28, 0.46);
+}
+
+html.theme-light .portfolio-assistant-message.is-user p {
+    border-color: rgba(54, 92, 255, 0.24);
+    background: rgba(54, 92, 255, 0.1);
+    color: rgba(17, 22, 28, 0.82);
+}
+
+html.theme-light .portfolio-assistant-close,
+html.theme-light .portfolio-assistant-prompt,
+html.theme-light .portfolio-assistant-actions a {
+    border-color: rgba(17, 22, 28, 0.12);
+    background: rgba(255, 255, 255, 0.52);
+    color: rgba(17, 22, 28, 0.68);
+}
+
+html.theme-light .portfolio-assistant-close:hover,
+html.theme-light .portfolio-assistant-close:focus-visible,
+html.theme-light .portfolio-assistant-prompt:hover,
+html.theme-light .portfolio-assistant-prompt:focus-visible,
+html.theme-light .portfolio-assistant-prompt.is-active,
+html.theme-light .portfolio-assistant-actions a:hover,
+html.theme-light .portfolio-assistant-actions a:focus-visible {
+    border-color: rgba(54, 92, 255, 0.4);
+    background: rgba(54, 92, 255, 0.1);
+    color: #11161c;
+}
+
+html.theme-light .portfolio-assistant-input-label span,
+html.theme-light .portfolio-assistant-status {
+    color: rgba(17, 22, 28, 0.46);
+}
+
+html.theme-light .portfolio-assistant-input-label input {
+    border-color: rgba(17, 22, 28, 0.12);
+    background: rgba(255, 255, 255, 0.56);
+    color: rgba(17, 22, 28, 0.86);
+}
+
+html.theme-light .portfolio-assistant-input-label input::placeholder {
+    color: rgba(17, 22, 28, 0.38);
+}
+
+html.theme-light .portfolio-assistant-form button {
+    border-color: rgba(54, 92, 255, 0.32);
+    background: rgba(54, 92, 255, 0.12);
+    color: #11161c;
 }
 
 .education-bagdes {
@@ -9208,9 +9633,23 @@ html.theme-light .about-toolkit-card-copy {
     }
 
     .ask-pill {
+        left: auto;
+        right: 1rem;
+        max-width: calc(100vw - 2rem);
+        justify-content: center;
+    }
+
+    .portfolio-assistant {
         left: 1rem;
         right: 1rem;
-        justify-content: center;
+        bottom: calc(max(1.2rem, env(safe-area-inset-bottom)) + 4.25rem);
+        width: auto;
+        transform-origin: center bottom;
+    }
+
+    .portfolio-assistant-shell {
+        max-height: calc(100svh - 7rem);
+        overflow: auto;
     }
 }
 
