@@ -732,7 +732,9 @@ function setupPortfolioAssistant() {
 
             chatMessages[chatMessages.length - 1].content =
                 data.answer || fallbackAnswer;
-            setStatus("Answered by AI.");
+            setStatus(
+                "Powered by Gemini · Trained on Jefferson's portfolio data",
+            );
         } catch (error) {
             chatMessages[chatMessages.length - 1].content =
                 fallbackAnswer ||
