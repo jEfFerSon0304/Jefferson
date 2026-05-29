@@ -524,7 +524,7 @@ function wait(duration) {
 function getPortfolioRootPath() {
     const path = window.location.pathname.replace(/\\/g, "/");
 
-    if (path.includes("/HTML/MahWorksNibbah/")) {
+    if (path.includes("/HTML/works/")) {
         return "../../";
     }
 
@@ -3542,6 +3542,126 @@ function setupGalleryPagination() {
     window.addEventListener("resize", requestUpdate);
 }
 
+function setupToolkitFlipCards() {
+    const toolkitBackCopy = {
+        Figma:
+            "I use Figma to shape interfaces before coding: layouts, spacing, visual direction, and quick design experiments.",
+        "VS Code":
+            "My main coding workspace for building pages, editing styles, organizing files, and checking the details as I work.",
+        Unity:
+            "I use Unity for game prototypes, scene building, character interactions, and testing gameplay ideas.",
+        Codex:
+            "I use Codex as a coding partner for debugging, refactoring, exploring structure, and moving faster through implementation.",
+        Claude:
+            "I use Claude when I want careful reasoning, writing help, and a second pass on complex ideas or content.",
+        Photoshop:
+            "I use Photoshop for image cleanup, visual polish, mockup assets, and preparing graphics for portfolio projects.",
+        Brave:
+            "My daily browser for research, testing live pages, previewing local work, and checking how sites feel in use.",
+        ChatGPT:
+            "I use ChatGPT for planning, brainstorming, explaining concepts, improving copy, and getting unstuck during builds.",
+        Gemini:
+            "I use Gemini for quick research, alternate ideas, and rapid checks when I want another angle on a task.",
+        "Git Desktop":
+            "I use GitHub Desktop to review changes, manage branches, and keep commits organized without leaving my flow.",
+        GitHub:
+            "I use GitHub to store projects, track versions, share work, and keep my portfolio code backed up.",
+        "Android Studio":
+            "I use Android Studio for mobile development, emulator testing, Gradle builds, and Android app experiments.",
+    };
+    const flipCards = Array.from(
+        document.querySelectorAll(".about-toolkit-card"),
+    );
+
+    if (!flipCards.length) {
+        return;
+    }
+
+    function getToolkitBackCopy(titleText) {
+        return (
+            toolkitBackCopy[titleText] ||
+            "I use this tool to support my design and development workflow."
+        );
+    }
+
+    function enhanceFlipCard(card) {
+        const existingInner = card.querySelector(".about-toolkit-card-inner");
+        const titleText =
+            card.querySelector(".about-toolkit-card-title")?.textContent.trim() ||
+            "Toolkit";
+        const description = getToolkitBackCopy(titleText);
+
+        card.classList.add("is-flippable");
+        card.dataset.toolkitFlipCard = "";
+        card.setAttribute("role", "button");
+        card.setAttribute("tabindex", "0");
+        card.setAttribute("aria-pressed", "false");
+
+        if (existingInner) {
+            const existingBackCopy = card.querySelector(
+                ".about-toolkit-card-back .about-toolkit-card-copy",
+            );
+
+            if (existingBackCopy) {
+                existingBackCopy.textContent = description;
+            }
+
+            return;
+        }
+
+        const inner = document.createElement("div");
+        const front = document.createElement("div");
+        const back = document.createElement("div");
+        const backTitle = document.createElement("h3");
+        const backCopy = document.createElement("p");
+
+        inner.className = "about-toolkit-card-inner";
+        front.className =
+            "about-toolkit-card-face about-toolkit-card-front";
+        back.className = "about-toolkit-card-face about-toolkit-card-back";
+        back.setAttribute("aria-hidden", "true");
+        backTitle.className = "about-toolkit-card-title";
+        backTitle.textContent = titleText;
+        backCopy.className = "about-toolkit-card-copy";
+        backCopy.textContent = description;
+
+        while (card.firstChild) {
+            front.appendChild(card.firstChild);
+        }
+
+        back.append(backTitle, backCopy);
+        inner.append(front, back);
+        card.appendChild(inner);
+    }
+
+    function setCardFlipped(card, shouldFlip) {
+        const front = card.querySelector(".about-toolkit-card-front");
+        const back = card.querySelector(".about-toolkit-card-back");
+
+        card.classList.toggle("is-flipped", shouldFlip);
+        card.setAttribute("aria-pressed", String(shouldFlip));
+        front?.setAttribute("aria-hidden", String(shouldFlip));
+        back?.setAttribute("aria-hidden", String(!shouldFlip));
+    }
+
+    flipCards.forEach((card) => {
+        enhanceFlipCard(card);
+
+        card.addEventListener("click", () => {
+            setCardFlipped(card, !card.classList.contains("is-flipped"));
+        });
+
+        card.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter" && event.key !== " ") {
+                return;
+            }
+
+            event.preventDefault();
+            setCardFlipped(card, !card.classList.contains("is-flipped"));
+        });
+    });
+}
+
 updateClock();
 setupThemedImages();
 setupThemeToggle();
@@ -3563,6 +3683,7 @@ setupAboutPagePhotoDrag();
 setupAboutPageMobilePhotoReveal();
 setupEducationBadgesModal();
 setupGalleryPagination();
+setupToolkitFlipCards();
 setupIntroLoader().finally(() => {
     setupHeroDescriptionTypewriter();
 });

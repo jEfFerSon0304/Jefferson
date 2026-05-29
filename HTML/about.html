@@ -434,26 +434,50 @@
 
                             <div class="about-toolkit-grid">
                                 <article
-                                    class="about-toolkit-card"
+                                    class="about-toolkit-card is-flippable"
                                     style="--about-toolkit-glow-rgb: 162 89 255"
+                                    role="button"
+                                    tabindex="0"
+                                    aria-pressed="false"
+                                    data-toolkit-flip-card
                                 >
-                                    <div
-                                        class="about-toolkit-icon"
-                                        aria-label="Figma logo"
-                                    >
-                                        <img
-                                            src="../Assets/LogoForAbout/Figma.png"
-                                            alt="Figma logo"
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
+                                    <div class="about-toolkit-card-inner">
+                                        <div
+                                            class="about-toolkit-card-face about-toolkit-card-front"
+                                        >
+                                            <div
+                                                class="about-toolkit-icon"
+                                                aria-label="Figma logo"
+                                            >
+                                                <img
+                                                    src="../Assets/LogoForAbout/Figma.png"
+                                                    alt="Figma logo"
+                                                    loading="lazy"
+                                                    decoding="async"
+                                                />
+                                            </div>
+                                            <h3 class="about-toolkit-card-title">
+                                                Figma
+                                            </h3>
+                                            <p class="about-toolkit-card-copy">
+                                                UI Design
+                                            </p>
+                                        </div>
+                                        <div
+                                            class="about-toolkit-card-face about-toolkit-card-back"
+                                            aria-hidden="true"
+                                        >
+                                            <h3 class="about-toolkit-card-title">
+                                                Figma
+                                            </h3>
+                                            <p class="about-toolkit-card-copy">
+                                                I use Figma to shape interfaces
+                                                before coding: layouts, spacing,
+                                                visual direction, and quick
+                                                design experiments.
+                                            </p>
+                                        </div>
                                     </div>
-                                    <h3 class="about-toolkit-card-title">
-                                        Figma
-                                    </h3>
-                                    <p class="about-toolkit-card-copy">
-                                        UI Design
-                                    </p>
                                 </article>
 
                                 <article

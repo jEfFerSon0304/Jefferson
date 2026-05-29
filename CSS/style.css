@@ -8323,6 +8323,46 @@ html.theme-light .about-toolkit-title-outline {
         box-shadow 220ms ease;
 }
 
+.about-toolkit-card.is-flippable {
+    cursor: pointer;
+    padding: 0;
+    perspective: 70rem;
+}
+
+.about-toolkit-card.is-flippable:focus-visible {
+    outline: 2px solid rgb(var(--about-toolkit-glow-rgb));
+    outline-offset: 0.35rem;
+}
+
+.about-toolkit-card-inner {
+    display: grid;
+    width: 100%;
+    min-height: inherit;
+    transform-style: preserve-3d;
+    transform-origin: center;
+    transition: transform 520ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.about-toolkit-card.is-flipped .about-toolkit-card-inner {
+    transform: rotateY(180deg);
+}
+
+.about-toolkit-card-face {
+    grid-area: 1 / 1;
+    display: grid;
+    justify-items: center;
+    align-content: center;
+    gap: 0.9rem;
+    min-height: inherit;
+    padding: clamp(1.3rem, 2vw, 1.7rem);
+    border-radius: inherit;
+    backface-visibility: hidden;
+}
+
+.about-toolkit-card-back {
+    transform: rotateY(180deg);
+}
+
 html.theme-light .about-toolkit-card {
     border-color: rgba(17, 22, 28, 0.12);
     background:
@@ -10254,6 +10294,7 @@ html.theme-light .about-toolkit-card-copy {
     .about-page-photo,
     .about-page-photo img,
     .about-toolkit-card,
+    .about-toolkit-card-inner,
     .about-toolkit-icon i,
     .about-toolkit-icon img,
     .site-intro-loader,
