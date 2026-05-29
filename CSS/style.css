@@ -1326,7 +1326,7 @@ html.theme-light .theme-toggle-icon-sun {
     position: fixed;
     left: 0;
     top: 0;
-    z-index: 34;
+    z-index: 89;
     width: 0;
     height: 0;
     pointer-events: none;
@@ -1474,20 +1474,29 @@ html.theme-light .theme-toggle-guide {
                 var(--theme-guide-start-x),
                 var(--theme-guide-start-y)
             )
-            scale(0.82);
+            scale(0.54);
     }
 
-    14% {
+    7% {
         opacity: 1;
         transform: translate(
                 var(--theme-guide-start-x),
                 var(--theme-guide-start-y)
             )
-            scale(0.92);
+            scale(0.54);
     }
 
-    38%,
-    84% {
+    22% {
+        opacity: 1;
+        transform: translate(
+                var(--theme-guide-start-x),
+                var(--theme-guide-start-y)
+            )
+            scale(1);
+    }
+
+    46%,
+    76% {
         opacity: 1;
         transform: translate(
                 var(--theme-guide-target-x),
@@ -1496,24 +1505,34 @@ html.theme-light .theme-toggle-guide {
             scale(1);
     }
 
-    100% {
-        opacity: 0;
+    92% {
+        opacity: 1;
         transform: translate(
-                var(--theme-guide-target-x),
-                var(--theme-guide-target-y)
+                var(--theme-guide-start-x),
+                var(--theme-guide-start-y)
             )
-            scale(0.92);
+            scale(1);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(
+                var(--theme-guide-start-x),
+                var(--theme-guide-start-y)
+            )
+            scale(0.54);
     }
 }
 
 @keyframes themeToggleGuideLabel {
     0%,
-    42% {
+    46%,
+    76% {
         opacity: 1;
         transform: translate(1rem, -1.2rem) scale(1);
     }
 
-    48%,
+    82%,
     100% {
         opacity: 0;
         transform: translate(1rem, -1.2rem) scale(0.92);
@@ -1522,19 +1541,20 @@ html.theme-light .theme-toggle-guide {
 
 @keyframes themeToggleGuideMessage {
     0%,
-    44% {
+    48% {
         opacity: 0;
         transform: translate(1rem, -1.2rem) scale(0.92);
         max-width: 0;
     }
 
-    52%,
-    88% {
+    56%,
+    76% {
         opacity: 1;
         transform: translate(1rem, -1.2rem) scale(1);
         max-width: min(19.5rem, calc(100vw - 2rem));
     }
 
+    82%,
     100% {
         opacity: 0;
         transform: translate(1rem, -1.2rem) scale(0.96);
@@ -1544,12 +1564,12 @@ html.theme-light .theme-toggle-guide {
 
 @keyframes themeToggleGuideType {
     0%,
-    46% {
+    50% {
         max-width: 0;
         padding-inline: 0;
     }
 
-    64%,
+    68%,
     100% {
         max-width: min(19.5rem, calc(100vw - 2rem));
         padding-inline: 0.68rem;
@@ -3035,10 +3055,10 @@ html.theme-light .about-page-photo {
     --about-reset-cursor-stroke: rgba(150, 102, 255, 0.98);
     --about-reset-cursor-label-bg: rgba(102, 40, 182, 0.94);
     --about-reset-cursor-label-border: rgba(195, 158, 255, 0.48);
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
-    z-index: 90;
+    z-index: 188;
     width: 0;
     height: 0;
     pointer-events: none;
@@ -3054,7 +3074,8 @@ html.theme-light .about-page-photo {
 .about-photo-reset-cursor-halo,
 .about-photo-reset-cursor-frame,
 .about-photo-reset-cursor-core,
-.about-photo-reset-cursor-label {
+.about-photo-reset-cursor-label,
+.about-photo-reset-cursor-message {
     position: absolute;
     left: 0;
     top: 0;
@@ -3070,8 +3091,8 @@ html.theme-light .about-page-photo {
     transform: translate(-50%, -50%) scale(1.38);
     background: radial-gradient(
         circle,
-        rgba(150, 102, 255, 0.32) 0%,
-        rgba(150, 102, 255, 0.13) 46%,
+        rgb(var(--hero-accent-rgb) / 0.32) 0%,
+        rgb(var(--hero-accent-rgb) / 0.13) 46%,
         transparent 74%
     );
 }
@@ -3102,7 +3123,7 @@ html.theme-light .about-page-photo {
     box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.1),
         0 0 0 1px rgba(0, 0, 0, 0.32),
-        0 0 1.2rem rgba(150, 102, 255, 0.32);
+        0 0 1.2rem rgb(var(--hero-accent-rgb) / 0.32);
 }
 
 .about-photo-reset-cursor-core {
@@ -3114,7 +3135,7 @@ html.theme-light .about-page-photo {
     box-shadow:
         0 0 18px rgba(255, 255, 255, 0.38),
         0 0 0 1px rgba(255, 255, 255, 0.26),
-        0 0 0 0.28rem rgba(150, 102, 255, 0.18);
+        0 0 0 0.28rem rgb(var(--hero-accent-rgb) / 0.18);
 }
 
 .about-photo-reset-cursor-label,
@@ -3158,6 +3179,12 @@ html.theme-light .about-page-photo {
         aboutPhotoReturnCursorType 4000ms steps(32, end) forwards;
 }
 
+html.theme-light .about-photo-reset-cursor {
+    --about-reset-cursor-stroke: rgba(54, 92, 255, 0.98);
+    --about-reset-cursor-label-bg: rgba(17, 22, 28, 0.92);
+    --about-reset-cursor-label-border: rgba(54, 92, 255, 0.4);
+}
+
 .about-photo-reset-cursor-label::after,
 .about-photo-reset-cursor-message::after {
     content: "";
@@ -3179,19 +3206,28 @@ html.theme-light .about-page-photo {
                 var(--reset-cursor-start-x),
                 var(--reset-cursor-start-y)
             )
-            scale(0.82);
+            scale(0.54);
     }
 
     7% {
-        opacity: 0;
+        opacity: 1;
         transform: translate(
                 var(--reset-cursor-start-x),
                 var(--reset-cursor-start-y)
             )
-            scale(0.82);
+            scale(0.54);
     }
 
-    20% {
+    16% {
+        opacity: 1;
+        transform: translate(
+                var(--reset-cursor-start-x),
+                var(--reset-cursor-start-y)
+            )
+            scale(1);
+    }
+
+    30% {
         opacity: 1;
         transform: translate(
                 var(--reset-cursor-pickup-x),
@@ -3200,7 +3236,7 @@ html.theme-light .about-page-photo {
             scale(1);
     }
 
-    25% {
+    34% {
         opacity: 1;
         transform: translate(
                 var(--reset-cursor-pickup-x),
@@ -3209,7 +3245,7 @@ html.theme-light .about-page-photo {
             scale(0.82);
     }
 
-    29% {
+    38% {
         opacity: 1;
         transform: translate(
                 var(--reset-cursor-pickup-x),
@@ -3218,7 +3254,7 @@ html.theme-light .about-page-photo {
             scale(0.95);
     }
 
-    44% {
+    54% {
         opacity: 1;
         transform: translate(
                 var(--reset-cursor-end-x),
@@ -3227,33 +3263,42 @@ html.theme-light .about-page-photo {
             scale(1);
     }
 
-    88% {
+    78% {
         opacity: 1;
         transform: translate(
                 var(--reset-cursor-end-x),
                 var(--reset-cursor-end-y)
+            )
+            scale(1);
+    }
+
+    92% {
+        opacity: 1;
+        transform: translate(
+                var(--reset-cursor-start-x),
+                var(--reset-cursor-start-y)
             )
             scale(1);
     }
 
     100% {
-        opacity: 0;
+        opacity: 1;
         transform: translate(
-                var(--reset-cursor-end-x),
-                var(--reset-cursor-end-y)
+                var(--reset-cursor-start-x),
+                var(--reset-cursor-start-y)
             )
-            scale(0.92);
+            scale(0.54);
     }
 }
 
 @keyframes aboutPhotoReturnCursorLabel {
     0%,
-    44% {
+    52% {
         opacity: 1;
         transform: translate(1rem, -1.2rem) scale(1);
     }
 
-    50%,
+    58%,
     100% {
         opacity: 0;
         transform: translate(1rem, -1.2rem) scale(0.92);
@@ -3262,18 +3307,19 @@ html.theme-light .about-page-photo {
 
 @keyframes aboutPhotoReturnCursorMessage {
     0%,
-    48% {
+    54% {
         opacity: 0;
         transform: translate(1rem, -1.2rem) scale(0.92);
     }
 
-    55%,
-    90% {
+    62%,
+    78% {
         opacity: 1;
         transform: translate(1rem, -1.2rem) scale(1);
         max-width: min(18rem, 58vw);
     }
 
+    84%,
     100% {
         opacity: 0;
         transform: translate(1rem, -1.2rem) scale(0.96);
@@ -3283,12 +3329,12 @@ html.theme-light .about-page-photo {
 
 @keyframes aboutPhotoReturnCursorType {
     0%,
-    50% {
+    56% {
         max-width: 0;
         padding-inline: 0;
     }
 
-    68%,
+    72%,
     100% {
         max-width: min(18rem, 58vw);
         padding-inline: 0.54rem;
@@ -7180,7 +7226,7 @@ html.theme-light .site-footer-links a:focus-visible span {
 .footer-photo-preview-close::before,
 .footer-photo-preview-close::after,
 .footer-photo-preview-close span {
-    position: absolute;
+    position: fixed;
     width: 0.9rem;
     height: 2px;
     border-radius: 999px;
@@ -7366,16 +7412,100 @@ html.theme-light .footer-photo-preview-close:focus-visible {
 }
 
 .ask-pill-icon {
-    display: inline-grid;
-    place-items: center;
-    width: 1.2rem;
-    height: 1.2rem;
-    border-radius: 50%;
-    border: 1px solid rgb(var(--hero-accent-rgb) / 0.52);
-    background: rgb(var(--hero-accent-rgb) / 0.14);
-    color: #ffffff;
-    font-weight: 700;
-    line-height: 1;
+    --ask-pill-cursor-scale: 0.54;
+    --ask-pill-cursor-stroke: rgba(150, 102, 255, 0.98);
+    position: relative;
+    display: inline-block;
+    width: 2.08rem;
+    height: 2.08rem;
+    flex: 0 0 2.08rem;
+    margin: -0.33rem;
+    border-radius: 0.36rem;
+    color: transparent;
+    transform: scale(calc(var(--ask-pill-cursor-scale) * 1.24));
+    background:
+        linear-gradient(var(--ask-pill-cursor-stroke) 0 0) top left / 0.66rem
+            2px no-repeat,
+        linear-gradient(var(--ask-pill-cursor-stroke) 0 0) top left / 2px
+            0.66rem no-repeat,
+        linear-gradient(var(--ask-pill-cursor-stroke) 0 0) top right / 0.66rem
+            2px no-repeat,
+        linear-gradient(var(--ask-pill-cursor-stroke) 0 0) top right / 2px
+            0.66rem no-repeat,
+        linear-gradient(var(--ask-pill-cursor-stroke) 0 0) bottom left /
+            0.66rem 2px no-repeat,
+        linear-gradient(var(--ask-pill-cursor-stroke) 0 0) bottom left / 2px
+            0.66rem no-repeat,
+        linear-gradient(var(--ask-pill-cursor-stroke) 0 0) bottom right /
+            0.66rem 2px no-repeat,
+        linear-gradient(var(--ask-pill-cursor-stroke) 0 0) bottom right / 2px
+            0.66rem no-repeat;
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.32),
+        0 0 1.2rem rgb(var(--hero-accent-rgb) / 0.32);
+    transform-origin: center;
+    transition:
+        opacity 180ms ease,
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
+}
+
+.ask-pill-icon::before,
+.ask-pill-icon::after {
+    content: "";
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    border-radius: 999px;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+}
+
+.ask-pill-icon::before {
+    width: 4.35rem;
+    height: 4.35rem;
+    opacity: 0.88;
+    filter: blur(9px);
+    transform: translate(-50%, -50%) scale(1.38);
+    background: radial-gradient(
+        circle,
+        rgb(var(--hero-accent-rgb) / 0.32) 0%,
+        rgb(var(--hero-accent-rgb) / 0.13) 46%,
+        transparent 74%
+    );
+}
+
+.ask-pill-icon::after {
+    width: 0.48rem;
+    height: 0.48rem;
+    background: rgba(255, 255, 255, 0.98);
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow:
+        0 0 18px rgba(255, 255, 255, 0.38),
+        0 0 0 1px rgba(255, 255, 255, 0.26),
+        0 0 0 0.28rem rgb(var(--hero-accent-rgb) / 0.18);
+}
+
+.ask-pill:hover .ask-pill-icon,
+.ask-pill:focus-visible .ask-pill-icon {
+    transform: scale(calc(0.6 * 1.24));
+    box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.1),
+        0 0 0 1px rgba(0, 0, 0, 0.32),
+        0 0 1.4rem rgb(var(--hero-accent-rgb) / 0.38);
+}
+
+.ask-pill.is-guide-source .ask-pill-icon {
+    opacity: 0;
+    transform: scale(calc(0.54 * 1.24));
+}
+
+.ask-pill.is-guide-returning .ask-pill-icon {
+    opacity: 1;
+    transform: scale(calc(0.54 * 1.24));
+    z-index: 189;
 }
 
 html.theme-light .ask-pill {
@@ -7411,9 +7541,28 @@ html.theme-light .ask-pill:focus-visible {
 }
 
 html.theme-light .ask-pill-icon {
-    border-color: rgba(54, 92, 255, 0.38);
-    background: rgba(54, 92, 255, 0.1);
-    color: #365cff;
+    --ask-pill-cursor-stroke: rgba(54, 92, 255, 0.98);
+    box-shadow:
+        inset 0 0 0 1px rgba(54, 92, 255, 0.1),
+        0 0 0 1px rgba(255, 255, 255, 0.74),
+        0 0 1.2rem rgba(54, 92, 255, 0.28);
+}
+
+html.theme-light .ask-pill-icon::before {
+    background: radial-gradient(
+        circle,
+        rgba(54, 92, 255, 0.32) 0%,
+        rgba(54, 92, 255, 0.13) 46%,
+        transparent 74%
+    );
+}
+
+html.theme-light .ask-pill-icon::after {
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow:
+        0 0 18px rgba(255, 255, 255, 0.38),
+        0 0 0 1px rgba(255, 255, 255, 0.26),
+        0 0 0 0.28rem rgba(54, 92, 255, 0.18);
 }
 
 .portfolio-assistant {
@@ -7909,8 +8058,12 @@ html.theme-light .education-badge:focus-visible {
     border: 2px solid #000000;
 }
 
-.education-badge img.is-logo-flight-target {
-    opacity: 0;
+.education-badge img.is-logo-flight-target,
+.education-modal-logo.is-logo-flight-target,
+.education-modal.is-logo-ready .education-modal-logo.is-logo-flight-target {
+    opacity: 0 !important;
+    visibility: hidden;
+    transition: none;
 }
 
 .education-badge-logo-plv {

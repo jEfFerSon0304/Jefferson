@@ -618,7 +618,7 @@ function ensurePortfolioAssistantMarkup() {
     toggle.setAttribute("aria-expanded", "false");
     toggle.setAttribute("aria-controls", "portfolioAssistant");
     toggle.innerHTML = `
-        <span class="ask-pill-icon" aria-hidden="true">+</span>
+        <span class="ask-pill-icon" aria-hidden="true"></span>
         <span>Ask about my work</span>
     `;
 
@@ -870,12 +870,20 @@ function setupThemeToggleGuide() {
 
     let hasPlayed = false;
     let guideTimeoutId = null;
+    let guideReturnTimeoutId = null;
     let activeGuide = null;
 
     function clearGuide() {
+        const askPill = document.querySelector(".ask-pill");
+
         if (guideTimeoutId !== null) {
             window.clearTimeout(guideTimeoutId);
             guideTimeoutId = null;
+        }
+
+        if (guideReturnTimeoutId !== null) {
+            window.clearTimeout(guideReturnTimeoutId);
+            guideReturnTimeoutId = null;
         }
 
         if (activeGuide) {
@@ -884,6 +892,7 @@ function setupThemeToggleGuide() {
         }
 
         themeToggle.classList.remove("is-guide-target");
+        askPill?.classList.remove("is-guide-source", "is-guide-returning");
     }
 
     function createGuide() {
@@ -909,11 +918,23 @@ function setupThemeToggleGuide() {
 
         const targetX = toggleRect.left + toggleRect.width / 2;
         const targetY = toggleRect.top + toggleRect.height / 2;
-        const startX = window.innerWidth + 92;
-        const startY = Math.min(
-            Math.max(targetY + 92, 120),
-            window.innerHeight - 90,
-        );
+        const askPill = document.querySelector(".ask-pill");
+        const askIcon = askPill?.querySelector(".ask-pill-icon");
+        const askIconRect = askIcon?.getBoundingClientRect();
+        const askIconIsVisible =
+            askIconRect &&
+            askIconRect.width > 0 &&
+            askIconRect.height > 0 &&
+            askIconRect.bottom > 0 &&
+            askIconRect.top < window.innerHeight &&
+            askIconRect.right > 0 &&
+            askIconRect.left < window.innerWidth;
+        const startX = askIconIsVisible
+            ? askIconRect.left + askIconRect.width / 2
+            : window.innerWidth + 92;
+        const startY = askIconIsVisible
+            ? askIconRect.top + askIconRect.height / 2
+            : Math.min(Math.max(targetY + 92, 120), window.innerHeight - 90);
         const guide = document.createElement("div");
         const halo = document.createElement("span");
         const frame = document.createElement("span");
@@ -941,8 +962,16 @@ function setupThemeToggleGuide() {
         guide.append(halo, frame, core, label, message);
 
         themeToggle.classList.add("is-guide-target");
+        askPill?.classList.toggle("is-guide-source", Boolean(askIconIsVisible));
         document.body.append(guide);
         activeGuide = guide;
+
+        if (askIconIsVisible && askPill) {
+            guideReturnTimeoutId = window.setTimeout(() => {
+                guideReturnTimeoutId = null;
+                askPill.classList.add("is-guide-returning");
+            }, 4780);
+        }
 
         guide.addEventListener(
             "animationend",
@@ -951,6 +980,10 @@ function setupThemeToggleGuide() {
                     activeGuide = null;
                     guide.remove();
                     themeToggle.classList.remove("is-guide-target");
+                    askPill?.classList.remove(
+                        "is-guide-source",
+                        "is-guide-returning",
+                    );
                 }
             },
             { once: true },
@@ -2917,22 +2950,85 @@ function setupAboutPagePhotoDrag() {
             return;
         }
 
-        const galleryRect = aboutPageGallery.getBoundingClientRect();
-        const elementRect = element.getBoundingClientRect();
+        const askPill = document.querySelector(".ask-pill");
+        const askIcon = askPill?.querySelector(".ask-pill-icon");
         const cursor = document.createElement("span");
         const cursorHalo = document.createElement("span");
         const cursorFrame = document.createElement("span");
         const cursorCore = document.createElement("span");
         const cursorLabel = document.createElement("span");
         const cursorMessage = document.createElement("span");
-        const pickupX =
-            elementRect.left + elementRect.width / 2 - galleryRect.left;
-        const pickupY =
-            elementRect.top + elementRect.height / 2 - galleryRect.top;
-        const startX = galleryRect.width + 42;
-        const startY = pickupY - 36;
-        const endX = pickupX - offsetX;
-        const endY = pickupY - offsetY;
+        let returnTimeoutId = null;
+        let pathFrameId = null;
+        let returnFollowFrameId = null;
+        let returnFollowUntil = 0;
+        let hasAppliedReturn = false;
+
+        function getAskIconRect() {
+            return askIcon?.getBoundingClientRect();
+        }
+
+        function isRectVisible(rect) {
+            return (
+                rect &&
+                rect.width > 0 &&
+                rect.height > 0 &&
+                rect.bottom > 0 &&
+                rect.top < window.innerHeight &&
+                rect.right > 0 &&
+                rect.left < window.innerWidth
+            );
+        }
+
+        function updateCursorPath() {
+            const elementRect = element.getBoundingClientRect();
+            const askIconRect = getAskIconRect();
+            const askIconIsVisible = isRectVisible(askIconRect);
+            const pickupX = elementRect.left + elementRect.width / 2;
+            const pickupY = elementRect.top + elementRect.height / 2;
+            const startX = askIconIsVisible
+                ? askIconRect.left + askIconRect.width / 2
+                : window.innerWidth + 42;
+            const startY = askIconIsVisible
+                ? askIconRect.top + askIconRect.height / 2
+                : pickupY - 36;
+            const endX = hasAppliedReturn ? pickupX : pickupX - offsetX;
+            const endY = hasAppliedReturn ? pickupY : pickupY - offsetY;
+
+            cursor.style.setProperty("--reset-cursor-start-x", `${startX}px`);
+            cursor.style.setProperty("--reset-cursor-start-y", `${startY}px`);
+            cursor.style.setProperty("--reset-cursor-pickup-x", `${pickupX}px`);
+            cursor.style.setProperty("--reset-cursor-pickup-y", `${pickupY}px`);
+            cursor.style.setProperty("--reset-cursor-end-x", `${endX}px`);
+            cursor.style.setProperty("--reset-cursor-end-y", `${endY}px`);
+            askPill?.classList.toggle(
+                "is-guide-source",
+                Boolean(askIconIsVisible),
+            );
+        }
+
+        function requestCursorPathUpdate() {
+            if (pathFrameId !== null) {
+                return;
+            }
+
+            pathFrameId = window.requestAnimationFrame(() => {
+                pathFrameId = null;
+                updateCursorPath();
+            });
+        }
+
+        function followReturningPhoto(timestamp) {
+            updateCursorPath();
+
+            if (timestamp >= returnFollowUntil) {
+                returnFollowFrameId = null;
+                return;
+            }
+
+            returnFollowFrameId =
+                window.requestAnimationFrame(followReturningPhoto);
+        }
 
         cursor.className = "about-photo-reset-cursor";
         cursorHalo.className = "about-photo-reset-cursor-halo";
@@ -2943,12 +3039,6 @@ function setupAboutPagePhotoDrag() {
         cursorLabel.textContent = "DRAG";
         cursorMessage.textContent = getNextReturnWorkerMessage();
         cursor.setAttribute("aria-hidden", "true");
-        cursor.style.setProperty("--reset-cursor-start-x", `${startX}px`);
-        cursor.style.setProperty("--reset-cursor-start-y", `${startY}px`);
-        cursor.style.setProperty("--reset-cursor-pickup-x", `${pickupX}px`);
-        cursor.style.setProperty("--reset-cursor-pickup-y", `${pickupY}px`);
-        cursor.style.setProperty("--reset-cursor-end-x", `${endX}px`);
-        cursor.style.setProperty("--reset-cursor-end-y", `${endY}px`);
         cursor.append(
             cursorHalo,
             cursorFrame,
@@ -2956,16 +3046,61 @@ function setupAboutPagePhotoDrag() {
             cursorLabel,
             cursorMessage,
         );
-        aboutPageGallery.append(cursor);
+        document.body.append(cursor);
+        updateCursorPath();
+        window.addEventListener("scroll", requestCursorPathUpdate, {
+            passive: true,
+        });
+        window.addEventListener("resize", requestCursorPathUpdate);
+
+        if (isRectVisible(getAskIconRect()) && askPill) {
+            returnTimeoutId = window.setTimeout(() => {
+                returnTimeoutId = null;
+                askPill.classList.add("is-guide-returning");
+            }, 3600);
+        }
 
         cursor.addEventListener(
             "animationend",
             () => {
+                window.removeEventListener("scroll", requestCursorPathUpdate);
+                window.removeEventListener("resize", requestCursorPathUpdate);
+
+                if (pathFrameId !== null) {
+                    window.cancelAnimationFrame(pathFrameId);
+                    pathFrameId = null;
+                }
+
+                if (returnFollowFrameId !== null) {
+                    window.cancelAnimationFrame(returnFollowFrameId);
+                    returnFollowFrameId = null;
+                }
+
+                if (returnTimeoutId !== null) {
+                    window.clearTimeout(returnTimeoutId);
+                }
+
                 cursor.remove();
+                askPill?.classList.remove(
+                    "is-guide-source",
+                    "is-guide-returning",
+                );
                 onComplete?.();
             },
             { once: true },
         );
+
+        return {
+            markReturnApplied() {
+                hasAppliedReturn = true;
+                returnFollowUntil = window.performance.now() + 720;
+
+                if (returnFollowFrameId === null) {
+                    returnFollowFrameId =
+                        window.requestAnimationFrame(followReturningPhoto);
+                }
+            },
+        };
     }
 
     function removeQueuedReturn(element) {
@@ -2994,29 +3129,34 @@ function setupAboutPagePhotoDrag() {
         isReturnWorkerActive = true;
         bringToFront(task.element);
 
-        animateReturnCursor(task.element, task.offsetX, task.offsetY, () => {
-            task.element.classList.remove("is-return-pending");
-            task.element.classList.remove("is-returning");
-            task.state.returnTimerId = null;
-            task.state.returnCleanupTimerId = null;
-            isReturnWorkerActive = false;
+        const returnAnimation = animateReturnCursor(
+            task.element,
+            task.offsetX,
+            task.offsetY,
+            () => {
+                task.element.classList.remove("is-return-pending");
+                task.element.classList.remove("is-returning");
+                task.state.returnTimerId = null;
+                task.state.returnCleanupTimerId = null;
+                isReturnWorkerActive = false;
 
-            if (
-                task.state.pointerId === null &&
-                isPhotoAwayFromHome(task.state)
-            ) {
-                queuePhotoReturn({
-                    element: task.element,
-                    state: task.state,
-                    applyOffset: task.applyOffset,
-                    offsetX: task.state.offsetX,
-                    offsetY: task.state.offsetY,
-                });
-                return;
-            }
+                if (
+                    task.state.pointerId === null &&
+                    isPhotoAwayFromHome(task.state)
+                ) {
+                    queuePhotoReturn({
+                        element: task.element,
+                        state: task.state,
+                        applyOffset: task.applyOffset,
+                        offsetX: task.state.offsetX,
+                        offsetY: task.state.offsetY,
+                    });
+                    return;
+                }
 
-            processReturnQueue();
-        });
+                processReturnQueue();
+            },
+        );
 
         task.state.returnTimerId = window.setTimeout(() => {
             task.element.classList.remove("is-return-pending");
@@ -3024,14 +3164,15 @@ function setupAboutPagePhotoDrag() {
             task.state.offsetX = 0;
             task.state.offsetY = 0;
             task.applyOffset();
+            returnAnimation?.markReturnApplied();
             task.state.returnTimerId = null;
-        }, 1230);
+        }, 1520);
 
         task.state.returnCleanupTimerId = window.setTimeout(() => {
             task.element.classList.remove("is-return-pending");
             task.element.classList.remove("is-returning");
             task.state.returnCleanupTimerId = null;
-        }, 1980);
+        }, 2180);
     }
 
     function queuePhotoReturn(task) {
@@ -3251,6 +3392,8 @@ function setupEducationBadgesModal() {
     }
 
     let activeEducationBadge = null;
+    let activeEducationLogo = null;
+    let activeEducationLogoFlight = null;
     const modal = document.createElement("div");
     const modalLogo = document.createElement("img");
     const modalKicker = document.createElement("p");
@@ -3290,10 +3433,30 @@ function setupEducationBadgesModal() {
     modal.querySelector(".education-modal-card")?.append(modalClose);
     document.body.append(modal);
 
+    function cleanupEducationLogoFlight() {
+        if (!activeEducationLogoFlight) {
+            return;
+        }
+
+        const { animation, element } = activeEducationLogoFlight;
+
+        activeEducationLogoFlight = null;
+        animation.onfinish = null;
+        animation.oncancel = null;
+        animation.cancel();
+        element.remove();
+    }
+
     function hideEducationModal() {
+        cleanupEducationLogoFlight();
         modal.classList.remove("is-open");
         modal.classList.remove("is-logo-ready");
         modal.setAttribute("aria-hidden", "true");
+        modalLogo.classList.remove("is-logo-flight-target");
+        modalLogo.style.removeProperty("opacity");
+        modalLogo.style.removeProperty("visibility");
+        activeEducationLogo?.classList.remove("is-logo-flight-target");
+        activeEducationLogo = null;
 
         if (activeEducationBadge) {
             activeEducationBadge.focus();
@@ -3306,10 +3469,16 @@ function setupEducationBadgesModal() {
             return;
         }
 
+        if (activeEducationLogoFlight?.direction === "in") {
+            hideEducationModal();
+            return;
+        }
+
         animateEducationLogoToBadge();
     }
 
     function openEducationModal(badge) {
+        cleanupEducationLogoFlight();
         const logo = badge.querySelector("img");
         const schoolName = badge.dataset.schoolName || badge.textContent.trim();
         const schoolKicker = badge.dataset.schoolKicker || "School Days";
@@ -3319,6 +3488,9 @@ function setupEducationBadgesModal() {
 
         activeEducationBadge = badge;
         modal.classList.remove("is-logo-ready");
+        modalLogo.classList.remove("is-logo-flight-target");
+        modalLogo.style.removeProperty("opacity");
+        modalLogo.style.removeProperty("visibility");
         modalLogo.src = logo?.currentSrc || logo?.src || "";
         modalLogo.alt = logo?.alt || `${schoolName} logo`;
         modalKicker.textContent = schoolKicker;
@@ -3354,6 +3526,8 @@ function setupEducationBadgesModal() {
             animatedLogo.style.top = `${startRect.top}px`;
             animatedLogo.style.width = `${startRect.width}px`;
             animatedLogo.style.height = `${startRect.height}px`;
+            activeEducationLogo = sourceLogo;
+            sourceLogo.classList.add("is-logo-flight-target");
             document.body.append(animatedLogo);
 
             const animation = animatedLogo.animate(
@@ -3373,8 +3547,18 @@ function setupEducationBadgesModal() {
                     fill: "forwards",
                 },
             );
+            activeEducationLogoFlight = {
+                animation,
+                direction: "in",
+                element: animatedLogo,
+            };
 
             animation.onfinish = () => {
+                if (activeEducationLogoFlight?.element !== animatedLogo) {
+                    return;
+                }
+
+                activeEducationLogoFlight = null;
                 modal.classList.add("is-logo-ready");
                 window.setTimeout(() => {
                     animatedLogo.remove();
@@ -3382,15 +3566,18 @@ function setupEducationBadgesModal() {
             };
 
             animation.oncancel = () => {
-                modal.classList.add("is-logo-ready");
-                window.setTimeout(() => {
-                    animatedLogo.remove();
-                }, 180);
+                if (activeEducationLogoFlight?.element !== animatedLogo) {
+                    return;
+                }
+
+                activeEducationLogoFlight = null;
+                animatedLogo.remove();
             };
         });
     }
 
     function animateEducationLogoToBadge() {
+        cleanupEducationLogoFlight();
         const targetLogo = activeEducationBadge?.querySelector("img");
 
         if (!targetLogo || !modalLogo.src) {
@@ -3414,10 +3601,13 @@ function setupEducationBadgesModal() {
         animatedLogo.style.top = `${startRect.top}px`;
         animatedLogo.style.width = `${startRect.width}px`;
         animatedLogo.style.height = `${startRect.height}px`;
-        document.body.append(animatedLogo);
         targetLogo.classList.add("is-logo-flight-target");
-        modal.classList.remove("is-open");
+        modalLogo.classList.add("is-logo-flight-target");
         modal.classList.remove("is-logo-ready");
+        modalLogo.style.opacity = "0";
+        modalLogo.style.visibility = "hidden";
+        document.body.append(animatedLogo);
+        modal.classList.remove("is-open");
         modal.setAttribute("aria-hidden", "true");
         activeEducationBadge = null;
 
@@ -3438,16 +3628,39 @@ function setupEducationBadgesModal() {
                 fill: "forwards",
             },
         );
+        activeEducationLogoFlight = {
+            animation,
+            direction: "out",
+            element: animatedLogo,
+        };
 
         animation.onfinish = () => {
+            if (activeEducationLogoFlight?.element !== animatedLogo) {
+                return;
+            }
+
+            activeEducationLogoFlight = null;
             animatedLogo.remove();
             targetLogo.classList.remove("is-logo-flight-target");
+            modalLogo.classList.remove("is-logo-flight-target");
+            modalLogo.style.removeProperty("opacity");
+            modalLogo.style.removeProperty("visibility");
+            activeEducationLogo = null;
             returnFocusTarget?.focus();
         };
 
         animation.oncancel = () => {
+            if (activeEducationLogoFlight?.element !== animatedLogo) {
+                return;
+            }
+
+            activeEducationLogoFlight = null;
             animatedLogo.remove();
             targetLogo.classList.remove("is-logo-flight-target");
+            modalLogo.classList.remove("is-logo-flight-target");
+            modalLogo.style.removeProperty("opacity");
+            modalLogo.style.removeProperty("visibility");
+            activeEducationLogo = null;
             returnFocusTarget?.focus();
         };
     }
