@@ -8472,6 +8472,137 @@ html.theme-light .about-toolkit-card-copy {
     color: rgba(17, 22, 28, 0.58);
 }
 
+.about-resume-section {
+    width: 100%;
+    padding: clamp(1rem, 4vw, 2rem) 0 clamp(5.4rem, 9vw, 7.6rem);
+}
+
+.about-resume-shell {
+    width: min(100% - 2rem, 80rem);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    padding: clamp(1.4rem, 3vw, 2.2rem) 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.theme-light .about-resume-shell {
+    border-top-color: rgba(17, 22, 28, 0.12);
+    border-bottom-color: rgba(17, 22, 28, 0.08);
+}
+
+.about-resume-copy {
+    max-width: 47rem;
+}
+
+.about-resume-kicker {
+    margin: 0 0 0.75rem;
+    font-size: 0.74rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.2em;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+html.theme-light .about-resume-kicker {
+    color: rgba(17, 22, 28, 0.46);
+}
+
+.about-resume-title {
+    margin: 0;
+    font-size: clamp(2rem, 4.6vw, 4.2rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+    color: #f4f4f4;
+}
+
+html.theme-light .about-resume-title {
+    color: #11161c;
+}
+
+.about-resume-text {
+    margin: 1rem 0 0;
+    max-width: 36rem;
+    font-size: clamp(0.98rem, 1.8vw, 1.08rem);
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.58);
+}
+
+html.theme-light .about-resume-text {
+    color: rgba(17, 22, 28, 0.62);
+}
+
+.about-resume-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 0.8rem;
+}
+
+.about-resume-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    min-height: 3.15rem;
+    padding: 0.9rem 1.1rem;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    border-radius: 999px;
+    color: rgba(255, 255, 255, 0.76);
+    font-size: 0.78rem;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.1em;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition:
+        border-color 220ms ease,
+        color 220ms ease,
+        background 220ms ease,
+        transform 220ms ease;
+}
+
+html.theme-light .about-resume-link {
+    border-color: rgba(17, 22, 28, 0.14);
+    color: rgba(17, 22, 28, 0.68);
+}
+
+.about-resume-link-primary {
+    border-color: rgba(255, 255, 255, 0.28);
+    background: rgba(255, 255, 255, 0.08);
+    color: #ffffff;
+}
+
+html.theme-light .about-resume-link-primary {
+    border-color: rgba(17, 22, 28, 0.24);
+    background: rgba(17, 22, 28, 0.06);
+    color: #11161c;
+}
+
+.about-resume-link:hover,
+.about-resume-link:focus-visible {
+    border-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+html.theme-light .about-resume-link:hover,
+html.theme-light .about-resume-link:focus-visible {
+    border-color: rgba(17, 22, 28, 0.4);
+    color: #11161c;
+    background: rgba(17, 22, 28, 0.08);
+}
+
+.about-resume-link span {
+    font-size: 0.98rem;
+    line-height: 1;
+}
+
 @media (max-width: 960px) {
     .site-header {
         position: fixed; /* or sticky, depende sa layout mo */
@@ -9884,6 +10015,36 @@ html.theme-light .about-toolkit-card-copy {
 
     .about-toolkit-card-copy {
         font-size: 0.76rem;
+    }
+
+    .about-resume-section {
+        padding: 1.5rem 0 4.4rem;
+    }
+
+    .about-resume-shell {
+        width: calc(100% - 2rem);
+        grid-template-columns: 1fr;
+        align-items: start;
+        gap: 1.25rem;
+        padding: 1.35rem 0;
+    }
+
+    .about-resume-title {
+        max-width: 11ch;
+        font-size: clamp(2rem, 11vw, 3.1rem);
+    }
+
+    .about-resume-text {
+        font-size: 0.94rem;
+    }
+
+    .about-resume-actions {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .about-resume-link {
+        flex: 1 1 12rem;
     }
 
     .toolkit-title {
