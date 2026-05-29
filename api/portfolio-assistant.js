@@ -1,0 +1,179 @@
+const GEMINI_API_BASE_URL = "https://generativelanguage.googleapis.com/v1beta";
+
+const portfolioContext = `
+You are Jefferson Garcia's portfolio chatbot.
+
+Personality:
+- Talk like a warm, casual assistant in a portfolio site.
+- You can handle light greetings and casual conversation.
+- Keep the vibe friendly, confident, and concise.
+
+Knowledge boundary:
+- Your factual knowledge is only Jefferson's portfolio context below.
+- If the visitor asks about facts outside the portfolio, be honest that you only know the portfolio, then gently connect back to Jefferson's work.
+- Do not invent private details, availability, employment history, pricing, grades, or contact information.
+
+Portfolio facts:
+- Jefferson is a web developer with a strong design sensibility.
+- The portfolio highlights interactive web experiences, motion, UI systems, and game-inspired projects.
+- Featured projects include:
+  - Gora Na Explorer: Wild Clash, a Unity/C# multiplayer strategy game with netcode and island adventure themes.
+  - PLV CEIT Thesis Hub, a web-based thesis catalog system for organizing and presenting student theses.
+  - The Session, a choice-driven slasher game with branching storylines and Unity gameplay programming.
+  - ThreatTrack, a cybersecurity-themed project shown in the project archive.
+  - Hannah's Creations, a project shown in the project archive.
+- Tools and stack shown in the portfolio include HTML5, Tailwind CSS, JavaScript, Laravel, GSAP, Node.js, React, Webflow, Figma, Photoshop, GitHub, VS Code, Cursor, ChatGPT, Claude, Gemini, OpenAI, GitHub Copilot, Brave, and GitHub Desktop.
+- Contact links include GitHub, LinkedIn, and the footer contact link.
+
+Response rules:
+- Keep most answers to 2-4 sentences.
+- For greetings, answer naturally and invite them to ask about projects, stack, process, or contact.
+- For portfolio questions, be specific and helpful.
+- Encourage visitors to explore the Work page, About page, or featured projects when useful.
+`;
+
+function sendJson(response, statusCode, body) {
+    response.setHeader("Access-Control-Allow-Headers", "Content-Type");
+    response.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+    response.setHeader("Access-Control-Allow-Origin", "*");
+    response.setHeader("Content-Type", "application/json");
+    response.status(statusCode).json(body);
+}
+
+function normalizeMessages(messages, fallbackQuestion) {
+    if (!Array.isArray(messages)) {
+        return [{ role: "user", content: fallbackQuestion }];
+    }
+
+    const normalized = messages
+        .map((message) => ({
+            role: message.role === "assistant" ? "assistant" : "user",
+            content: String(message.content || "").trim(),
+        }))
+        .filter((message) => message.content)
+        .slice(-10);
+
+    while (normalized.length && normalized[0].role !== "user") {
+        normalized.shift();
+    }
+
+    const alternating = [];
+
+    for (const message of normalized) {
+        const previous = alternating[alternating.length - 1];
+
+        if (!previous || previous.role !== message.role) {
+            alternating.push(message);
+            continue;
+        }
+
+        previous.content = `${previous.content}\n${message.content}`;
+    }
+
+    return alternating.length
+        ? alternating
+        : [{ role: "user", content: fallbackQuestion }];
+}
+
+function toGeminiContents(messages) {
+    return messages.map((message) => ({
+        role: message.role === "assistant" ? "model" : "user",
+        parts: [
+            {
+                text: message.content,
+            },
+        ],
+    }));
+}
+
+function extractGeminiAnswer(data) {
+    const parts = data.candidates?.[0]?.content?.parts || [];
+
+    return parts
+        .map((part) => part.text || "")
+        .join("")
+        .trim();
+}
+
+module.exports = async function handler(request, response) {
+    if (request.method === "OPTIONS") {
+        return sendJson(response, 204, {});
+    }
+
+    if (request.method !== "POST") {
+        return sendJson(response, 405, { error: "Method not allowed." });
+    }
+
+    if (!process.env.GEMINI_API_KEY) {
+        return sendJson(response, 500, {
+            error: "GEMINI_API_KEY is not configured.",
+        });
+    }
+
+    let payload;
+
+    try {
+        payload =
+            request.body && typeof request.body === "object"
+                ? request.body
+                : JSON.parse(request.body || "{}");
+    } catch (error) {
+        return sendJson(response, 400, { error: "Invalid JSON body." });
+    }
+
+    const question = String(payload.question || "").trim();
+
+    if (!question) {
+        return sendJson(response, 400, { error: "Question is required." });
+    }
+
+    if (question.length > 500) {
+        return sendJson(response, 400, { error: "Question is too long." });
+    }
+
+    const model = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+    const endpoint = `${GEMINI_API_BASE_URL}/models/${model}:generateContent?key=${process.env.GEMINI_API_KEY}`;
+    const messages = normalizeMessages(payload.messages, question);
+
+    try {
+        const geminiResponse = await fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                systemInstruction: {
+                    parts: [{ text: portfolioContext }],
+                },
+                contents: toGeminiContents(messages),
+                generationConfig: {
+                    maxOutputTokens: 320,
+                    temperature: 0.75,
+                },
+            }),
+        });
+
+        const data = await geminiResponse.json();
+
+        if (!geminiResponse.ok) {
+            return sendJson(response, geminiResponse.status, {
+                error:
+                    data.error?.message ||
+                    "Gemini could not answer that request.",
+            });
+        }
+
+        const answer = extractGeminiAnswer(data);
+
+        return sendJson(response, 200, {
+            answer:
+                answer ||
+                "I could not produce an answer right now. Please try again.",
+            provider: "gemini",
+        });
+    } catch (error) {
+        return sendJson(response, 500, {
+            error: "The assistant could not reach the AI service.",
+        });
+    }
+};
