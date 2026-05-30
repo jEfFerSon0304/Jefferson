@@ -1078,6 +1078,10 @@ html.theme-light .hero-orbit {
         0 0.7rem 1.8rem rgba(58, 32, 86, 0.13);
 }
 
+html.theme-light .hero-atmosphere .hero-orbit:not([data-theme-toggle]) {
+    display: none;
+}
+
 .hero-orbit-badge {
     min-width: 11rem;
     align-items: start;

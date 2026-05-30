@@ -950,9 +950,9 @@ function setupThemeToggleGuide() {
         core.className = "theme-toggle-guide-core";
         label.className = "theme-toggle-guide-label";
         message.className = "theme-toggle-guide-message";
-        label.textContent = "TIP";
+        label.textContent = "-_-";
         message.textContent = isLightTheme
-            ? "You can switch back to dark mode here."
+            ? "You can switch to dark mode here."
             : "You can switch to light mode here.";
         guide.setAttribute("aria-hidden", "true");
         guide.style.setProperty("--theme-guide-start-x", `${startX}px`);
@@ -2572,6 +2572,21 @@ function setupFooterPhotoGallery() {
         image.loading = "eager";
         image.decoding = "async";
 
+        if ("fetchPriority" in image) {
+            image.fetchPriority = "low";
+        }
+
+        const source = image.currentSrc || image.src;
+
+        if (source) {
+            const preloadedImage = new Image();
+            preloadedImage.decoding = "async";
+            if ("fetchPriority" in preloadedImage) {
+                preloadedImage.fetchPriority = "low";
+            }
+            preloadedImage.src = source;
+        }
+
         if (!image.complete && typeof image.decode === "function") {
             image.decode().catch(() => {
                 // The regular image load path still handles decode failures.
@@ -3757,28 +3772,21 @@ function setupGalleryPagination() {
 
 function setupToolkitFlipCards() {
     const toolkitBackCopy = {
-        Figma:
-            "I use Figma to shape interfaces before coding: layouts, spacing, visual direction, and quick design experiments.",
+        Figma: "I use Figma to shape interfaces before coding: layouts, spacing, visual direction, and quick design experiments.",
         "VS Code":
             "My main coding workspace for building pages, editing styles, organizing files, and checking the details as I work.",
-        Unity:
-            "I use Unity for game prototypes, scene building, character interactions, and testing gameplay ideas.",
-        Codex:
-            "I use Codex as a coding partner for debugging, refactoring, exploring structure, and moving faster through implementation.",
-        Claude:
-            "I use Claude when I want careful reasoning, writing help, and a second pass on complex ideas or content.",
+        Unity: "I use Unity for game prototypes, scene building, character interactions, and testing gameplay ideas.",
+        Codex: "I use Codex as a coding partner for debugging, refactoring, exploring structure, and moving faster through implementation.",
+        Claude: "I use Claude when I want careful reasoning, writing help, and a second pass on complex ideas or content.",
         Photoshop:
             "I use Photoshop for image cleanup, visual polish, mockup assets, and preparing graphics for portfolio projects.",
-        Brave:
-            "My daily browser for research, testing live pages, previewing local work, and checking how sites feel in use.",
+        Brave: "My daily browser for research, testing live pages, previewing local work, and checking how sites feel in use.",
         ChatGPT:
             "I use ChatGPT for planning, brainstorming, explaining concepts, improving copy, and getting unstuck during builds.",
-        Gemini:
-            "I use Gemini for quick research, alternate ideas, and rapid checks when I want another angle on a task.",
+        Gemini: "I use Gemini for quick research, alternate ideas, and rapid checks when I want another angle on a task.",
         "Git Desktop":
             "I use GitHub Desktop to review changes, manage branches, and keep commits organized without leaving my flow.",
-        GitHub:
-            "I use GitHub to store projects, track versions, share work, and keep my portfolio code backed up.",
+        GitHub: "I use GitHub to store projects, track versions, share work, and keep my portfolio code backed up.",
         "Android Studio":
             "I use Android Studio for mobile development, emulator testing, Gradle builds, and Android app experiments.",
     };
@@ -3800,8 +3808,9 @@ function setupToolkitFlipCards() {
     function enhanceFlipCard(card) {
         const existingInner = card.querySelector(".about-toolkit-card-inner");
         const titleText =
-            card.querySelector(".about-toolkit-card-title")?.textContent.trim() ||
-            "Toolkit";
+            card
+                .querySelector(".about-toolkit-card-title")
+                ?.textContent.trim() || "Toolkit";
         const description = getToolkitBackCopy(titleText);
 
         card.classList.add("is-flippable");
@@ -3829,8 +3838,7 @@ function setupToolkitFlipCards() {
         const backCopy = document.createElement("p");
 
         inner.className = "about-toolkit-card-inner";
-        front.className =
-            "about-toolkit-card-face about-toolkit-card-front";
+        front.className = "about-toolkit-card-face about-toolkit-card-front";
         back.className = "about-toolkit-card-face about-toolkit-card-back";
         back.setAttribute("aria-hidden", "true");
         backTitle.className = "about-toolkit-card-title";
